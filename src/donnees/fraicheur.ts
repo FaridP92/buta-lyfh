@@ -24,12 +24,12 @@ async function lireFraicheur(): Promise<Fraicheur> {
     }
   }
   const reponse = await fetch("/data/instantane/_meta.json");
-  if (!reponse.ok) throw new Error("aucune fraicheur disponible");
+  if (!reponse.ok) throw new Error("aucune fraîcheur disponible");
   const meta = SchemaMeta.parse(await reponse.json());
   return { source: "instantane", journee: meta.journee_publiee, integreeLe: meta.genere_le };
 }
 
-/** Journee simulee publiee et heure d'integration (badge de fraicheur), rafraichie au retour d'onglet. */
+/** Journée simulée publiée et heure d'intégration (badge de fraîcheur), rafraîchie au retour d'onglet. */
 export function useFraicheur() {
   return useQuery({ queryKey: ["fraicheur"], queryFn: lireFraicheur, staleTime: 60_000, retry: 1, refetchOnWindowFocus: true });
 }

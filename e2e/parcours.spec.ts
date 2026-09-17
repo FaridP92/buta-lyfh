@@ -24,7 +24,7 @@ for (const route of ROUTES) {
 
     const reponse = await page.goto(route);
     expect(reponse?.status()).toBeLessThan(400);
-    await expect(page.locator("footer")).toContainText("Demonstrateur personnel");
+    await expect(page.locator("footer")).toContainText("Démonstrateur personnel");
     expect(erreurs).toEqual([]);
   });
 }
@@ -32,10 +32,10 @@ for (const route of ROUTES) {
 test("la palette de commandes s'ouvre au raccourci clavier", async ({ page }) => {
   await page.goto("/methode");
   await page.keyboard.press("Meta+k");
-  await expect(page.getByPlaceholder(/Chercher un ecran/)).toBeVisible();
+  await expect(page.getByPlaceholder(/Chercher un écran/)).toBeVisible();
 });
 
-test("le pied de page porte la mention reglementaire sur toutes les pages", async ({ page }) => {
+test("le pied de page porte la mention réglementaire sur toutes les pages", async ({ page }) => {
   for (const route of ROUTES) {
     await page.goto(route);
     await expect(page.locator("footer")).toContainText("Sans lien avec Butagaz");

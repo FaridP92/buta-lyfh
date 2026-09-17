@@ -24,7 +24,7 @@ export function memoriserTheme(theme: Theme): void {
   try {
     localStorage.setItem(CLE_STOCKAGE, theme);
   } catch {
-    // stockage indisponible (navigation privee) : le choix ne survit pas a la session
+    // stockage indisponible (navigation privée) : le choix ne survit pas à la session
   }
   appliquerTheme(theme);
 }

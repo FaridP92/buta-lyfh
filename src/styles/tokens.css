@@ -1,7 +1,7 @@
 /*
   Tokens du systeme de design Buta.Lyfh (docs/DESIGN.md §1-3).
-  Sombre par defaut ; data-theme="clair" force le theme clair ; sinon on suit
-  prefers-color-scheme. Le choix est memorise en localStorage par src/app/theme.ts.
+  Sombre par défaut ; data-theme="clair" force le thème clair ; sinon on suit
+  prefers-color-scheme. Le choix est mémorisé en localStorage par src/app/theme.ts.
 */
 
 :root {
@@ -14,7 +14,7 @@
   --texte: #e6eaf2;
   --texte-2: #9aa4b8;
   /* DESIGN.md §1 donnait #6B7488 (4,09:1 sur le fond, 3,52:1 sur surface-2), sous le AA
-     exige par §7 ; eclairci a #808A9D (5,52:1 et 4,76:1). Note dans JOURNAL.md. */
+     exigé par §7 ; éclairci à #808A9D (5,52:1 et 4,76:1). Noté dans JOURNAL.md. */
   --texte-3: #808a9d;
 
   --ambre: #f5b700;
@@ -26,13 +26,13 @@
   --attention: #fbbf24;
   --gris-serie: #94a3b8;
 
-  /* accents utilises comme texte : identiques en sombre, assombris en clair pour le AA */
+  /* accents utilisés comme texte : identiques en sombre, assombris en clair pour le AA */
   --ambre-texte: #f5b700;
   --menthe-texte: #2dd4bf;
 
   --ombre-carte: none;
 
-  /* echelle d'espacement DESIGN.md §9 */
+  /* échelle d'espacement DESIGN.md §9 */
   --esp-1: 4px;
   --esp-2: 8px;
   --esp-3: 12px;

@@ -17,7 +17,7 @@ export interface DefinitionRoute {
   chemin: string;
   libelle: string;
   icone: LucideIcon;
-  /** Ecran complet des le lot 0 (Methode) ; les autres sont "a venir" jusqu'a leur lot. */
+  /** Écran complet dès le lot 0 (Méthode) ; les autres sont « à venir » jusqu'à leur lot. */
   disponible: boolean;
   palier: "A" | "B";
   lot: string;
@@ -32,7 +32,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "A",
     lot: "2",
-    objectif: "En trente secondes : ou en est le reseau ce mois-ci, ou sont les ecarts, que faire.",
+    objectif: "En trente secondes : où en est le réseau ce mois-ci, où sont les écarts, que faire.",
   },
   {
     chemin: "/territoires",
@@ -41,7 +41,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "A",
     lot: "3",
-    objectif: "Lire le marche reel des territoires couverts et alentour, departement par departement.",
+    objectif: "Lire le marché réel des territoires couverts et alentour, département par département.",
   },
   {
     chemin: "/funnel",
@@ -50,7 +50,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "A",
     lot: "2",
-    objectif: "Ou se perd la conversion, quel canal vaut son cout, quels leads attendent.",
+    objectif: "Où se perd la conversion, quel canal vaut son coût, quels leads attendent.",
   },
   {
     chemin: "/ventes",
@@ -59,7 +59,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "A",
     lot: "2",
-    objectif: "Chiffre d'affaires, marge, panier, remises, mix produit, et l'explication des ecarts.",
+    objectif: "Chiffre d'affaires, marge, panier, remises, mix produit, et l'explication des écarts.",
   },
   {
     chemin: "/forecast",
@@ -68,7 +68,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "A",
     lot: "2",
-    objectif: "Ou finit l'annee, avec quelles hypotheses, quels risques et opportunites.",
+    objectif: "Où finit l'année, avec quelles hypothèses, quels risques et opportunités.",
   },
   {
     chemin: "/pose",
@@ -77,7 +77,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "B",
     lot: "4b",
-    objectif: "Delai de pose, carnet de charge par agence, encaissement et aides en attente.",
+    objectif: "Délai de pose, carnet de charge par agence, encaissement et aides en attente.",
   },
   {
     chemin: "/plans-action",
@@ -86,16 +86,16 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "B",
     lot: "4b",
-    objectif: "Les leviers en cours, leurs proprietaires, le gain attendu, et le calendrier des revues.",
+    objectif: "Les leviers en cours, leurs propriétaires, le gain attendu, et le calendrier des revues.",
   },
   {
     chemin: "/qualite",
-    libelle: "Qualite et referentiels",
+    libelle: "Qualité et référentiels",
     icone: ShieldCheck,
     disponible: false,
     palier: "A",
     lot: "3",
-    objectif: "La confiance dans le chiffre, rendue visible : douze controles, fraicheur, referentiels.",
+    objectif: "La confiance dans le chiffre, rendue visible : douze contrôles, fraîcheur, référentiels.",
   },
   {
     chemin: "/automatisations",
@@ -104,7 +104,7 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "B",
     lot: "4b",
-    objectif: "Les workflows n8n, leur derniere execution, le journal des automatisations.",
+    objectif: "Les workflows n8n, leur dernière exécution, le journal des automatisations.",
   },
   {
     chemin: "/analyste",
@@ -113,15 +113,15 @@ export const ROUTES: DefinitionRoute[] = [
     disponible: false,
     palier: "B",
     lot: "4b",
-    objectif: "Poser une question en francais sur les indicateurs, avec la requete SQL et les sources.",
+    objectif: "Poser une question en français sur les indicateurs, avec la requête SQL et les sources.",
   },
   {
     chemin: "/methode",
-    libelle: "Methode et auteur",
+    libelle: "Méthode et auteur",
     icone: BookOpenText,
     disponible: true,
     palier: "A",
     lot: "0",
-    objectif: "Ce que c'est, ce que ce n'est pas, les sources, le modele de simulation, l'auteur.",
+    objectif: "Ce que c'est, ce que ce n'est pas, les sources, le modèle de simulation, l'auteur.",
   },
 ];

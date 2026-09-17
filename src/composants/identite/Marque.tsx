@@ -10,8 +10,8 @@ const LETTRES_AVANT = ["B", "u", "t", "a"];
 const LETTRES_APRES = ["L", "y", "f", "h"];
 
 /**
- * Marque-mot "Buta.Lyfh" (DESIGN.md §10) : le point median devient un point
- * ambre legerement plus grand que le corps du texte. En Instrument Serif.
+ * Marque-mot « Buta.Lyfh » (DESIGN.md §10) : le point médian devient un point
+ * ambre légèrement plus grand que le corps du texte. En Instrument Serif.
  */
 export function Marque({ taille = 22, className, animerEntree = false }: MarqueProps) {
   return (

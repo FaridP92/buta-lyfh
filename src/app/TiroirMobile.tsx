@@ -10,7 +10,7 @@ interface TiroirMobileProps {
   onOuvertureChange: (ouvert: boolean) => void;
 }
 
-/** Tiroir de navigation mobile (375 px), libelle complet de chaque route. */
+/** Tiroir de navigation mobile (375 px), libellé complet de chaque route. */
 export function TiroirMobile({ ouvert, onOuvertureChange }: TiroirMobileProps) {
   return (
     <Dialog.Root open={ouvert} onOpenChange={onOuvertureChange}>

@@ -1,5 +1,5 @@
--- Douze plans d'action simules, coherents avec les sept histoires (ECRANS.md §7). Proprietaires en codes.
--- Rejouable : la table est videe puis rechargee (pas de cle naturelle).
+-- Douze plans d'action simulés, cohérents avec les sept histoires (ECRANS.md §7). Propriétaires en codes.
+-- Rejouable : la table est vidée puis rechargée (pas de clé naturelle).
 
 truncate buta.plan_action;
 

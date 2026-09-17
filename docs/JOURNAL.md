@@ -107,6 +107,22 @@ Déroulé :
 - Mot de passe du rôle `analyste_ro` et `ANALYSTE_DB_URL` : lot 4b.
 - Pas encore de commit `Co-Authored-By` unique : les commits de la session portent le modèle actif au moment du commit (Sonnet 5, Fable 5.1, Opus 5), c'est la consigne système du moment.
 
+Commits lot 1 : `9c4244e`, `8ae1ba7`, `9805e33`, `af551d8` (docs alignées, CV ajouté).
+
+### Session 2, 18 septembre 2026 : lots 2 et 3
+
+Plan lot 2 (dix lignes) :
+1. Socle graphique : thème ECharts maison (`src/graphiques/theme.ts`, tokens lus au rendu, palette de six séries), composant `Graphique` chargé à la demande, menu (plein écran, PNG, CSV, requête).
+2. Composants : `Carte`, `CarteKPI` (compteur 700 ms, mini courbe, bouton i), `Tableau` (tri, en-tête collant, mono à droite, export CSV et XLSX), `Pastille`, `Badge`, `LigneSources`, `Squelette`.
+3. Fiche indicateur : catalogue `src/lib/indicateurs.ts` (INDICATEURS.md en données), panneau latéral 420 px.
+4. Période : mois, trimestre, année à date dans l'URL ; agrégation testée dans `src/lib/periode.ts` (sommes, ratios recalculés depuis les sommes, jamais dans un composant).
+5. Vue d'ensemble : quatre KPI, atterrissage, funnel du mois, alertes, agences, carte miniature, « Ce que dit le mois » par règles (`src/lib/phrases.ts` testé).
+6. Ventes et marge : cascade d'écart, barres empilées, matrice, tableau, remises (`src/lib/remise.ts` testé).
+7. Forecast : éventail, hypothèses, curseur (`src/lib/forecast.ts` testé), tableau, risques et opportunités.
+8. Funnel : Sankey, matrice canal × agence, courbe 20 mois, qualité des leads, leads sans RDV.
+9. Palette de commandes enrichie (agences, indicateurs), export XLSX (`fflate`, écriture minimale sans dépendance lourde).
+10. Animations signature §11, revue §9 par écran, captures 1280 et 375, e2e, déploiement, commit.
+
 Écarts et décisions (lot 1, en cours) :
 - Colonnes ajoutées à `fait_dossier` par rapport à DONNEES.md §4.2 : `empreinte_contact` (contrôle 5, doublons), `produit_libelle_source` (contrôle 9 et H4), et `remise` nommée `taux_remise` (taux entre 0 et 1, sans ambiguïté avec un montant). `dim_produit` porte en plus `part_mix_base` et `profil_saison` (règles §3.3 rendues lisibles en base). `controle` porte `ordre`.
 - Les vues lisent les dossiers publiés « à la journée publiée » (`buta.journee_publiee()`, vue interne `dossier_a_date`) : toute date postérieure est masquée, le réalisé ne contient jamais le futur simulé. Le `statut` stocké est l'état final du dossier ; l'état à date se déduit des dates.

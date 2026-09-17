@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 /**
- * Referentiel des vues mart_ (DONNEES.md §4.5) : un schema Zod par vue, valide a la reception.
- * Les colonnes numeriques arrivent de PostgREST en nombres ; les dates en AAAA-MM-JJ.
- * passthrough : une colonne ajoutee cote SQL ne casse pas le front ; une colonne attendue absente, si.
+ * Référentiel des vues mart_ (DONNEES.md §4.5) : un schéma Zod par vue, validé à la réception.
+ * Les colonnes numériques arrivent de PostgREST en nombres ; les dates en AAAA-MM-JJ.
+ * passthrough : une colonne ajoutée côté SQL ne casse pas le front ; une colonne attendue absente, si.
  */
 const nombre = z.number();
 const nombreOuNul = z.number().nullable();

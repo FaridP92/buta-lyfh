@@ -1,7 +1,7 @@
 /**
- * Chaque vue mart_ definie dans les migrations Supabase doit avoir sa fiche
- * dans docs/INDICATEURS.md (DONNEES.md §4.5). Tant que le lot 1 n'a pas livre
- * de migrations, le controle est un avertissement, pas un echec (US-006,
+ * Chaque vue mart_ définie dans les migrations Supabase doit avoir sa fiche
+ * dans docs/INDICATEURS.md (DONNEES.md §4.5). Tant que le lot 1 n'a pas livré
+ * de migrations, le contrôle est un avertissement, pas un échec (US-006,
  * DEPLOIEMENT_VPS.md §2).
  */
 import { readdirSync, readFileSync } from "node:fs";

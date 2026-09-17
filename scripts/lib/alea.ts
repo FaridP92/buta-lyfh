@@ -1,4 +1,4 @@
-/** Generateur pseudo-aleatoire deterministe (mulberry32) : meme graine, meme jeu. */
+/** Generateur pseudo-aléatoire deterministe (mulberry32) : même graine, même jeu. */
 export class Alea {
   private etat: number;
 
@@ -25,7 +25,7 @@ export class Alea {
     return Math.floor(this.entre(min, max + 1));
   }
 
-  /** Normale centree reduite (Box-Muller). */
+  /** Normale centree réduite (Box-Muller). */
   normale(): number {
     let u = 0;
     while (u === 0) u = this.uniforme();
@@ -33,12 +33,12 @@ export class Alea {
     return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   }
 
-  /** Log-normale de mediane donnee et d'ecart-type sigma sur le log. */
+  /** Log-normale de médiane donnée et d'écart-type sigma sur le log. */
   logNormale(mediane: number, sigma: number): number {
     return mediane * Math.exp(sigma * this.normale());
   }
 
-  /** Vrai avec la probabilite p. */
+  /** Vrai avec la probabilité p. */
   bernoulli(p: number): boolean {
     return this.uniforme() < p;
   }

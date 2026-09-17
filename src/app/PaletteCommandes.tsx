@@ -10,7 +10,7 @@ interface PaletteCommandesProps {
   onOuvertureChange: (ouverte: boolean) => void;
 }
 
-/** Palette de commandes Cmd K (DESIGN.md §3) : ecrans, agences, indicateurs. */
+/** Palette de commandes Cmd K (DESIGN.md §3) : écrans, agences, indicateurs. */
 export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommandesProps) {
   const [requete, setRequete] = useState("");
   const navigate = useNavigate();
@@ -46,15 +46,15 @@ export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommande
               autoFocus
               value={requete}
               onChange={(e) => setRequete(e.target.value)}
-              placeholder="Chercher un ecran, une agence, un indicateur..."
+              placeholder="Chercher un écran, une agence, un indicateur…"
               className="w-full bg-transparent text-[14px] text-texte outline-none placeholder:text-texte-3"
             />
-            <kbd className="rounded border border-bordure px-[6px] py-[2px] text-[11px] text-texte-3">Echap</kbd>
+            <kbd className="rounded border border-bordure px-[6px] py-[2px] text-[11px] text-texte-3">Échap</kbd>
           </div>
           <ul className="max-h-[320px] overflow-y-auto p-1">
             {resultats.length === 0 && (
               <li className="px-[var(--esp-4)] py-[var(--esp-4)] text-[13px] text-texte-3">
-                Aucun resultat pour « {requete} ».
+                Aucun résultat pour « {requete} ».
               </li>
             )}
             {resultats.map((route) => (

@@ -43,7 +43,7 @@ export function ajouterJours(date: Date, jours: number): Date {
   return new Date(date.getTime() + Math.round(jours) * 86_400_000);
 }
 
-/** AAAA-MM-JJ a partir des composantes UTC. */
+/** AAAA-MM-JJ à partir des composantes UTC. */
 export function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
@@ -74,8 +74,8 @@ export async function insererParLots(
 }
 
 /**
- * Upsert multi-lignes par lots ; les valeurs sont passees en parametres ($n).
- * colonnesMaj : colonnes mises a jour en cas de conflit (par defaut toutes hors cles).
+ * Upsert multi-lignes par lots ; les valeurs sont passees en paramètres ($n).
+ * colonnesMaj : colonnes mises à jour en cas de conflit (par défaut toutes hors clés).
  */
 export async function upsertParLots(
   client: pg.PoolClient,

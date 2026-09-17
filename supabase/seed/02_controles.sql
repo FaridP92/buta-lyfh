@@ -1,5 +1,5 @@
--- Les douze controles de coherence (DONNEES.md §4.6). Chaque requete renvoie les lignes en anomalie
--- (au plus quelques colonnes), executee par buta.executer_controles. Rejouable (upsert).
+-- Les douze contrôles de cohérence (DONNEES.md §4.6). Chaque requête renvoie les lignes en anomalie
+-- (au plus quelques colonnes), exécutée par buta.executer_controles. Rejouable (upsert).
 
 insert into buta.controle (code, ordre, libelle, regle, bloquant, requete) values
   ('C01', 1, 'Dossier sans agence', 'Tout dossier publié porte une agence.', true,

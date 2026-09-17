@@ -14,7 +14,7 @@ const OPTIONS_COMPARAISON = [
   { valeur: "n1", libelle: "N-1" },
 ];
 
-/** Barre haute collante : periode, comparaison, agence, Cmd K, Exporter, fraicheur. */
+/** Barre haute collante : période, comparaison, agence, Cmd K, Exporter, fraîcheur. */
 export function BarreHaute() {
   const { periode, comparaison, agence, definir } = useFiltresURL();
   const [paletteOuverte, setPaletteOuverte] = useState(false);
@@ -56,7 +56,7 @@ export function BarreHaute() {
 
         <div className="hidden items-center gap-[var(--esp-2)] md:flex">
           <SelecteurMenu
-            libelle="Periode"
+            libelle="Période"
             options={optionsPeriode}
             valeur={periode}
             onChange={(v) => definir("periode", v)}
@@ -80,7 +80,7 @@ export function BarreHaute() {
           <button
             type="button"
             onClick={() => setPaletteOuverte(true)}
-            aria-label="Rechercher un ecran, une agence ou un indicateur (Cmd K)"
+            aria-label="Rechercher un écran, une agence ou un indicateur (Cmd K)"
             className="flex h-9 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-3)] text-[13px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte"
           >
             <Search size={14} strokeWidth={1.5} aria-hidden="true" />

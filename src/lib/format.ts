@@ -1,7 +1,7 @@
 /**
- * Formatage a la francaise (docs/DESIGN.md §2, docs/INDICATEURS.md conventions).
- * Espace insecable fine avant % et entre milliers, virgule decimale,
- * k€ et M€ a partir de 10 000 et 1 000 000, "n. d." pour une valeur non calculable.
+ * Formatage à la française (docs/DESIGN.md §2, docs/INDICATEURS.md conventions).
+ * Espace insécable fine avant % et entre milliers, virgule décimale,
+ * k€ et M€ à partir de 10 000 et 1 000 000, « n. d. » pour une valeur non calculable.
  */
 
 const ESPACE_FINE = " ";
@@ -53,9 +53,9 @@ export function formatNombre(valeur: number | null | undefined): string {
 const REGEX_DATE_SEULE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
- * new Date("2026-02-15") est interprete en UTC : sur un fuseau a l'ouest de
+ * new Date("2026-02-15") est interprété en UTC : sur un fuseau à l'ouest de
  * Greenwich, .getDate() peut alors renvoyer le 14. On force une lecture en
- * heure locale pour une chaine "AAAA-MM-JJ".
+ * heure locale pour une chaîne « AAAA-MM-JJ ».
  */
 function versDate(date: string | Date): Date {
   if (typeof date !== "string") return date;
@@ -68,17 +68,17 @@ function versDate(date: string | Date): Date {
 
 const MOIS_ABREGES = [
   "janv.",
-  "fevr.",
+  "févr.",
   "mars",
   "avr.",
   "mai",
   "juin",
   "juil.",
-  "aout",
+  "août",
   "sept.",
   "oct.",
   "nov.",
-  "dec.",
+  "déc.",
 ] as const;
 
 export function formatMoisAbrege(date: string | Date): string {

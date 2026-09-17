@@ -1,6 +1,6 @@
 /**
- * Ingestion du marche reel (DONNEES.md §1 et §2) : Insee Logement 2022, ADEME RGE,
- * RTE registre solaire, ADEME DPE, contours geographiques. Rejouable : telechargements
+ * Ingestion du marche réel (DONNEES.md §1 et §2) : Insee Logement 2022, ADEME RGE,
+ * RTE registre solaire, ADEME DPE, contours geographiques. Rejouable : téléchargements
  * caches dans .cache/marche/, upserts en base. `--charger` rejoue seulement le chargement
  * depuis .cache/marche/aggregats.json. Requiert `unzip` pour lire l'archive Insee en flux.
  */
@@ -110,7 +110,7 @@ interface Aggregats {
   >;
   rge_installateurs: Installateur[];
   rge_brut_17: { pac: number; pv: number };
-  /** Totaux France entiere (outre-mer et non geocodes compris), pour les seuls chiffres de controle. */
+  /** Totaux France entière (outre-mer et non geocodes compris), pour les seuls chiffres de contrôle. */
   france_entiere: { rp: number; maisons: number; fioul: number; gaz_citerne: number; dpe_maisons_fg: number };
   controles: Controle[];
   geo_tailles: Record<string, number>;
@@ -183,7 +183,7 @@ function journal(message: string): void {
 }
 
 // ---------------------------------------------------------------------------
-// Geographie : departements, regions, communes
+// Geographie : départements, regions, communes
 // ---------------------------------------------------------------------------
 
 async function chargerGeo(): Promise<{ departements: Departement[]; communes: Commune[] }> {
@@ -219,7 +219,7 @@ async function chargerGeo(): Promise<{ departements: Departement[]; communes: Co
       });
     }
   }
-  journal(`geo : ${departements.length} departements, ${communes.length} communes du perimetre`);
+  journal(`geo : ${departements.length} départements, ${communes.length} communes du périmètre`);
   return { departements, communes };
 }
 
@@ -233,7 +233,7 @@ async function chargerInsee(
   franceEntiere: Aggregats["france_entiere"],
 ): Promise<void> {
   const chemin = `${CACHE}/insee-logement-2022.zip`;
-  if (await telechargerVersFichier(URL_INSEE, chemin)) journal("insee : archive telechargee");
+  if (await telechargerVersFichier(URL_INSEE, chemin)) journal("insee : archive téléchargée");
   const enfant = spawn("unzip", ["-p", chemin, "base-cc-logement-2022.CSV"]);
   let lignes = 0;
   for await (const ligne of lignesCsv(enfant.stdout, ";")) {
@@ -384,7 +384,7 @@ async function chargerRge(
       });
     }
   }
-  journal(`rge : ${installateurs.size} installateurs geolocalises dans le perimetre, ${nonResolues} qualifications sans commune resolue`);
+  journal(`rge : ${installateurs.size} installateurs géolocalisés dans le périmètre, ${nonResolues} qualifications sans commune résolue`);
   return { installateurs: [...installateurs.values()], brut17 };
 }
 
@@ -394,7 +394,7 @@ async function chargerRge(
 
 async function chargerRte(parCommune: Map<string, Marche>, parDepartement: Map<string, Marche>): Promise<void> {
   const chemin = `${CACHE}/rte-registre.csv`;
-  if (await telechargerVersFichier(URL_RTE, chemin)) journal("rte : export telecharge");
+  if (await telechargerVersFichier(URL_RTE, chemin)) journal("rte : export téléchargé");
   let lignes = 0;
   for await (const ligne of lignesCsv(createReadStream(chemin), ";")) {
     if (ligne["codefiliere"] !== "SOLAI") continue;
@@ -416,7 +416,7 @@ async function chargerRte(parCommune: Map<string, Marche>, parDepartement: Map<s
       c.solaire_nb_36 += petites;
     }
   }
-  journal(`rte : ${lignes} lignes solaires agregees`);
+  journal(`rte : ${lignes} lignes solaires agrégées`);
 }
 
 // ---------------------------------------------------------------------------
@@ -467,10 +467,10 @@ async function chargerDpe(
     ),
   );
   await Promise.all(taches);
-  journal(`dpe : ${departements.length * 4} agregats (${appels} appels reseau, le reste en cache)`);
+  journal(`dpe : ${departements.length * 4} agrégats (${appels} appels réseau, le reste en cache)`);
 }
 
-/** Total France entiere des maisons F ou G, non geocodees et outre-mer comprises (chiffre de controle). */
+/** Total France entière des maisons F ou G, non geocodees et outre-mer comprises (chiffre de contrôle). */
 async function chargerDpeFranceEntiere(): Promise<number> {
   const chemin = `${CACHE}/dpe-FR-maisons_fg.json`;
   if (!existsSync(chemin)) {
@@ -527,12 +527,12 @@ async function chargerContours(): Promise<Record<string, number>> {
     const sortie = `${GEO_SORTIE}/communes-${dep}.geojson`;
     tailles[`communes-${dep}`] = await simplifier(brut, sortie, [6, 5, 4, 3, 2.5, 2, 1.5, 1], TAILLE_MAX_COMMUNES);
   }
-  journal(`contours : ${Object.keys(tailles).length} fichiers ecrits dans ${GEO_SORTIE}/`);
+  journal(`contours : ${Object.keys(tailles).length} fichiers écrits dans ${GEO_SORTIE}/`);
   return tailles;
 }
 
 // ---------------------------------------------------------------------------
-// Centiles, indice, controles
+// Centiles, indice, contrôles
 // ---------------------------------------------------------------------------
 
 function centiles(valeurs: number[]): number[] {
@@ -584,26 +584,26 @@ function controler(agg: Aggregats): Controle[] {
   const tous = agg.marche_departement.map((d) => d.code);
   const fe = agg.france_entiere;
   const lignes: Array<[string, number, number]> = [
-    ["France entiere, residences principales (Insee)", 32_699_970, Math.round(fe.rp)],
-    ["France entiere, maisons (Insee)", 17_342_742, Math.round(fe.maisons)],
-    ["France entiere, fioul (Insee)", 2_616_667, Math.round(fe.fioul)],
-    ["France entiere, gaz citerne ou bouteille (Insee)", 448_868, Math.round(fe.gaz_citerne)],
-    ["Metropole (96 departements), residences principales (Insee)", 31_911_516, somme(tous, "rp")],
-    ["Dix departements, maisons", 2_006_852, somme(DIX_DEPARTEMENTS, "maisons")],
-    ["Dix departements, proprietaires", 1_755_553, somme(DIX_DEPARTEMENTS, "proprietaires")],
-    ["Dix departements, fioul", 220_802, somme(DIX_DEPARTEMENTS, "fioul")],
-    ["Dix departements, citerne", 56_672, somme(DIX_DEPARTEMENTS, "gaz_citerne")],
+    ["France entière, résidences principales (Insee)", 32_699_970, Math.round(fe.rp)],
+    ["France entière, maisons (Insee)", 17_342_742, Math.round(fe.maisons)],
+    ["France entière, fioul (Insee)", 2_616_667, Math.round(fe.fioul)],
+    ["France entière, gaz citerne ou bouteille (Insee)", 448_868, Math.round(fe.gaz_citerne)],
+    ["Métropole (96 départements), résidences principales (Insee)", 31_911_516, somme(tous, "rp")],
+    ["Dix départements, maisons", 2_006_852, somme(DIX_DEPARTEMENTS, "maisons")],
+    ["Dix départements, propriétaires", 1_755_553, somme(DIX_DEPARTEMENTS, "proprietaires")],
+    ["Dix départements, fioul", 220_802, somme(DIX_DEPARTEMENTS, "fioul")],
+    ["Dix départements, citerne", 56_672, somme(DIX_DEPARTEMENTS, "gaz_citerne")],
     ["Nord, maisons", 760_086, somme(["59"], "maisons")],
-    ["Nord, proprietaires", 623_436, somme(["59"], "proprietaires")],
+    ["Nord, propriétaires", 623_436, somme(["59"], "proprietaires")],
     ["Nord, fioul", 41_248, somme(["59"], "fioul")],
-    ["France entiere, maisons F ou G (DPE, non geocodees comprises)", 739_580, fe.dpe_maisons_fg],
-    ["Metropole (96 departements geocodes), maisons F ou G (DPE)", 730_791, somme(tous, "maisons_fg")],
+    ["France entière, maisons F ou G (DPE, non géocodées comprises)", 739_580, fe.dpe_maisons_fg],
+    ["Métropole (96 départements géocodés), maisons F ou G (DPE)", 730_791, somme(tous, "maisons_fg")],
     ["Nord, maisons F ou G (DPE)", 31_576, somme(["59"], "maisons_fg")],
     ["Charente-Maritime, maisons F ou G (DPE)", 10_841, somme(["17"], "maisons_fg")],
     ["Charente-Maritime, installations solaires (RTE)", 23_520, somme(["17"], "solaire_nb")],
     ["Nord, installations solaires (RTE)", 23_394, somme(["59"], "solaire_nb")],
-    ["Charente-Maritime, qualifications RGE pompe a chaleur (toutes)", 239, agg.rge_brut_17.pac],
-    ["Charente-Maritime, qualifications RGE photovoltaique (toutes)", 113, agg.rge_brut_17.pv],
+    ["Charente-Maritime, qualifications RGE pompe à chaleur (toutes)", 239, agg.rge_brut_17.pac],
+    ["Charente-Maritime, qualifications RGE photovoltaïque (toutes)", 113, agg.rge_brut_17.pv],
   ];
   return lignes.map(([libelle, attendu, obtenu]) => {
     const ecart = attendu > 0 ? ((obtenu - attendu) / attendu) * 100 : 0;
@@ -618,7 +618,7 @@ function controler(agg: Aggregats): Controle[] {
 async function charger(agg: Aggregats): Promise<boolean> {
   const url = urlBase();
   if (!url) {
-    journal("chargement : SUPABASE_DB_URL absent, agregats laisses dans le cache (rejouer avec --charger)");
+    journal("chargement : SUPABASE_DB_URL absent, agrégats laissés dans le cache (rejouer avec --charger)");
     return false;
   }
   const pool = creerPool(url);
@@ -627,7 +627,7 @@ async function charger(agg: Aggregats): Promise<boolean> {
     try {
       await client.query("select 1 from buta.marche_commune limit 0");
     } catch {
-      journal("chargement : tables buta absentes (migrations non appliquees), rejouer avec --charger plus tard");
+      journal("chargement : tables buta absentes (migrations non appliquées), rejouer avec --charger plus tard");
       return false;
     }
     await client.query("begin");
@@ -686,7 +686,7 @@ async function charger(agg: Aggregats): Promise<boolean> {
     const verif = await client.query<{ rp: string; communes: string }>(
       "select (select sum(rp) from buta.marche_departement) as rp, (select count(*) from buta.marche_commune) as communes",
     );
-    journal(`verification base : France RP ${verif.rows[0]?.rp ?? "?"}, communes ${verif.rows[0]?.communes ?? "?"}`);
+    journal(`vérification base : France RP ${verif.rows[0]?.rp ?? "?"}, communes ${verif.rows[0]?.communes ?? "?"}`);
     return true;
   } catch (erreur) {
     await client.query("rollback").catch(() => undefined);
@@ -735,9 +735,9 @@ async function construire(): Promise<Aggregats> {
 }
 
 function afficherControles(controles: Controle[]): boolean {
-  journal("\ncontroles (tolerance 0,5 %) :");
+  journal("\ncontrôles (tolérance 0,5 %) :");
   for (const c of controles) {
-    journal(`  ${c.ok ? "OK" : "KO"}  ${c.libelle} : attendu ${c.attendu.toLocaleString("fr-FR")}, obtenu ${c.obtenu.toLocaleString("fr-FR")}, ecart ${c.ecart_pct} %`);
+    journal(`  ${c.ok ? "OK" : "KO"}  ${c.libelle} : attendu ${c.attendu.toLocaleString("fr-FR")}, obtenu ${c.obtenu.toLocaleString("fr-FR")}, écart ${c.ecart_pct} %`);
   }
   return controles.every((c) => c.ok);
 }
@@ -748,7 +748,7 @@ async function principal(): Promise<void> {
   let agg: Aggregats;
   if (chargerSeulement) {
     agg = JSON.parse(await readFile(`${CACHE}/aggregats.json`, "utf-8")) as Aggregats;
-    journal(`agregats du ${agg.genere_le} relus depuis le cache`);
+    journal(`agrégats du ${agg.genere_le} relus depuis le cache`);
   } else {
     agg = await construire();
   }
@@ -756,7 +756,7 @@ async function principal(): Promise<void> {
   const controlesOk = afficherControles(agg.controles);
   await charger(agg);
   if (!controlesOk) {
-    journal("\nau moins un chiffre de controle est hors tolerance");
+    journal("\nau moins un chiffre de contrôle est hors tolérance");
     process.exitCode = 1;
   }
 }

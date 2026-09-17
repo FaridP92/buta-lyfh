@@ -15,7 +15,7 @@ interface BadgeProps {
   className?: string;
 }
 
-/** Badges "simule", "reel, source", "instantane" (DESIGN.md §3). */
+/** Badges « simulé », « réel, source », « instantané » (DESIGN.md §3). */
 export function Badge({ variante, children, className }: BadgeProps) {
   return (
     <span

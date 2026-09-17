@@ -5,7 +5,7 @@ interface MonogrammeProps {
   className?: string;
 }
 
-/** Monogramme de marque, DESIGN.md §10 : carre ambre, B en reserve, point ambre en reserve dans la panse. */
+/** Monogramme de marque, DESIGN.md §10 : carré ambre, B en réserve, point ambre en réserve dans la panse. */
 export function Monogramme({ taille = 32, className }: MonogrammeProps) {
   return (
     <svg

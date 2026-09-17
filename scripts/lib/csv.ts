@@ -26,7 +26,7 @@ export function decouperLigneCsv(ligne: string, separateur = ";"): string[] {
 }
 
 /**
- * Lit un flux CSV ligne a ligne sans le charger en memoire.
+ * Lit un flux CSV ligne a ligne sans le charger en mémoire.
  * Renvoie pour chaque ligne un objet indexe par le nom de colonne de l'en-tete.
  */
 export async function* lignesCsv(

@@ -54,7 +54,7 @@ body {
   position: relative;
 }
 
-/* grain tres discret sur le fond, DESIGN.md §1 : "un fond qui n'est pas un aplat numerique" */
+/* grain très discret sur le fond, DESIGN.md §1 : « un fond qui n'est pas un aplat numérique » */
 body::before {
   content: "";
   position: fixed;

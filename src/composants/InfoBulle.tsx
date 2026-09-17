@@ -8,7 +8,7 @@ interface InfoBulleProps {
   cote?: "top" | "right" | "bottom" | "left";
 }
 
-/** Info-bulle maison (DESIGN.md §3) : 12 px, fond surface haute, fleche. */
+/** Info-bulle maison (DESIGN.md §3) : 12 px, fond surface haute, flèche. */
 export function InfoBulle({ contenu, children, delaiMs = 200, cote = "right" }: InfoBulleProps) {
   return (
     <TooltipPrimitive.Provider delayDuration={delaiMs}>

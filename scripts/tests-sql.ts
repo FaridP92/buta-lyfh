@@ -1,6 +1,6 @@
 /**
- * Tests SQL (VERIFICATION.md §2) : execute chaque fichier de supabase/tests/ sur la base et
- * exige une colonne `ok` vraie sur chaque ligne renvoyee. `npm run test:sql`.
+ * Tests SQL (VERIFICATION.md §2) : exécute chaque fichier de supabase/tests/ sur la base et
+ * exige une colonne `ok` vraie sur chaque ligne renvoyée. `npm run test:sql`.
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";

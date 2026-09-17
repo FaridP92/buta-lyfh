@@ -1,5 +1,5 @@
--- Referentiels du reseau simule (DONNEES.md §3.1 et §3.2). Rejouable (upsert).
--- Aucune agence, personne ou entite reelle : noms de bassins, effectifs codes.
+-- Référentiels du réseau simulé (DONNEES.md §3.1 et §3.2). Rejouable (upsert).
+-- Aucune agence, personne ou entité réelle : noms de bassins, effectifs codés.
 
 insert into buta.dim_departement (code, nom, region) values
   ('16', 'Charente', 'Nouvelle-Aquitaine'),
@@ -10,19 +10,19 @@ insert into buta.dim_departement (code, nom, region) values
   ('40', 'Landes', 'Nouvelle-Aquitaine'),
   ('47', 'Lot-et-Garonne', 'Nouvelle-Aquitaine'),
   ('59', 'Nord', 'Hauts-de-France'),
-  ('64', 'Pyrenees-Atlantiques', 'Nouvelle-Aquitaine'),
-  ('79', 'Deux-Sevres', 'Nouvelle-Aquitaine'),
-  ('85', 'Vendee', 'Pays de la Loire')
+  ('64', 'Pyrénées-Atlantiques', 'Nouvelle-Aquitaine'),
+  ('79', 'Deux-Sèvres', 'Nouvelle-Aquitaine'),
+  ('85', 'Vendée', 'Pays de la Loire')
 on conflict (code) do update set nom = excluded.nom, region = excluded.region;
 
--- Coordonnees : centre approximatif du bassin, pas une adresse.
+-- Coordonnées : centre approximatif du bassin, pas une adresse.
 insert into buta.dim_agence (code, nom_bassin, departement, latitude, longitude, ouverture, poses_par_technicien_semaine) values
   ('SAI', 'Saintonge', '17', 45.745, -0.630, '2019-01-01', 5),
   ('ANG', 'Angoumois', '16', 45.650, 0.160, '2020-01-01', 5),
   ('MAR', 'Marensin', '40', 43.830, -1.330, '2010-01-01', 5),
   ('BOR', 'Born', '40', 44.200, -1.170, '2021-01-01', 5),
   ('MSN', 'Marsan', '40', 43.890, -0.500, '2022-01-01', 5),
-  ('BDX', 'Bordeaux Metropole', '33', 44.840, -0.580, '2021-01-01', 5),
+  ('BDX', 'Bordeaux Métropole', '33', 44.840, -0.580, '2021-01-01', 5),
   ('HGI', 'Haute Gironde', '33', 45.130, -0.470, '2023-01-01', 5),
   ('ARC', 'Bassin d''Arcachon', '33', 44.660, -1.100, '2022-01-01', 5),
   ('NOR', 'Nord', '59', 50.370, 3.080, '2026-06-01', 5)
@@ -43,8 +43,8 @@ insert into buta.dim_agence_territoire (agence, departement, part) values
   ('NOR', '59', 1.00)
 on conflict (agence, departement) do update set part = excluded.part;
 
--- Effectifs codes : C-XXX-nn commerciaux (le 01 porte le drapeau responsable), T-XXX-nn techniciens.
--- Entree : ouverture de l'agence, ou 1er janvier 2025 pour Nord (historique repris).
+-- Effectifs codés : C-XXX-nn commerciaux (le 01 porte le drapeau responsable), T-XXX-nn techniciens.
+-- Entrée : ouverture de l'agence, ou 1er janvier 2025 pour Nord (historique repris).
 with effectifs (agence, commerciaux, techniciens, entree) as (
   values
     ('SAI', 6, 7, date '2019-01-01'), ('ANG', 4, 4, date '2020-01-01'), ('MAR', 5, 7, date '2010-01-01'),

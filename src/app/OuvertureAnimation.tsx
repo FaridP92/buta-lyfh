@@ -20,7 +20,7 @@ function marquerVue(): void {
   try {
     sessionStorage.setItem(CLE_SESSION, "1");
   } catch {
-    // navigation privee : l'animation pourra rejouer, sans consequence
+    // navigation privée : l'animation pourra rejouer, sans conséquence
   }
 }
 
@@ -30,8 +30,7 @@ interface OuvertureAnimationProps {
 
 /**
  * Animation d'ouverture, une fois par session (DESIGN.md §10) : le point
- * s'allume, le mot apparait lettre par lettre, puis le rail glisse (gere par
- * Layout via la classe "ouverture-terminee" posee 300 ms avant la fin).
+ * s'allume, le mot apparaît lettre par lettre, puis le rail glisse.
  */
 export function OuvertureAnimation({ onTermine }: OuvertureAnimationProps) {
   const [visible, setVisible] = useState(() => !dejaVue() && !reductionMouvementSouhaitee());

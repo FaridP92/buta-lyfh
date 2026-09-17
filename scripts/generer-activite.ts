@@ -1,11 +1,11 @@
 /**
- * Generateur du jeu simule (DONNEES.md §3), deterministe : graine 20260922.
- * `npm run generer:activite` regenere et charge tout (2025-01-01 a 2026-12-31),
- * puis publie jusqu'a J-1. `npm run publier -- --jusqua AAAA-MM-JJ` publie seulement.
+ * Generateur du jeu simulé (DONNEES.md §3), deterministe : graine 20260922.
+ * `npm run generer:activite` regenere et charge tout (2025-01-01 à 2026-12-31),
+ * puis publie jusqu'à J-1. `npm run publier -- --jusqua AAAA-MM-JJ` publie seulement.
  *
- * Aucune agence, personne ou entite reelle : bassins, codes, regles ecrites.
- * Les proprietaires occupants par departement sont figes ici (Insee 2022, arrondis)
- * pour que le jeu ne depende pas de l'etat de la table marche_departement.
+ * Aucune agence, personne ou entite réelle : bassins, codes, règles ecrites.
+ * Les propriétaires occupants par département sont figés ici (Insee 2022, arrondis)
+ * pour que le jeu ne depende pas de l'état de la table marche_departement.
  */
 import type pg from "pg";
 import { Alea } from "./lib/alea";
@@ -62,7 +62,7 @@ const PRODUITS: Produit[] = [
   { code: "POELE", libelle: "Poêle à granulés", prix: 5600, tauxPose: 0.13, margeCible: 0.32, dureeJt: 1.5, aide: 1800, part: 0.08, profil: "chauffage" },
   { code: "BORNE", libelle: "Borne de recharge", prix: 1600, tauxPose: 0.15, margeCible: 0.36, dureeJt: 0.5, aide: 0, part: 0.06, profil: "plat" },
 ];
-/** Libelles divergents recus du systeme source pendant l'integration de Nord (H4). */
+/** Libelles divergents reçus du système source pendant l'intégration de Nord (H4). */
 const LIBELLES_DIVERGENTS: Record<string, string> = {
   PV3: "PV 3KW", PV6: "PV 6KW", PVB: "PV + BATTERIE", PACAE: "PAC AIR EAU 11KW",
   PACAA: "PAC AIR/AIR", CET: "CHAUFFE EAU THERMO", POELE: "POELE GRANULES", BORNE: "BORNE 7KW",
@@ -143,7 +143,7 @@ function estDistance(departement: string): boolean {
   return !DEPARTEMENTS_AVEC_AGENCE.has(departement);
 }
 
-/** H1 Marensin : RDV vers devis en retrait de mars a juin 2026, retour progressif. */
+/** H1 Marensin : RDV vers devis en retrait de mars à juin 2026, retour progressif. */
 function ajustementDevisH1(agence: string, annee: number, mois: number): number {
   if (agence !== "MAR" || annee !== 2026) return 0;
   if (mois >= 3 && mois <= 6) return -0.10;
@@ -152,23 +152,23 @@ function ajustementDevisH1(agence: string, annee: number, mois: number): number 
   return 0;
 }
 
-/** H3 Saintonge : remise 4 % vers 9 % a partir d'avril 2026, signature +4 pts. */
+/** H3 Saintonge : remise 4 % vers 9 % à partir d'avril 2026, signature +4 pts. */
 function h3Actif(agence: string, annee: number, mois: number): boolean {
   return agence === "SAI" && (annee > 2026 || (annee === 2026 && mois >= 4));
 }
 
-/** H2 Bordeaux Metropole : leads achetes doubles a partir d'avril 2026, RDV du canal 30 % vers 23 %. */
+/** H2 Bordeaux Métropole : leads achetés doubles à partir d'avril 2026, RDV du canal 30 % vers 23 %. */
 function h2Actif(agence: string, annee: number, mois: number): boolean {
   return agence === "BDX" && annee === 2026 && mois >= 4;
 }
 
-/** H7 Bassin d'Arcachon : capacite de pose reduite de 25 % de mai a aout 2026. */
+/** H7 Bassin d'Arcachon : capacite de pose réduite de 25 % de mai a août 2026. */
 function h7Actif(agence: string, date: Date): boolean {
   const d = formatDate(date);
   return agence === "ARC" && d >= "2026-04-15" && d <= "2026-08-31";
 }
 
-/** H4 Nord : intensite des anomalies d'integration, decroissante de juin a mi-septembre 2026. */
+/** H4 Nord : intensite des anomalies d'intégration, décroissante de juin à mi-septembre 2026. */
 function intensiteH4(agence: string, dateLead: Date): number {
   if (agence !== "NOR") return 0;
   const debut = dateUTC(2026, 6, 1).getTime();
@@ -179,10 +179,10 @@ function intensiteH4(agence: string, dateLead: Date): number {
 }
 
 /**
- * Tirage systematique (variance reduite) : chaque element i est retenu avec la probabilite p_i,
- * et le nombre d'elements retenus vaut la somme des p_i a une unite pres. Les taux du modele
- * s'appliquent donc a chaque cohorte au lieu de se perdre dans le bruit des petits effectifs,
- * sans jamais ecrire un resultat : les vues recalculent tout.
+ * Tirage systématique (variance réduite) : chaque element i est retenu avec la probabilité p_i,
+ * et le nombre d'éléments retenus vaut la somme des p_i à une unité près. Les taux du modèle
+ * s'appliquent donc à chaque cohorte au lieu de se perdre dans le bruit des petits effectifs,
+ * sans jamais écrire un résultat : les vues recalculent tout.
  */
 const REPORTS = new Map<string, number>();
 
@@ -195,8 +195,8 @@ function selectionSystematique(alea: Alea, probabilites: number[], strate: strin
     ordre[j] = tmp;
   }
   const retenus: boolean[] = Array.from({ length: probabilites.length }, () => false);
-  // Le reste fractionnaire de la strate est reporte d'une cohorte a la suivante : sur plusieurs
-  // mois, le nombre retenu suit la somme des probabilites a une unite pres, meme pour un petit canal.
+  // Le reste fractionnaire de la strate est reporte d'une cohorte à la suivante : sur plusieurs
+  // mois, le nombre retenu suit la somme des probabilités à une unité près, même pour un petit canal.
   let cumul = REPORTS.get(strate) ?? -alea.uniforme();
   for (const i of ordre) {
     const avant = cumul;
@@ -207,7 +207,7 @@ function selectionSystematique(alea: Alea, probabilites: number[], strate: strin
   return retenus;
 }
 
-/** Tirage systematique par strate (canal) : chaque canal suit ses propres taux a l'unite pres. */
+/** Tirage systématique par strate (canal) : chaque canal suit ses propres taux à l'unité près. */
 function selectionParCanal(alea: Alea, dossiers: Dossier[], probabilites: number[], etape: string): boolean[] {
   const retenus: boolean[] = Array.from({ length: dossiers.length }, () => false);
   const parCanal = new Map<Canal, number[]>();
@@ -224,7 +224,7 @@ function selectionParCanal(alea: Alea, dossiers: Dossier[], probabilites: number
   return retenus;
 }
 
-/** Aleas mensuel sur un taux de cohorte (ecart-type relatif 6 %), borne dans [0, 1]. */
+/** Aleas mensuel sur un taux de cohorte (écart-type relatif 6 %), borne dans [0, 1]. */
 function tauxCohorte(alea: Alea, taux: number): number {
   return Math.min(1, Math.max(0, taux * Math.exp(0.06 * alea.normale())));
 }
@@ -260,7 +260,7 @@ function genererDossiers(alea: Alea): Dossier[] {
         const nLeads = Math.round(base * tendance(annee, mois) * facteurSaison * bruit);
         const poidsCanaux = CANAUX.map((c) => {
           if (c.code === "salons" && !MOIS_SALON.has(mois)) return 0;
-          // Bordeaux Metropole : agence metropolitaine, un quart des leads vient des plateformes.
+          // Bordeaux Métropole : agence metropolitaine, un quart des leads vient des plateformes.
           if (agence.code === "BDX") return c.code === "leads_achetes" ? PART_LEADS_ACHETES_BDX : c.part * (1 - PART_LEADS_ACHETES_BDX) / 0.88;
           return c.part;
         });
@@ -291,7 +291,7 @@ function genererDossiers(alea: Alea): Dossier[] {
 
         deroulerFunnel(alea, agence, cohorte, annee, mois, effetAgence.get(agence.code) ?? 0, effetCommercial);
 
-        // Les doublons H4 s'ajoutent a la cohorte pendant le parcours : on parcourt une copie.
+        // Les doublons H4 s'ajoutent à la cohorte pendant le parcours : on parcourt une copie.
         const initiaux = cohorte.slice();
         for (const d of initiaux) {
           const h4 = intensiteH4(agence.code, d.dateLead);
@@ -316,7 +316,7 @@ function genererDossiers(alea: Alea): Dossier[] {
   return dossiers;
 }
 
-/** Deroule le funnel d'une cohorte mois x agence, etape par etape, par tirage systematique. */
+/** Deroule le funnel d'une cohorte mois x agence, étape par étape, par tirage systématique. */
 function deroulerFunnel(
   alea: Alea, agence: Agence, cohorte: Dossier[], annee: number, mois: number,
   effetAgence: number, effetCommercial: Map<string, number>,
@@ -324,7 +324,7 @@ function deroulerFunnel(
   const h2 = h2Actif(agence.code, annee, mois);
   const h3 = h3Actif(agence.code, annee, mois);
 
-  // Lead vers RDV tenu : taux par canal, aleas mensuel par canal.
+  // Lead vers RDV tenu : taux par canal, aléas mensuel par canal.
   const aleasRdv = new Map<Canal, number>();
   const pRdv = cohorte.map((d) => {
     let taux = FUNNEL.rdv;
@@ -376,14 +376,14 @@ function deroulerFunnel(
     if (!aSign[i] || !d.dateDevis || d.montantDevis === null) return;
     d.dateSignature = ajouterJours(d.dateDevis, Math.max(0, alea.logNormale(12, 0.5)));
     d.montantHt = d.montantDevis;
-    // Couts sur le prix catalogue du dossier (tire a +-12 %) : la marge avant remise vaut la marge cible.
+    // Coûts sur le prix catalogue du dossier (tire a +-12 %) : la marge avant remise vaut la marge cible.
     d.coutMateriel = arrondi(d.prixCatalogue * (1 - d.produit.margeCible - d.produit.tauxPose), 0);
     d.coutPose = arrondi(d.prixCatalogue * d.produit.tauxPose, 0);
     d.commission = arrondi(d.montantHt * COMMISSION, 0);
     d.statut = "signe";
   });
 
-  // Signature vers annulation (H5 : plus elevee a distance), puis pose et encaissement.
+  // Signature vers annulation (H5 : plus élevée à distance), puis pose et encaissement.
   const signes = cohorte.filter((d) => d.dateSignature !== null);
   const aleasAnnul = tauxCohorte(alea, 1);
   const aAnnul: boolean[] = Array.from({ length: signes.length }, () => false);
@@ -404,7 +404,7 @@ function deroulerFunnel(
     }
     const distance = estDistance(d.departement);
     let delaiPose = alea.logNormale(distance ? 75 : 45, 0.35);
-    // H7 : capacite de pose reduite, chaque pose attend en moyenne 22 jours de plus.
+    // H7 : capacite de pose réduite, chaque pose attend en moyenne 22 jours de plus.
     if (h7Actif(agence.code, d.dateSignature)) delaiPose += Math.max(10, 22 + 4 * alea.normale());
     d.datePose = ajouterJours(d.dateSignature, Math.max(7, delaiPose));
     d.technicien = `T-${agence.code}-${String(alea.entier(1, agence.techniciens)).padStart(2, "0")}`;
@@ -520,10 +520,10 @@ function controlesGenerateur(dossiers: Dossier[], couts: CoutCanal[]): void {
   const coutsAcquisition = couts.reduce((s, c) => s + c.montant, 0) + commissions;
   const poids = coutsAcquisition / caSigne;
   if (poids < 0.12 || poids > 0.22) erreurs.push(`poids de l'acquisition hors 12 a 22 % : ${(poids * 100).toFixed(1)} %`);
-  console.log(`controles generateur : ${dossiers.length} dossiers, CA signe ${Math.round(caSigne / 1000)} k€, acquisition ${(poids * 100).toFixed(1)} % du CA`);
+  console.log(`contrôles générateur : ${dossiers.length} dossiers, CA signe ${Math.round(caSigne / 1000)} k€, acquisition ${(poids * 100).toFixed(1)} % du CA`);
   if (erreurs.length > 0) {
     console.error(erreurs.slice(0, 20).join("\n"));
-    throw new Error(`${erreurs.length} erreur(s) du generateur`);
+    throw new Error(`${erreurs.length} erreur(s) du générateur`);
   }
 }
 
@@ -591,7 +591,7 @@ function lireArgument(nom: string): string | undefined {
 async function principal(): Promise<void> {
   const hier = ajouterJours(new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())), -1);
   const jusqua = lireArgument("--jusqua") ?? formatDate(hier);
-  if (jusqua < formatDate(DEBUT) || jusqua > formatDate(FIN)) throw new Error(`--jusqua hors periode : ${jusqua}`);
+  if (jusqua < formatDate(DEBUT) || jusqua > formatDate(FIN)) throw new Error(`--jusqua hors période : ${jusqua}`);
 
   if (process.argv.includes("--publier")) {
     chargerEnv();

@@ -2,8 +2,8 @@ import { useLocation } from "react-router";
 import { ROUTES } from "@/app/routes";
 
 /**
- * Etat "a venir" (BACKLOG US-004) : jamais un ecran blanc ni une icone triste
- * (DESIGN.md §9). Le titre, la promesse de l'ecran et le lot qui l'apporte.
+ * État « à venir » (BACKLOG US-004) : jamais un écran blanc ni une icône triste
+ * (DESIGN.md §9). Le titre, la promesse de l'écran et le lot qui l'apporte.
  */
 export function EnConstruction() {
   const { pathname } = useLocation();

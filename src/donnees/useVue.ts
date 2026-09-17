@@ -4,11 +4,11 @@ import { supabase } from "./client";
 import { VUES, type Ligne, type NomVue } from "./vues";
 
 export interface FiltresVue {
-  /** Egalites : { agence: "SAI", canal: "TOUS" } */
+  /** Égalités : { agence: "SAI", canal: "TOUS" } */
   egal?: Record<string, string | number | boolean>;
   /** Intervalle inclusif sur une colonne (dates AAAA-MM-JJ ou nombres). */
   entre?: { colonne: string; de: string | number; a: string | number };
-  /** Colonne de tri, prefixee de - pour un ordre decroissant. */
+  /** Colonne de tri, préfixée de - pour un ordre décroissant. */
   ordre?: string;
   limite?: number;
 }
@@ -27,7 +27,7 @@ function cle(nom: string, filtres: FiltresVue | undefined): unknown[] {
 }
 
 async function lireSupabase<N extends NomVue>(nom: N, filtres: FiltresVue | undefined): Promise<Ligne<N>[]> {
-  if (!supabase) throw new Error("Supabase non configure");
+  if (!supabase) throw new Error("Supabase non configuré");
   let requete = supabase.from(nom).select("*");
   for (const [colonne, valeur] of Object.entries(filtres?.egal ?? {})) requete = requete.eq(colonne, valeur);
   if (filtres?.entre) requete = requete.gte(filtres.entre.colonne, filtres.entre.de).lte(filtres.entre.colonne, filtres.entre.a);
@@ -71,9 +71,9 @@ async function lireInstantane<N extends NomVue>(nom: N): Promise<Ligne<N>[]> {
 }
 
 /**
- * Lecture d'une vue mart_ (ARCHITECTURE.md §3) : l'instantane statique s'affiche d'abord,
- * Supabase remplace des qu'il repond ; si Supabase echoue, l'instantane reste avec sa source.
- * Aucun calcul ici : les filtres locaux ne font que restreindre les lignes de l'instantane.
+ * Lecture d'une vue mart_ (ARCHITECTURE.md §3) : l'instantané statique s'affiche d'abord,
+ * Supabase remplace dès qu'il répond ; si Supabase échoue, l'instantané reste avec sa source.
+ * Aucun calcul ici : les filtres locaux ne font que restreindre les lignes de l'instantané.
  */
 export function useVue<N extends NomVue>(nom: N, filtres?: FiltresVue): ResultatVue<N> {
   const distant = useQuery({

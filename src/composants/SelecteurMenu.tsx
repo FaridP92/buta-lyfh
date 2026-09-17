@@ -15,7 +15,7 @@ interface SelecteurMenuProps {
   className?: string;
 }
 
-/** Selecteur compact de la barre haute (periode, comparaison, agence). */
+/** Sélecteur compact de la barre haute (période, comparaison, agence). */
 export function SelecteurMenu({ libelle, options, valeur, onChange, className }: SelecteurMenuProps) {
   const optionActive = options.find((o) => o.valeur === valeur);
 

@@ -26,24 +26,24 @@ export function BadgeFraicheur() {
     return undefined;
   }, [data]);
 
-  let texte = "Pas encore de donnee chargee";
+  let texte = "Pas encore de donnée chargée";
   let couleur = "bg-texte-3";
   if (data?.journee) {
     if (data.source === "supabase") {
-      texte = `Journee du ${formatDateCourte(data.journee)} integree a ${formatDateHeure(data.integreeLe).slice(6)}`;
+      texte = `Journée du ${formatDateCourte(data.journee)} intégrée à ${formatDateHeure(data.integreeLe).slice(6)}`;
       couleur = "bg-ambre";
     } else {
-      texte = `Instantane du ${formatDateCourte(data.journee)}`;
+      texte = `Instantané du ${formatDateCourte(data.journee)}`;
       couleur = "bg-texte-3";
     }
   } else if (isError) {
-    texte = "Donnees indisponibles";
+    texte = "Données indisponibles";
   }
 
   return (
     <span
       className="hidden items-center gap-[6px] rounded-full border border-bordure px-[var(--esp-3)] py-[6px] text-[12px] text-texte-3 lg:inline-flex"
-      title={data?.source === "instantane" ? "Supabase ne repond pas : secours statique" : undefined}
+      title={data?.source === "instantane" ? "Supabase ne répond pas : secours statique" : undefined}
     >
       <span className={cn("h-1.5 w-1.5 rounded-full", couleur, pulse && "animate-pulse")} aria-hidden="true" />
       {texte}

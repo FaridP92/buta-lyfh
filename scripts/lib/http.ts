@@ -52,7 +52,7 @@ export async function telechargerVersFichier(url: string, chemin: string, option
   return true;
 }
 
-/** Limite le nombre de promesses en cours d'execution. */
+/** Limite le nombre de promesses en cours d'exécution. */
 export function limiteur(concurrence: number): <T>(tache: () => Promise<T>) => Promise<T> {
   let enCours = 0;
   const attente: Array<() => void> = [];

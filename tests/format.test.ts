@@ -16,22 +16,22 @@ describe("formatMontant", () => {
     expect(formatMontant(Number.NaN)).toBe("n. d.");
   });
 
-  it("affiche les euros sans decimale sous 10 000", () => {
+  it("affiche les euros sans décimale sous 10 000", () => {
     expect(formatMontant(0)).toBe("0 €");
     expect(formatMontant(1234)).toBe("1 234 €");
   });
 
-  it("bascule en k€ a partir de 10 000", () => {
+  it("bascule en k€ à partir de 10 000", () => {
     expect(formatMontant(12_500)).toBe("12,5 k€");
   });
 
-  it("bascule en M€ a partir de 1 000 000", () => {
+  it("bascule en M€ à partir de 1 000 000", () => {
     expect(formatMontant(2_340_000)).toBe("2,3 M€");
   });
 });
 
 describe("formatTaux", () => {
-  it("affiche une decimale avec la virgule francaise et l'espace fine", () => {
+  it("affiche une décimale avec la virgule française et l'espace fine", () => {
     expect(formatTaux(12.34)).toBe("12,3 %");
   });
 
@@ -45,7 +45,7 @@ describe("formatVariationPoints", () => {
     expect(formatVariationPoints(4.2)).toBe("+4,2 pts");
   });
 
-  it("ne force pas de signe pour une variation negative", () => {
+  it("ne force pas de signe pour une variation négative", () => {
     expect(formatVariationPoints(-1.5)).toBe("-1,5 pt");
   });
 });
@@ -63,8 +63,8 @@ describe("formatNombre", () => {
 });
 
 describe("formatMoisAbrege", () => {
-  it("abrege a la francaise", () => {
-    expect(formatMoisAbrege("2026-02-15")).toBe("fevr. 2026");
+  it("abrège à la française", () => {
+    expect(formatMoisAbrege("2026-02-15")).toBe("févr. 2026");
   });
 });
 

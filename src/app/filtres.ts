@@ -9,7 +9,7 @@ export const AGENCES = [
   { code: "MAR", nom: "Marensin" },
   { code: "BOR", nom: "Born" },
   { code: "MSN", nom: "Marsan" },
-  { code: "BDX", nom: "Bordeaux Metropole" },
+  { code: "BDX", nom: "Bordeaux Métropole" },
   { code: "HGI", nom: "Haute Gironde" },
   { code: "ARC", nom: "Bassin d'Arcachon" },
   { code: "NOR", nom: "Nord" },
@@ -21,8 +21,8 @@ function moisCourant(): string {
 }
 
 /**
- * Filtres globaux persistes dans l'URL (ECRANS.md conventions), pour qu'un
- * lien partage montre la meme vue : ?periode=2026-09&comparaison=objectif&agence=MER
+ * Filtres globaux persistés dans l'URL (ECRANS.md conventions), pour qu'un
+ * lien partagé montre la même vue : ?periode=2026-09&comparaison=objectif&agence=MER
  */
 export function useFiltresURL() {
   const [params, setParams] = useSearchParams();

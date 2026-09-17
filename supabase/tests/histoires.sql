@@ -1,8 +1,8 @@
--- Les sept histoires (DONNEES.md §3.4), une requete par histoire, chacune renvoie une ligne
+-- Les sept histoires (DONNEES.md §3.4), une requête par histoire, chacune renvoie une ligne
 -- (test, ok, valeurs mesurees). Tolerance : plus ou moins 20 % de l'effet cible (VERIFICATION.md §2),
 -- sauf mention. Executees par `npm run test:sql` sur la base chargee.
 
--- H1 Marensin : RDV vers devis en retrait de 10 points de mars a juin 2026 (vs novembre 2025 a fevrier 2026).
+-- H1 Marensin : RDV vers devis en retrait de 10 points de mars à juin 2026 (vs novembre 2025 a février 2026).
 with avant as (
   select sum(devis)::numeric / nullif(sum(rdv_tenus), 0) as taux from buta.mart_funnel
   where agence = 'MAR' and canal = 'TOUS' and mois between date '2025-11-01' and date '2026-02-01'),
@@ -15,9 +15,9 @@ select 'H1 Marensin : taux RDV vers devis' as test,
   round(100 * (pendant.taux - avant.taux), 1) as ecart_points, '-10 pts (-12 a -8)' as attendu
 from avant, pendant;
 
--- H2 Bordeaux Metropole : cout par vente des leads achetes +40 a +45 % vs premier trimestre 2026
--- (avril a juillet 2026, cohortes quasi completes au 16 septembre), calcule depuis la vue.
--- Le ratio de leads depasse 2 par la saisonnalite (printemps photovoltaique) : borne large.
+-- H2 Bordeaux Métropole : coût par vente des leads achetés +40 a +45 % vs premier trimestre 2026
+-- (avril à juillet 2026, cohortes quasi complètes au 16 septembre), calcule depuis la vue.
+-- Le ratio de leads dépasse 2 par la saisonnalite (printemps photovoltaique) : borne large.
 with t1 as (
   select sum(cout) / nullif(sum(ventes), 0) as cpv from buta.mart_couts_acquisition
   where agence = 'BDX' and canal = 'leads_achetes' and mois between date '2026-01-01' and date '2026-03-01'),
@@ -27,14 +27,14 @@ apres as (
 leads_t1 as (
   select sum(leads) / 3.0 as leads from buta.mart_couts_acquisition
   where agence = 'BDX' and canal = 'leads_achetes' and mois between date '2026-01-01' and date '2026-03-01')
-select 'H2 Bordeaux Metropole : cout par vente des leads achetes' as test,
+select 'H2 Bordeaux Métropole : coût par vente des leads achetés' as test,
   100 * (apres.cpv - t1.cpv) / t1.cpv between 34 and 51 and apres.leads / leads_t1.leads between 1.6 and 2.8 as ok,
   round(t1.cpv, 0) as cpv_t1, round(apres.cpv, 0) as cpv_apres,
   round(100 * (apres.cpv - t1.cpv) / t1.cpv, 1) as hausse_pct,
-  round(apres.leads / leads_t1.leads, 2) as ratio_leads_mensuels, '+40 a +45 % (34 a 51), leads x2 (1,6 a 2,8)' as attendu
+  round(apres.leads / leads_t1.leads, 2) as ratio_leads_mensuels, '+40 a +45 % (34 à 51), leads x2 (1,6 à 2,8)' as attendu
 from t1, apres, leads_t1;
 
--- H3 Saintonge : remise de 4 % a 9 % (+5 pts), signature +4 pts, marge en retrait, a partir d'avril 2026.
+-- H3 Saintonge : remise de 4 % à 9 % (+5 pts), signature +4 pts, marge en retrait, à partir d'avril 2026.
 with avant as (
   select sum(remises_num) / nullif(sum(cat_num), 0) as remise, sum(marge) / nullif(sum(ca), 0) as marge from (
     select taux_remise * prix_catalogue_moyen * ventes as remises_num, prix_catalogue_moyen * ventes as cat_num, marge_brute as marge, ca_signe as ca
@@ -56,11 +56,11 @@ select 'H3 Saintonge : remise, signature, marge' as test,
   round(avant.remise, 2) as remise_avant_pct, round(apres.remise, 2) as remise_apres_pct,
   round(100 * (sign_apres.taux - sign_avant.taux), 1) as signature_ecart_pts,
   round(100 * (apres.marge - avant.marge), 1) as marge_ecart_pts,
-  'remise +5 pts (4 a 6), signature +4 pts (3,2 a 4,8), marge -3 a -4 pts (-5 a -2,4)' as attendu
+  'remise +5 pts (4 à 6), signature +4 pts (3,2 à 4,8), marge -3 a -4 pts (-5 a -2,4)' as attendu
 from avant, apres, sign_avant, sign_apres;
 
--- H4 Nord : anomalies d'integration (statut absent, libelle produit hors referentiel, doublons)
--- presentes en juin 2026, decroissantes jusqu'en septembre, absentes ailleurs.
+-- H4 Nord : anomalies d'intégration (statut absent, libellé produit hors référentiel, doublons)
+-- presentes en juin 2026, décroissantes jusqu'en septembre, absentes ailleurs.
 with anomalies as (
   select date_trunc('week', date_lead)::date as semaine, agence,
     count(*) filter (where statut is null) as sans_statut,
@@ -72,13 +72,13 @@ ailleurs as (select coalesce(sum(sans_statut + libelles), 0) as n from anomalies
 doublons as (select count(*) as n from buta.fait_dossier a join buta.fait_dossier b
   on b.empreinte_contact = a.empreinte_contact and b.produit = a.produit and b.id > a.id and abs(b.date_lead - a.date_lead) <= 30
   where a.publie and b.publie and a.agence = 'NOR')
-select 'H4 Nord : anomalies d''integration decroissantes' as test,
+select 'H4 Nord : anomalies d''intégration décroissantes' as test,
   nord_debut.n >= 10 and nord_fin.n::numeric / nullif(nord_debut.n, 0) < 0.35 and ailleurs.n = 0 and doublons.n >= 10 as ok,
   nord_debut.n as anomalies_3_premieres_semaines, nord_fin.n as anomalies_3_dernieres_semaines, ailleurs.n as anomalies_ailleurs,
   doublons.n as doublons_nord, 'debut >= 10, fin < 35 % du debut, 0 ailleurs, doublons >= 10' as attendu
 from nord_debut, nord_fin, ailleurs, doublons;
 
--- H5 Departements couverts a distance : delai signature vers pose 75 j contre 45 j (ratio 1,67),
+-- H5 Départements couverts à distance : délai signature vers pose 75 j contre 45 j (ratio 1,67),
 -- annulation 14 % contre 8 % (+6 pts).
 with delais as (
   select
@@ -90,14 +90,14 @@ annul as (
     count(*) filter (where date_annulation is not null and departement not in ('16', '17', '33', '40', '59'))::numeric / nullif(count(*) filter (where departement not in ('16', '17', '33', '40', '59')), 0) as distance,
     count(*) filter (where date_annulation is not null and departement in ('16', '17', '33', '40', '59'))::numeric / nullif(count(*) filter (where departement in ('16', '17', '33', '40', '59')), 0) as sur_place
   from buta.fait_dossier where publie and date_signature is not null and date_signature <= buta.journee_publiee() - 60)
-select 'H5 couverts a distance : delai de pose et annulation' as test,
+select 'H5 couverts à distance : délai de pose et annulation' as test,
   delais.distance / delais.sur_place between 1.33 and 2.0 and 100 * (annul.distance - annul.sur_place) between 4.8 and 7.2 as ok,
   delais.distance as delai_distance_j, delais.sur_place as delai_sur_place_j,
   round(100 * annul.distance, 1) as annulation_distance_pct, round(100 * annul.sur_place, 1) as annulation_sur_place_pct,
-  'ratio delai 1,67 (1,33 a 2,0), annulation +6 pts (4,8 a 7,2)' as attendu
+  'ratio délai 1,67 (1,33 à 2,0), annulation +6 pts (4,8 à 7,2)' as attendu
 from delais, annul;
 
--- H6 Saisonnalite (2025) : photovoltaique au printemps, PAC et poele a l'automne, aout creux partout.
+-- H6 Saisonnalite (2025) : photovoltaique au printemps, PAC et poele à l'automne, août creux partout.
 with leads as (
   select extract(month from date_lead)::int as mois, p.profil_saison, count(*) as n
   from buta.fait_dossier d join buta.dim_produit p on p.code = d.produit
@@ -113,12 +113,12 @@ aout as (
 select 'H6 saisonnalite' as test,
   pv.ratio between 1.2 and 1.5 and chauffage.ratio between 1.2 and 1.75 and aout.ratio < 0.85 as ok,
   round(pv.ratio, 2) as pv_printemps_vs_reste, round(chauffage.ratio, 2) as chauffage_automne_vs_hiver_printemps, round(aout.ratio, 2) as aout_vs_moyenne,
-  'PV 1,2 a 1,5 ; chauffage 1,2 a 1,75 ; aout < 0,85' as attendu
+  'PV 1,2 à 1,5 ; chauffage 1,2 à 1,75 ; août < 0,85' as attendu
 from pv, chauffage, aout;
 
--- H7 Bassin d'Arcachon : capacite de pose reduite de mi-avril a aout 2026 : retards de pose +22 j
--- (signatures de mai a aout vs reference janvier 2025 a mi-avril 2026, delai reel non censure), carnet
--- de pose au moins x1,25 (a ces volumes, le stock signe non pose croit comme le delai : +22 j sur 45).
+-- H7 Bassin d'Arcachon : capacite de pose réduite de mi-avril a août 2026 : retards de pose +22 j
+-- (signatures de mai a août vs référence janvier 2025 à mi-avril 2026, délai réel non censure), carnet
+-- de pose au moins x1,25 (a ces volumes, le stock signe non pose croit comme le délai : +22 j sur 45).
 with delais as (
   select
     percentile_cont(0.5) within group (order by date_pose - date_signature) filter (where date_signature between date '2026-05-01' and date '2026-08-31') as pendant,
@@ -133,5 +133,5 @@ select 'H7 Bassin d''Arcachon : retards de pose et carnet' as test,
   (delais.pendant - delais.avant) between 17.6 and 26.4 and carnet.pic / nullif(carnet.base, 0) >= 1.25 as ok,
   delais.avant as delai_avant_j, delais.pendant as delai_pendant_j, round((delais.pendant - delais.avant)::numeric, 1) as ecart_j,
   round(carnet.base, 1) as carnet_base_jo, round(carnet.pic, 1) as carnet_pic_jo, round(carnet.pic / nullif(carnet.base, 0), 2) as ratio_carnet,
-  '+22 j (17,6 a 26,4), carnet x1,25 au moins' as attendu
+  '+22 j (17,6 à 26,4), carnet x1,25 au moins' as attendu
 from delais, carnet;

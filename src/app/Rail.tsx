@@ -5,13 +5,13 @@ import { InfoBulle } from "@/composants/InfoBulle";
 import { cn } from "@/lib/cn";
 
 /**
- * Rail gauche fixe, 76 px, icones 20 px, libelle au survol apres 300 ms
- * (ECRANS.md conventions, DESIGN.md §3). Le point ambre marque la selection.
+ * Rail gauche fixe, 76 px, icônes 20 px, libellé au survol après 300 ms
+ * (ECRANS.md conventions, DESIGN.md §3). Le point ambre marque la sélection.
  *
- * NavLink est enveloppe par Tooltip.Trigger (asChild) : Radix Slot fusionne
- * className en chaine et casse la forme fonction ({isActive}) => ... de
- * react-router. On calcule donc l'etat actif nous-memes avec useLocation,
- * et NavLink ne recoit qu'une className/des enfants deja resolus.
+ * NavLink est enveloppé par Tooltip.Trigger (asChild) : Radix Slot fusionne
+ * className en chaîne et casse la forme fonction ({isActive}) => … de
+ * react-router. On calcule donc l'état actif nous-mêmes avec useLocation,
+ * et NavLink ne reçoit qu'une className et des enfants déjà résolus.
  */
 export function Rail() {
   const { pathname } = useLocation();
@@ -22,7 +22,7 @@ export function Rail() {
       className="fixed inset-y-0 left-0 z-30 hidden w-[var(--rail-largeur)] flex-col items-center gap-[var(--esp-4)] border-r border-bordure bg-surface py-[var(--esp-3)] md:flex"
     >
       <InfoBulle contenu="Buta.Lyfh" delaiMs={300} cote="right">
-        <NavLink to="/" aria-label="Aller a la vue d'ensemble" className="flex items-center justify-center">
+        <NavLink to="/" aria-label="Aller à la vue d'ensemble" className="flex items-center justify-center">
           <Monogramme taille={32} />
         </NavLink>
       </InfoBulle>
