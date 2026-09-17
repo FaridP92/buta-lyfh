@@ -111,6 +111,10 @@ export interface LigneKpi {
   delai_pose_median: number | null;
   commerciaux_actifs: number;
   techniciens_actifs: number;
+  /** Part du mois publiée (jours publiés / jours du mois), 1 pour un mois complet. */
+  prorata: number;
+  jours_publies: number;
+  jours_mois: number;
 }
 
 export interface KpiAgrege {
@@ -133,9 +137,17 @@ export interface KpiAgrege {
   charges: number;
   resultat: number;
   taux_cac: number | null;
+  /** Objectifs du mois entier. */
   objectif_ventes: number;
   objectif_ca: number;
+  /** Objectifs proratisés des jours publiés (égaux aux précédents pour des mois complets). */
+  objectif_ventes_prorata: number;
+  objectif_ca_prorata: number;
   ecart_objectif_pct: number | null;
+  /** Prorata du dernier mois de la période (1 si complet) et jours publiés sur jours du mois. */
+  prorata: number;
+  jours_publies: number;
+  jours_mois: number;
   /** Médiane mensuelle si un seul mois ; sinon moyenne des médianes pondérée par les poses (approximation). */
   delai_pose_median: number | null;
   productivite_commerciale: number | null;
@@ -147,14 +159,22 @@ function ratio(numerateur: number, denominateur: number, facteur = 1, decimales 
   return Math.round((facteur * numerateur / denominateur) * f) / f;
 }
 
-/** Somme des mesures additives d'une liste de lignes mensuelles, ratios recalculés depuis les sommes. */
-export function agregerKpi(lignes: readonly LigneKpi[], debut: string, fin: string): KpiAgrege | null {
-  const retenues = lignes.filter((l) => l.mois >= debut && l.mois <= fin);
+/**
+ * Somme des mesures additives d'une liste de lignes mensuelles, ratios recalculés depuis les sommes.
+ * `prorataDernierMois` sert à la comparaison N-1 : les mesures du dernier mois de la période N-1
+ * sont ramenées à la part publiée du mois en cours (le mois N-1 est complet, le mois courant non).
+ */
+export function agregerKpi(lignes: readonly LigneKpi[], debut: string, fin: string, options?: { prorataDernierMois?: number }): KpiAgrege | null {
+  const retenues = lignes.filter((l) => moisDe(l.mois) >= debut && moisDe(l.mois) <= fin).sort((a, b) => a.mois.localeCompare(b.mois));
   if (retenues.length === 0) return null;
-  const somme = (cle: keyof LigneKpi) => retenues.reduce((s, l) => s + (Number(l[cle]) || 0), 0);
+  const dernier = retenues[retenues.length - 1] as LigneKpi;
+  const facteur = (l: LigneKpi) => (options?.prorataDernierMois !== undefined && l === dernier ? options.prorataDernierMois : 1);
+  const somme = (cle: keyof LigneKpi) => retenues.reduce((s, l) => s + (Number(l[cle]) || 0) * facteur(l), 0);
   const leads = somme("leads"), ventes = somme("ventes"), ca = somme("ca_signe"), marge = somme("marge_brute");
   const sb = somme("signatures_brutes"), an = somme("annulees_60j"), couts = somme("couts_acquisition"), com = somme("commissions");
   const objectifCa = somme("objectif_ca");
+  const objectifCaProrata = retenues.reduce((s, l) => s + l.objectif_ca * (l.prorata ?? 1), 0);
+  const objectifVentesProrata = retenues.reduce((s, l) => s + l.objectif_ventes * (l.prorata ?? 1), 0);
   const poses = somme("poses");
   const delaisPonderes = retenues.reduce((s, l) => s + (l.delai_pose_median ?? 0) * l.poses, 0);
   const posesAvecDelai = retenues.reduce((s, l) => s + (l.delai_pose_median === null ? 0 : l.poses), 0);
@@ -170,7 +190,9 @@ export function agregerKpi(lignes: readonly LigneKpi[], debut: string, fin: stri
     marge_apres_acquisition: somme("marge_apres_acquisition"), charges: somme("charges"), resultat: somme("resultat"),
     taux_cac: ratio(couts + com, ca, 100),
     objectif_ventes: somme("objectif_ventes"), objectif_ca: objectifCa,
-    ecart_objectif_pct: ratio(ca - objectifCa, objectifCa, 100),
+    objectif_ventes_prorata: Math.round(objectifVentesProrata * 10) / 10, objectif_ca_prorata: Math.round(objectifCaProrata),
+    ecart_objectif_pct: ratio(ca - objectifCaProrata, objectifCaProrata, 100),
+    prorata: dernier.prorata ?? 1, jours_publies: dernier.jours_publies ?? dernier.jours_mois ?? 0, jours_mois: dernier.jours_mois ?? 0,
     delai_pose_median: posesAvecDelai > 0 ? Math.round(delaisPonderes / posesAvecDelai) : null,
     productivite_commerciale: commerciauxMoyens > 0 ? ratio(ventes, commerciauxMoyens, 1, 2) : null,
   };
@@ -186,4 +208,54 @@ export function ecartPct(valeur: number | null, comparaison: number | null): num
 export function ecartPoints(valeur: number | null, comparaison: number | null): number | null {
   if (valeur === null || comparaison === null) return null;
   return Math.round((valeur - comparaison) * 10) / 10;
+}
+
+export interface LigneFunnel {
+  mois: string;
+  leads: number;
+  rdv_tenus: number;
+  devis: number;
+  signatures: number;
+  poses: number;
+  encaissements: number;
+  cohorte_mature: boolean;
+}
+
+export interface CohorteAgregee {
+  leads: number;
+  rdv: number;
+  devis: number;
+  signatures: number;
+  poses: number;
+  encaissements: number;
+  /** Vrai seulement si toutes les cohortes de la période ont plus de 90 jours. */
+  mature: boolean;
+}
+
+/** Cohortes de création additionnées sur la période (les étapes restent rattachées au mois du lead). */
+export function agregerFunnel(lignes: readonly LigneFunnel[], debut: string, fin: string): CohorteAgregee | null {
+  const retenues = lignes.filter((l) => moisDe(l.mois) >= debut && moisDe(l.mois) <= fin);
+  if (retenues.length === 0) return null;
+  const somme = (cle: Exclude<keyof LigneFunnel, "mois" | "cohorte_mature">) => retenues.reduce((s, l) => s + l[cle], 0);
+  return {
+    leads: somme("leads"), rdv: somme("rdv_tenus"), devis: somme("devis"), signatures: somme("signatures"),
+    poses: somme("poses"), encaissements: somme("encaissements"), mature: retenues.every((l) => l.cohorte_mature),
+  };
+}
+
+export interface EtapeFunnel {
+  nom: string;
+  valeur: number;
+  /** Taux par rapport à l'étape précédente, en pourcentage ; null pour la première étape ou un dénominateur nul. */
+  taux: number | null;
+}
+
+export function etapesFunnel(c: CohorteAgregee): EtapeFunnel[] {
+  const brut = [
+    ["Leads", c.leads], ["RDV tenus", c.rdv], ["Devis", c.devis], ["Signatures", c.signatures], ["Poses", c.poses], ["Encaissements", c.encaissements],
+  ] as const;
+  return brut.map(([nom, valeur], i) => {
+    const precedente = i > 0 ? brut[i - 1]?.[1] ?? 0 : 0;
+    return { nom, valeur, taux: i > 0 && precedente > 0 ? Math.round((valeur / precedente) * 1000) / 10 : null };
+  });
 }

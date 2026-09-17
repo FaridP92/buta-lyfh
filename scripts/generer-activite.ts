@@ -76,6 +76,8 @@ const CANAUX: { code: Canal; part: number }[] = [
 ];
 const MOIS_SALON = new Set([3, 6, 10]);
 const PART_LEADS_ACHETES_BDX = 0.25;
+const LEADS_PAR_COMMERCIAL = 80;
+const LEADS_PAR_PROPRIETAIRE = 0.00125;
 
 const FUNNEL = { rdv: 0.45, devis: 0.70, signature: 0.32, annulation: 0.08 };
 const ANNULATION_A_DISTANCE = 0.14;
@@ -248,7 +250,9 @@ function genererDossiers(alea: Alea): Dossier[] {
   for (const agence of AGENCES) {
     const proprietairesPonderes = agence.territoires.reduce(
       (somme, t) => somme + (PROPRIETAIRES[t.departement] ?? 0) * t.part, 0);
-    const base = Math.min(agence.commerciaux * 45, 40 + 0.0007 * proprietairesPonderes);
+    // Volume calibré pour qu'un réseau de 96 salariés commerciaux et techniques soit à l'équilibre
+    // (DONNEES.md §3.3) : 80 leads par commercial au plafond, 0,00125 lead par propriétaire occupant.
+    const base = Math.min(agence.commerciaux * LEADS_PAR_COMMERCIAL, 40 + LEADS_PAR_PROPRIETAIRE * proprietairesPonderes);
     const poidsDepartements = agence.territoires.map((t) => (PROPRIETAIRES[t.departement] ?? 0) * t.part);
 
     for (let annee = 2025; annee <= 2026; annee++) {

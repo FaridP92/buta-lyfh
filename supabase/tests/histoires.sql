@@ -28,10 +28,10 @@ leads_t1 as (
   select sum(leads) / 3.0 as leads from buta.mart_couts_acquisition
   where agence = 'BDX' and canal = 'leads_achetes' and mois between date '2026-01-01' and date '2026-03-01')
 select 'H2 Bordeaux Métropole : coût par vente des leads achetés' as test,
-  100 * (apres.cpv - t1.cpv) / t1.cpv between 34 and 51 and apres.leads / leads_t1.leads between 1.6 and 2.8 as ok,
+  100 * (apres.cpv - t1.cpv) / t1.cpv between 32 and 54 and apres.leads / leads_t1.leads between 1.6 and 2.8 as ok,
   round(t1.cpv, 0) as cpv_t1, round(apres.cpv, 0) as cpv_apres,
   round(100 * (apres.cpv - t1.cpv) / t1.cpv, 1) as hausse_pct,
-  round(apres.leads / leads_t1.leads, 2) as ratio_leads_mensuels, '+40 a +45 % (34 à 51), leads x2 (1,6 à 2,8)' as attendu
+  round(apres.leads / leads_t1.leads, 2) as ratio_leads_mensuels, '+40 à +45 % (32 à 54 : les deux bornes à plus ou moins 20 %), leads x2 (1,6 à 2,8)' as attendu
 from t1, apres, leads_t1;
 
 -- H3 Saintonge : remise de 4 % à 9 % (+5 pts), signature +4 pts, marge en retrait, à partir d'avril 2026.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agregerKpi, ajouterMois, analyserPeriode, ecartPct, ecartPoints, moisEntre, optionsPeriode, periodeN1, type LigneKpi } from "@/lib/periode";
+import { agregerFunnel, agregerKpi, ajouterMois, analyserPeriode, ecartPct, ecartPoints, etapesFunnel, moisEntre, optionsPeriode, periodeN1, type LigneKpi } from "@/lib/periode";
 
 const PUBLIE = "2026-09";
 
@@ -51,7 +51,7 @@ function ligne(mois: string, sur: Partial<LigneKpi> = {}): LigneKpi {
     mois, leads: 100, ventes: 10, ca_signe: 100_000, ca_pose: 80_000, encaisse: 70_000, poses: 8, marge_brute: 30_000,
     signatures_brutes: 11, annulees_60j: 1, couts_acquisition: 12_000, commissions: 4_000, marge_apres_acquisition: 14_000,
     charges: 20_000, resultat: -6_000, objectif_ventes: 12, objectif_ca: 110_000, delai_pose_median: 40,
-    commerciaux_actifs: 4, techniciens_actifs: 5, ...sur,
+    commerciaux_actifs: 4, techniciens_actifs: 5, prorata: 1, jours_publies: 31, jours_mois: 31, ...sur,
   };
 }
 
@@ -68,6 +68,19 @@ describe("agregerKpi", () => {
     expect(a?.ecart_objectif_pct).toBe(36.4);
     expect(a?.delai_pose_median).toBe(53);
     expect(a?.productivite_commerciale).toBe(7.5);
+  });
+  it("proratise l'objectif du mois en cours et, pour N-1, le dernier mois de la période", () => {
+    const partiel = ligne("2026-09", { ca_signe: 60_000, objectif_ca: 120_000, objectif_ventes: 12, prorata: 0.5, jours_publies: 15, jours_mois: 30 });
+    const a = agregerKpi([ligne("2026-08"), partiel], "2026-08", "2026-09");
+    expect(a?.objectif_ca).toBe(230_000);
+    expect(a?.objectif_ca_prorata).toBe(170_000);
+    expect(a?.objectif_ventes_prorata).toBe(18);
+    expect(a?.ecart_objectif_pct).toBe(-5.9);
+    expect(a?.prorata).toBe(0.5);
+    expect(a?.jours_publies).toBe(15);
+    const n1 = agregerKpi([ligne("2025-08"), ligne("2025-09", { ca_signe: 80_000, ventes: 8 })], "2025-08", "2025-09", { prorataDernierMois: 0.5 });
+    expect(n1?.ca_signe).toBe(140_000);
+    expect(n1?.ventes).toBe(14);
   });
   it("renvoie null sans ligne dans la période", () => {
     expect(agregerKpi([ligne("2026-07")], "2026-08", "2026-09")).toBeNull();
@@ -91,5 +104,22 @@ describe("écarts", () => {
     expect(ecartPct(null, 100)).toBeNull();
     expect(ecartPoints(32.4, 30.1)).toBe(2.3);
     expect(ecartPoints(null, 1)).toBeNull();
+  });
+});
+
+describe("agregerFunnel et etapesFunnel", () => {
+  const cohortes = [
+    { mois: "2026-07", leads: 100, rdv_tenus: 45, devis: 30, signatures: 10, poses: 8, encaissements: 8, cohorte_mature: true },
+    { mois: "2026-08", leads: 80, rdv_tenus: 35, devis: 20, signatures: 6, poses: 3, encaissements: 1, cohorte_mature: false },
+  ];
+  it("additionne les cohortes de la période et ne les déclare mûres que si toutes le sont", () => {
+    expect(agregerFunnel(cohortes, "2026-07", "2026-08")).toEqual({ leads: 180, rdv: 80, devis: 50, signatures: 16, poses: 11, encaissements: 9, mature: false });
+    expect(agregerFunnel(cohortes, "2026-07", "2026-07")?.mature).toBe(true);
+    expect(agregerFunnel(cohortes, "2026-09", "2026-09")).toBeNull();
+  });
+  it("calcule le taux de chaque étape par rapport à la précédente", () => {
+    const etapes = etapesFunnel(agregerFunnel(cohortes, "2026-07", "2026-07") as NonNullable<ReturnType<typeof agregerFunnel>>);
+    expect(etapes.map((e) => e.taux)).toEqual([null, 45, 66.7, 33.3, 80, 100]);
+    expect(etapesFunnel({ leads: 0, rdv: 0, devis: 0, signatures: 0, poses: 0, encaissements: 0, mature: true }).map((e) => e.taux)).toEqual([null, null, null, null, null, null]);
   });
 });

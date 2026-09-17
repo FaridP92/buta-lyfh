@@ -18,6 +18,7 @@ export const VUES = {
       delai_pose_median: nombreOuNul, couts_acquisition: nombre, commissions: nombre, marge_apres_acquisition: nombre,
       charges: nombre, resultat: nombre, taux_cac: nombreOuNul, commerciaux_actifs: nombre, techniciens_actifs: nombre,
       productivite_commerciale: nombreOuNul, objectif_ventes: nombre, objectif_ca: nombre, ecart_objectif_pct: nombreOuNul,
+      prorata: nombre, jours_publies: nombre, jours_mois: nombre,
     })
     .passthrough(),
   mart_funnel: z
@@ -41,7 +42,7 @@ export const VUES = {
       mois: date, agence: z.string(), comparaison: z.enum(["objectif", "n1"]), comparaison_disponible: z.boolean(),
       motif: z.string().nullable(), ventes: nombre, ventes_comparaison: nombre, ca_realise: nombre, ca_comparaison: nombre,
       ecart_total: nombre, effet_volume: nombre, effet_mix: nombre, effet_prix: nombre, effet_remise: nombre, residuel: nombre,
-      taux_remise: nombreOuNul, taux_remise_comparaison: nombreOuNul,
+      taux_remise: nombreOuNul, taux_remise_comparaison: nombreOuNul, prorata: nombre,
     })
     .passthrough(),
   mart_couts_acquisition: z
@@ -128,6 +129,25 @@ export const VUES = {
       semaine: date, faits: z.unknown(), texte: z.string().nullable(), modele: z.string().nullable(), cout: nombreOuNul,
       publie_le: z.string().nullable(), libelle: z.string(),
     })
+    .passthrough(),
+  // Dimensions en lecture publique (RLS lecture_publique), utiles aux cartes et aux libellés.
+  dim_agence: z
+    .object({
+      code: z.string(), nom_bassin: z.string(), departement: z.string(), latitude: nombre, longitude: nombre,
+      ouverture: date, poses_par_technicien_semaine: nombre,
+    })
+    .passthrough(),
+  dim_produit: z
+    .object({
+      code: z.string(), libelle: z.string(), famille: z.string(), prix_catalogue: nombre, taux_pose: nombre,
+      taux_marge_cible: nombre, duree_pose_jt: nombre, aide_moyenne: nombre, part_mix_base: nombre, profil_saison: z.string(),
+    })
+    .passthrough(),
+  dim_canal: z
+    .object({ code: z.string(), libelle: z.string(), cout_modele: z.string(), mention_legale: z.string().nullable() })
+    .passthrough(),
+  source_fraicheur: z
+    .object({ source: z.string(), date_reference: date.nullable(), ingere_le: z.string(), prochaine: date.nullable() })
     .passthrough(),
 } as const;
 

@@ -75,7 +75,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
 
   return (
     <div className="flex min-w-0 flex-col gap-[var(--esp-2)]">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto [scrollbar-width:thin]">
         <table className="w-full min-w-[560px] border-collapse text-[15px] max-md:text-[13px]">
           <thead className="sticky top-0 z-[1] bg-surface">
             <tr className="border-b border-bordure">
@@ -133,10 +133,11 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
           </tbody>
         </table>
       </div>
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-[var(--esp-2)]">
+        <p className="text-[11px] text-texte-3 md:hidden">Faire défiler horizontalement pour les autres colonnes.</p>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
-            <button type="button" className="inline-flex h-8 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">
+            <button type="button" className="ml-auto inline-flex h-8 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">
               <Download size={13} strokeWidth={1.5} aria-hidden="true" />
               Exporter
             </button>

@@ -29,7 +29,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/",
     libelle: "Vue d'ensemble",
     icone: Gauge,
-    disponible: false,
+    disponible: true,
     palier: "A",
     lot: "2",
     objectif: "En trente secondes : où en est le réseau ce mois-ci, où sont les écarts, que faire.",
