@@ -65,11 +65,11 @@ Produits (prix catalogue HT moyen simulé, taux de pose en part du prix, marge b
 ### 3.4 Les sept histoires injectées (à retrouver à l'écran et par l'analyste)
 - H1 Marensin : changement d'organisation commerciale en février 2026, taux RDV vers devis -10 pts de mars à juin 2026, retour progressif de juillet à septembre. Aucune personne n'est désignée.
 - H2 Bordeaux Métropole : leads achetés doublés à partir d'avril 2026 : leads du canal +100 %, taux de RDV du canal de 30 % à 23 %, prix du lead de 65 à 72 € ; coût par vente du canal entre +40 % et +45 % vs premier trimestre, calculé depuis la vue, jamais forcé.
-- H3 Saintonge : taux de remise de 4 % à 9 % à partir d'avril 2026, taux de signature +4 pts, taux de marge -3 pts : conversion gagnée, marge perdue.
+- H3 Saintonge : taux de remise de 4 % à 9 % à partir d'avril 2026, taux de signature +4 pts, taux de marge de -3 à -4 pts (coûts sur le prix du dossier, voir §3.3) : conversion gagnée, marge perdue.
 - H4 Nord : agence intégrée en juin 2026, écarts de référentiels typiques d'une intégration (6 % de dossiers sans statut, 3 % de doublons, libellés produits divergents, par exemple « PAC AIR EAU 11KW » contre « Pompe à chaleur air-eau ») réconciliés par un référentiel commun ; anomalies décroissantes semaine après semaine jusqu'en septembre. Présentée comme une réussite d'alignement, formulée « dossiers à qualifier, référentiel en cours d'alignement ».
 - H5 Départements couverts à distance (79, 85, 24, 47, 32, 64) : délai signature vers pose 75 j contre 45 j, taux d'annulation 14 % contre 8 % ailleurs.
 - H6 Saisonnalité : photovoltaïque au printemps, PAC et poêle à l'automne, août creux partout.
-- H7 Bassin d'Arcachon : capacité de pose réduite de 25 % de mai à août 2026, sans motif indiqué ; carnet de pose de 30 à 68 jours ouvrés, retards de pose +22 j, CA posé en retrait alors que le CA signé tient.
+- H7 Bassin d'Arcachon : capacité de pose réduite de 25 % de mai à août 2026, sans motif indiqué ; carnet de pose multiplié par 1,3 à 1,5 (de l'ordre de 10 à 15 jours ouvrés à ces volumes : 52 techniciens pour 1 800 poses par an, la capacité est loin d'être saturée, le carnet se lit en relatif), retards de pose +22 j, CA posé en retrait alors que le CA signé tient.
 
 ## 4. Schéma SQL (schéma `buta`, migrations Supabase numérotées)
 ### 4.1 Dimensions

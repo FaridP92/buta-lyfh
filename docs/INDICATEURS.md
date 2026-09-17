@@ -58,7 +58,7 @@ Pente estimée par régression du taux de signature sur le taux de remise (agenc
 |---|---|---|---|
 | D_SIGN_POSE | Délai signature vers pose | médiane (date pose - date signature), par agence et par département | plus bas = mieux |
 | POSE_DELAI | Poses dans les délais | poses à moins de 60 jours de la signature / poses | plus haut = mieux |
-| CARNET | Carnet de pose | charge restante en jours-technicien (ventes signées non posées × durée de pose du produit, `dim_produit.duree_pose_jt`) / (techniciens actifs × 0,8), en jours ouvrés | plus bas = mieux ; la durée de pose retenue par produit est affichée sous l'indicateur |
+| CARNET | Carnet de pose | charge restante en jours-technicien (ventes signées non posées × durée de pose du produit, `dim_produit.duree_pose_jt`) / (techniciens actifs × 0,8), en jours ouvrés | plus bas = mieux ; la durée de pose retenue par produit est affichée sous l'indicateur ; alerte quand le carnet dépasse 1,3 fois la médiane des douze semaines précédentes de l'agence |
 | PROD_TECH | Productivité pose | jours-technicien posés / (techniciens actifs × 5) par semaine | plus haut = mieux |
 | ENCAISSE | Encaissé | somme des encaissements du mois | montant |
 | D_ENCAISSE | Délai pose vers encaissement | médiane (date encaissement - date pose) | plus bas = mieux |
