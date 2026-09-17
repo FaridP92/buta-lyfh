@@ -16,3 +16,4 @@ n8n/*.export.json
 # etat operationnel oh-my-claudecode ; seuls les skills de projet sont versionnables
 .omc/*
 !.omc/skills/
+.cache/

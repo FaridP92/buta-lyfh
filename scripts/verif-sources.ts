@@ -22,7 +22,7 @@ function listerMigrations(): string[] {
 }
 
 function extraireVues(contenuSQL: string): string[] {
-  const regex = /CREATE\s+(?:MATERIALIZED\s+)?VIEW\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:buta\.)?(mart_\w+)/gi;
+  const regex = /CREATE\s+(?:OR\s+REPLACE\s+)?(?:MATERIALIZED\s+)?VIEW\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:buta\.)?(mart_\w+)/gi;
   const vues = new Set<string>();
   let correspondance: RegExpExecArray | null;
   while ((correspondance = regex.exec(contenuSQL)) !== null) {

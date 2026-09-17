@@ -71,8 +71,18 @@ Pente estimée par régression du taux de signature sur le taux de remise (agenc
 | ATTERR | Atterrissage | réalisé à date + pipe pondéré (qui couvre les 45 prochains jours) + Σ sur les mois restants au-delà de ces 45 jours de (run-rate 3 mois × coefficient de saisonnalité du mois) ; bornes bas et haut = central ± σ_mensuel × racine du nombre de mois restants (intervalle à 68 %), σ estimé sur 12 mois | prévision, hypothèses affichées |
 | P_ATTEINTE | Probabilité d'atteinte | part des 500 tirages (run-rate bruité par σ, graine fixe) dont l'atterrissage dépasse l'objectif, arrondie à 5 points | pourcentage |
 
-## Qualité et marché
+## Qualité et marché (`mart_qualite`, `mart_marche_departement`, `mart_marche_commune`)
 | Code | Indicateur | Formule | Lecture |
 |---|---|---|---|
 | QUALITE | Score de qualité | 100 × somme pondérée des contrôles OK / somme des poids ; poids 3 pour les contrôles bloquants, 1 pour les autres (`mart_qualite`) | plus haut = mieux |
 | INDICE | Indice de potentiel territorial | chaque composante en rang centile (0 à 100) sur les 96 départements métropolitains : volume = propriétaires occupants ; intensité fioul et citerne = part des résidences principales au fioul ou au gaz citerne ; intensité F ou G = part des maisons F ou G parmi les maisons diagnostiquées ; frein = installateurs RGE PAC ou PV pour 10 000 maisons ; saturation = installations solaires pour 1 000 maisons. Indice = (0,4 × volume + 0,3 × intensité fioul et citerne + 0,3 × intensité F ou G) × (1 - 0,3 × frein / 100) × (1 - 0,3 × saturation / 100). Le tableau affiche toujours les deux lectures, volume et intensité, à côté de l'indice. Poids modifiables à l'écran (`src/lib/indice.ts`) | plus haut = plus de potentiel non servi ; ce n'est pas une recommandation |
+
+Grains : `mart_marche_departement` = un département (96, métropole), avec `perimetre` vrai pour les onze du réseau simulé, les agences simulées couvrantes, les parts (fioul et citerne, maisons F ou G) et les ratios pour 1 000 et 10 000 maisons ; `mart_marche_commune` = une commune des onze départements, mêmes colonnes, centiles et indice calculés parmi ces communes.
+
+## Vues de service (pas d'indicateur propre, une fiche par vue)
+| Vue | Grain | Contenu | Écran |
+|---|---|---|---|
+| `mart_alertes` | une alerte à la journée publiée | code, agence, gravité, valeur numérique, texte assemblé en SQL (coût par vente des leads achetés au-delà de +30 % vs T1, dossiers à qualifier, carnet de pose au-delà de 40 jours ouvrés, poses en retard), date de calcul | Vue d'ensemble, Forecast |
+| `mart_automatisation` | une exécution n8n | workflow, début, fin, durée en secondes, statut, message, lignes, rang (1 = dernière exécution du workflow) | Automatisations |
+| `mart_plans_action` | un plan d'action | levier, agence et bassin, propriétaire (code), gain attendu en euros, statut, échéance, avancement en pourcentage, indicateur suivi | Plans d'action et rituels |
+| `mart_revue_hebdo` | une semaine (lundi) | faits calculés en SQL (jsonb), texte rédigé, modèle, coût en euros, date de publication, libellé de semaine | Plans d'action et rituels |

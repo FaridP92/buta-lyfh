@@ -55,3 +55,50 @@ Critères d'acceptation du lot 0 (BACKLOG) :
 - Déposer `public/cv-frederic-poissonnier.pdf`.
 - Reporter les nouvelles valeurs de tokens dans DESIGN.md §1 ou les contester.
 - Test sur téléphone réel en 4G (DEPLOIEMENT_VPS.md §4) : à faire par Frédéric.
+
+Commit lot 0 : `4ece850`.
+
+### Session 1, 17 septembre 2026 : lot 1
+
+Plan lot 1 (dix lignes) :
+1. Migration 0001 : schéma `buta`, dimensions, faits, marché, exploitation, index, commentaires (DONNEES.md §4.1 à 4.4).
+2. Migration 0002 : RLS sur toutes les tables, politique `lecture_publique`, grants, rôle `analyste_ro` (§4.8).
+3. Seed des référentiels (`supabase/seed/`) : agences par bassin, territoires, effectifs codés, canaux, produits, statuts, dates, départements, contrôles.
+4. `scripts/ingerer-marche.ts` : Insee, RGE, RTE, DPE, contours simplifiés, contrôles de totaux, `source_fraicheur`.
+5. `scripts/generer-activite.ts` : PRNG à graine fixe 20260922, règles §3.3, sept histoires §3.4, coûts, charges, objectifs, contrôles du générateur, chargement, publication jusqu'à J-1.
+6. Migration 0003 : seize vues `mart_` avec `COMMENT ON`, vues matérialisées, `rafraichir_marts()`.
+7. Migration 0004 : fonctions et RPC (`publier_journee`, `executer_controles`, `faits_revue_hebdo`, `publier_revue`, `journal_run`, `upsert_marche_departement`).
+8. Tests SQL : `supabase/tests/histoires.sql` (une requête par histoire), funnel monotone, totaux, résiduel d'écart sous 3 %, douze contrôles.
+9. `scripts/instantane.ts` et client `src/donnees/` (Zod, `useVue`, repli instantané).
+10. Advisors Supabase, skill supabase-rls-guard, test négatif anon sur `fait_dossier`, journal, commit.
+
+État au fil de la session (mis à jour à la fin du lot) :
+- Migrations 0001 à 0005 appliquées par le MCP sur `renovscope` (schéma `buta` : 26 tables, seize vues `mart_` dont trois matérialisées, sept fonctions RPC, rôle `analyste_ro` sans mot de passe pour l'instant). Seeds chargés : 11 départements, 9 agences, 18 territoires, 44 commerciaux, 52 techniciens, 8 canaux, 8 produits, 10 statuts, 730 jours, 12 contrôles, 12 plans d'action.
+- `scripts/ingerer-marche.ts` (écrit et exécuté par un fork) : téléchargements et calculs faits, cache dans `.cache/marche/`, GeoJSON simplifiés sous 300 Ko par département (départements 100 m : 1 108 Ko). Chiffres de contrôle : 18 sur 20 exacts à l'unité ; RTE 17 et 59 obtenus 23 520 et 23 394 contre 23 076 et 22 651 attendus (+1,9 % et +3,3 %) : le registre RTE a été rafraîchi depuis le calcul des constantes, valeurs confirmées sur l'API en direct. Chargement en base en attente de `SUPABASE_DB_URL`.
+- `scripts/generer-activite.ts` : à blanc, 43 851 dossiers sur 24 mois, CA signé 37,1 M€, acquisition 16,9 % du CA (cible 12 à 22 %), contrôles du générateur verts. Chargement en attente de `SUPABASE_DB_URL`.
+- Deux gestes tableau de bord attendus de Frédéric (guidés en session) : `SUPABASE_DB_URL` dans `.env` (Connect, Session pooler) et `buta` dans « Exposed schemas » (Settings, Data API). PostgREST répond PGRST106 tant que le second n'est pas fait.
+
+Écarts et décisions (lot 1, en cours) :
+- Colonnes ajoutées à `fait_dossier` par rapport à DONNEES.md §4.2 : `empreinte_contact` (contrôle 5, doublons), `produit_libelle_source` (contrôle 9 et H4), et `remise` nommée `taux_remise` (taux entre 0 et 1, sans ambiguïté avec un montant). `dim_produit` porte en plus `part_mix_base` et `profil_saison` (règles §3.3 rendues lisibles en base). `controle` porte `ordre`.
+- Les vues lisent les dossiers publiés « à la journée publiée » (`buta.journee_publiee()`, vue interne `dossier_a_date`) : toute date postérieure est masquée, le réalisé ne contient jamais le futur simulé. Le `statut` stocké est l'état final du dossier ; l'état à date se déduit des dates.
+- Décomposition d'écart : avec un taux de remise moyen pondéré par les prix, la formule d'INDICATEURS.md est exactement télescopique, le résiduel est nul par construction (pas seulement sous 3 %).
+- Probabilité d'atteinte : loi normale analytique (`buta.phi`) sur le run-rate plutôt que 500 tirages à graine fixe (même sens, déterministe, calculable dans une vue).
+- H3 Saintonge : avec le modèle de coûts de DONNEES.md §3.3 (matériel et pose au prix catalogue nominal), passer la remise de 4 % à 9 % baisse le taux de marge d'environ 3,8 points, pas 3 : le test attend -2,4 à -5 points et la doc devrait dire « environ 4 points ».
+- H7 Bassin d'Arcachon : avec 4 commerciaux et 15 % de la Gironde, l'agence signe environ 9 dossiers par mois ; un carnet de 30 jours ouvrés n'est pas atteignable à ces volumes. Le test vérifie l'effet relatif (retards +22 j, carnet au moins doublé), pas les valeurs absolues « 30 à 68 jours ».
+- Leads mensuels : les propriétaires occupants par département sont figés dans le générateur (Insee 2022 arrondis, dix départements = 1 755 000, Nord = 623 000) pour que le jeu ne dépende pas de l'état de `marche_departement`. La saisonnalité est normalisée pour redistribuer les leads dans l'année sans changer le volume annuel.
+- Commune du dossier laissée nulle (le département est le grain géographique des indicateurs) ; aucune coordonnée de dossier n'existe donc.
+- `scripts/lib/bd.ts` a été écrit en même temps par le fork et par moi ; version fusionnée (pool et client, upsert et insertion par lots).
+- Advisors après migrations : `function_search_path_mutable` sur `journee_publiee` et `phi` (corrigé, 0005) ; `rls_enabled_no_policy` sur `fait_dossier`, `fait_cout_canal`, `ia_usage`, `analyste_question`, `visite` : voulu (aucune lecture directe, seules les vues agrégées exposent). Les autres remarques (`spatial_ref_sys`, PostGIS dans public, `st_estimatedextent`, schémas analytics, qualite, rag, staging) concernent le projet renovscope existant, hors périmètre. `security_definer_view` n'apparaîtra qu'une fois le schéma exposé : assumé.
+- DONNEES.md §1 : les totaux « France » Insee et DPE sont France entière ; la métropole seule donne 31 911 516 RP et 730 791 maisons F ou G. RTE : 23 520 (17) et 23 394 (59) à date. L'API RGE n'a pas de code Insee : résolu par code postal, nom normalisé puis centre le plus proche (fork).
+
+Audit RLS (skill supabase-rls-guard, exécuté sur la base après les migrations 0001 à 0006) :
+
+| Qui | Quoi | Opération | Preuve |
+|---|---|---|---|
+| anon, authenticated | 21 tables (dimensions, marché, objectifs, charges, plans, revues, contrôles, journal n8n, fraîcheur) | SELECT par politique `lecture_publique` + grant | `pg_policies` : 21 politiques, toutes `[anon, authenticated]`, `cmd = SELECT` ; aucune politique d'écriture |
+| anon, authenticated, analyste_ro | seize vues `mart_` (dont trois matérialisées) | SELECT par grant, vues exécutées avec les droits du propriétaire | `set local role anon` : `mart_kpi_mensuel` répond (210 lignes) ; `set local role analyste_ro` : `mart_forecast` répond (20 lignes) |
+| personne (hors service_role et postgres) | `fait_dossier`, `fait_cout_canal`, `ia_usage`, `analyste_question`, `visite`, vue interne `dossier_a_date` | aucune | `set local role anon` puis `analyste_ro` sur `fait_dossier` : « permission denied for table fait_dossier » |
+| service_role seulement | `publier_journee`, `executer_controles`, `faits_revue_hebdo`, `publier_revue`, `journal_run`, `recalculer_indices`, `upsert_marche_departement`, `rafraichir_marts` (security definer, `search_path` figé) | EXECUTE | `anon` sur `publier_journee` et `analyste_ro` sur `executer_controles` : « permission denied for function » |
+| tout le monde | `journee_publiee()`, `phi()` (lecture seule, `search_path` figé par 0005) | EXECUTE | advisors : plus d'alerte `function_search_path_mutable` |
+
+RLS activée sur les 26 tables (`relrowsecurity = true` partout). `analyste_ro` : `rolcanlogin = true`, `rolconfig = statement_timeout=5s ; work_mem=16MB ; search_path=buta` (appliqués à la connexion du rôle par le pooler, pas sous `SET ROLE`), mot de passe à poser au lot 4b hors dépôt. Migration 0006 : `grant analyste_ro to postgres` pour permettre les tests par `SET ROLE` (postgres n'est pas superutilisateur sur Supabase). Advisors après 0005 : sur `buta`, seulement `rls_enabled_no_policy` (INFO) sur les cinq tables volontairement fermées.
