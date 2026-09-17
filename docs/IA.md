@@ -1,0 +1,21 @@
+# IA · analyste et explications
+
+Règle fondatrice : le modèle ne produit jamais un chiffre. Les faits sont calculés en SQL et lui sont donnés ; il rédige. Chaque réponse montre la requête, les lignes, la prose et les sources. Une réponse dont un nombre n'est pas traçable aux lignes est rejetée et remplacée par « je ne peux pas répondre de façon fiable à cette question ».
+
+## 1. Périmètre
+Répond : questions sur les indicateurs, agences, canaux, produits, périodes, écarts, délais, qualité, marché des territoires (vues `mart_`). Refuse avec un motif clair : conseil personnel ou stratégique (« faut-il ouvrir à Nantes ? » : « le démonstrateur lit le marché, il ne recommande pas d'implantation »), questions hors périmètre (météo, actualité), questions sur des données non couvertes (MaPrimeRénov' par commune, données réelles de Butagaz), demandes d'écriture ou de suppression.
+
+## 2. Catalogue transmis au modèle (généré depuis les commentaires SQL des vues)
+Pour chaque vue `mart_` autorisée : nom, description, colonnes avec type et unité, grain, exemple de ligne. Le catalogue est généré par `scripts/verif-sources.ts` à partir des `COMMENT ON VIEW` et `COMMENT ON COLUMN`, ce qui garantit que la documentation et la base disent la même chose. Vues autorisées : les seize vues `mart_` de DONNEES.md §4.5. Tout autre objet est refusé à la validation.
+
+## 3. Prompts (en français, dans `supabase/functions/*/prompts.ts`)
+- Système analyste : rôle (« tu es l'analyste d'un cockpit de pilotage d'un réseau d'installateurs ; les données d'activité sont simulées, le marché est réel »), catalogue, règles SQL (un seul SELECT, vues autorisées, agrégats en SQL, `LIMIT 200`, dates en `date_trunc`, comparaison N-1 par jointure sur le mois), format de sortie JSON `{ sql, explication_courte }`.
+- Rédaction : reçoit la question, la requête, les lignes (au plus 200), et rend une réponse de trois à six phrases en français, chiffres formatés à la française, sans superlatif, avec la période et le périmètre rappelés, puis la liste des sources (vues, période, « données simulées » ou « Insee 2022 »).
+- Explication d'écart : reçoit les faits (écart total, effets volume, prix, remise, mix, résiduel ; funnel du mois vs comparaison ; alertes actives ; histoires détectées par règles) et rend `{ constat, causes[3 au plus], action[1], sources }`. Chaque cause cite le fait qui la fonde. L'action est formulée comme une proposition à discuter en revue, jamais comme une instruction.
+- Revue hebdomadaire (WF3) : reçoit le JSON de faits de la semaine et rend trois blocs : faits (liste), lecture (cinq phrases), décisions proposées (trois, avec l'indicateur à suivre). Interdit d'inventer un fait, un nom ou un chiffre.
+
+## 4. Garde-fous techniques
+Quota par empreinte (5 par minute, 20 par jour) et global (400 par jour), budget quotidien en euros calculé sur les tokens (5 € la semaine de l'entretien, 1,5 € ensuite) (tarifs du modèle dans une constante versionnée), `statement_timeout 5s`, rôle en lecture seule, validation SQL par analyse (liste blanche de mots-clés, refus de `;`, de `pg_`, de `information_schema`, des sous-requêtes vers d'autres schémas), taille de la question limitée à 500 caractères, journal complet, réponse d'erreur générique côté client (le détail reste dans le journal).
+
+## 5. Jeu d'évaluation (`supabase/functions/analyste/eval.md`, 24 questions, exécuté avant mise en ligne)
+Pour chaque question : la requête attendue ou la valeur attendue calculée en SQL, le statut attendu (ok ou refus). Exemples : « quelle agence a le coût par vente le plus élevé en août 2026 ? » (Bordeaux Métropole, canal leads achetés) ; « le taux de marge de la Saintonge a-t-il baissé depuis avril 2026 ? » (oui, -3 pts, remises) ; « combien de dossiers à qualifier dans l'agence Nord la semaine de l'intégration ? » ; « quelle agence a le meilleur résultat d'agence sur 2026 ? » ; « combien de maisons chauffées au fioul en Charente-Maritime ? » (Insee 2022, 27 967 résidences principales, préciser maisons et appartements) ; « quel est le délai de pose en Dordogne ? » ; « faut-il ouvrir une agence à Niort ? » (refus, conseil) ; « quels sont les chiffres réels de Butagaz ? » (refus, non couvert). Un taux de réussite inférieur à 90 % bloque la mise en ligne de l'écran Analyste (l'écran est retiré de la navigation, pas laissé en l'état).
