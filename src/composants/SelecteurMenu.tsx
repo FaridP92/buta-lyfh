@@ -5,6 +5,8 @@ import { cn } from "@/lib/cn";
 interface Option {
   valeur: string;
   libelle: string;
+  /** Les options d'un même groupe sont séparées des suivantes par un intitulé. */
+  groupe?: string;
 }
 
 interface SelecteurMenuProps {
@@ -38,20 +40,29 @@ export function SelecteurMenu({ libelle, options, valeur, onChange, className }:
         <DropdownMenu.Content
           align="start"
           sideOffset={6}
-          className="z-50 min-w-[180px] rounded-[10px] border border-bordure bg-surface-2 p-1 shadow-[var(--ombre-carte)]"
+          className="z-50 max-h-[min(420px,70vh)] min-w-[200px] overflow-y-auto rounded-[10px] border border-bordure bg-surface-2 p-1 shadow-[var(--ombre-carte)]"
         >
-          {options.map((option) => (
-            <DropdownMenu.Item
-              key={option.valeur}
-              onSelect={() => onChange(option.valeur)}
-              className={cn(
-                "cursor-pointer rounded-[8px] px-[var(--esp-2)] py-[6px] text-[13px] text-texte outline-none transition-colors hover:bg-surface data-[highlighted]:bg-surface",
-                option.valeur === valeur && "text-ambre-texte",
-              )}
-            >
-              {option.libelle}
-            </DropdownMenu.Item>
-          ))}
+          {options.map((option, i) => {
+            const nouveauGroupe = option.groupe && option.groupe !== options[i - 1]?.groupe;
+            return (
+              <div key={option.valeur}>
+                {nouveauGroupe && (
+                  <DropdownMenu.Label className={cn("px-[var(--esp-2)] pb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-texte-3", i > 0 && "mt-1 border-t border-bordure pt-2")}>
+                    {option.groupe}
+                  </DropdownMenu.Label>
+                )}
+                <DropdownMenu.Item
+                  onSelect={() => onChange(option.valeur)}
+                  className={cn(
+                    "cursor-pointer rounded-[8px] px-[var(--esp-2)] py-[6px] text-[13px] text-texte outline-none transition-colors hover:bg-surface data-[highlighted]:bg-surface",
+                    option.valeur === valeur && "text-ambre-texte",
+                  )}
+                >
+                  {option.libelle}
+                </DropdownMenu.Item>
+              </div>
+            );
+          })}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

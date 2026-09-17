@@ -521,6 +521,15 @@ async function chargerContours(): Promise<Record<string, number>> {
   } else {
     tailles["departements-100m"] = await simplifier(brutDep, sortieDep, [40, 30, 20, 15, 10], TAILLE_MAX_DEPARTEMENTS);
   }
+  // Les onze départements du périmètre seuls, très simplifiés (carte miniature de la Vue d'ensemble, ~16 Ko).
+  const sortiePerimetre = `${GEO_SORTIE}/perimetre.geojson`;
+  await executer("node_modules/.bin/mapshaper", [
+    "-i", sortieDep,
+    "-filter", `"${DEPARTEMENTS_PERIMETRE.join(",")}".split(",").includes(code)`,
+    "-simplify", "12%", "keep-shapes",
+    "-o", "precision=0.001", "format=geojson", "force", sortiePerimetre,
+  ], { maxBuffer: 64 * 1024 * 1024 });
+  tailles["perimetre"] = statSync(sortiePerimetre).size;
   for (const dep of DEPARTEMENTS_PERIMETRE) {
     const brut = `${CACHE}/communes-${dep}-brut.geojson`;
     await telechargerVersFichier(`https://geo.api.gouv.fr/departements/${dep}/communes?format=geojson&geometry=contour`, brut);

@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import { Menu, Search, Download } from "lucide-react";
-import { AGENCES, useFiltresURL } from "@/app/filtres";
+import { AGENCES, useFiltres } from "@/app/filtres";
 import { SelecteurMenu } from "@/composants/SelecteurMenu";
 import { BadgeFraicheur } from "@/app/BadgeFraicheur";
 import { BasculeTheme } from "@/app/BasculeTheme";
 import { PaletteCommandes } from "@/app/PaletteCommandes";
 import { TiroirMobile } from "@/app/TiroirMobile";
+import { useExportEcran } from "@/app/exportEcran";
 import { Marque } from "@/composants/identite/Marque";
-import { formatMoisAbrege } from "@/lib/format";
+import { optionsPeriode } from "@/lib/periode";
+import { nomFichier, telecharger, versXLSX } from "@/lib/export";
 
 const OPTIONS_COMPARAISON = [
   { valeur: "objectif", libelle: "Objectif" },
   { valeur: "n1", libelle: "N-1" },
 ];
 
+const GROUPES: Record<string, string> = { mois: "Mois", trimestre: "Trimestres", annee: "Années" };
+
 /** Barre haute collante : période, comparaison, agence, Cmd K, Exporter, fraîcheur. */
 export function BarreHaute() {
-  const { periode, comparaison, agence, definir } = useFiltresURL();
+  const { periode, comparaison, agence, moisPublie, definir } = useFiltres();
+  const feuilles = useExportEcran();
   const [paletteOuverte, setPaletteOuverte] = useState(false);
   const [tiroirOuvert, setTiroirOuvert] = useState(false);
 
@@ -32,11 +37,16 @@ export function BarreHaute() {
     return () => window.removeEventListener("keydown", surAppuiClavier);
   }, []);
 
-  const optionsPeriode = [{ valeur: periode, libelle: formatMoisAbrege(`${periode}-01`) }];
+  const optionsPeriodes = optionsPeriode(moisPublie).map((o) => ({ valeur: o.valeur, libelle: o.libelle, groupe: GROUPES[o.groupe] ?? o.groupe }));
   const optionsAgence = [
     { valeur: "toutes", libelle: "Toutes les agences" },
     ...AGENCES.map((a) => ({ valeur: a.code, libelle: a.nom })),
   ];
+
+  function exporterEcran() {
+    if (feuilles.length === 0) return;
+    telecharger(nomFichier("export-ecran", "xlsx"), versXLSX(feuilles), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  }
 
   return (
     <>
@@ -55,24 +65,9 @@ export function BarreHaute() {
         </div>
 
         <div className="hidden items-center gap-[var(--esp-2)] md:flex">
-          <SelecteurMenu
-            libelle="Période"
-            options={optionsPeriode}
-            valeur={periode}
-            onChange={(v) => definir("periode", v)}
-          />
-          <SelecteurMenu
-            libelle="Vs"
-            options={OPTIONS_COMPARAISON}
-            valeur={comparaison}
-            onChange={(v) => definir("comparaison", v)}
-          />
-          <SelecteurMenu
-            libelle="Agence"
-            options={optionsAgence}
-            valeur={agence}
-            onChange={(v) => definir("agence", v)}
-          />
+          <SelecteurMenu libelle="Période" options={optionsPeriodes} valeur={periode.param} onChange={(v) => definir("periode", v)} />
+          <SelecteurMenu libelle="Vs" options={OPTIONS_COMPARAISON} valeur={comparaison} onChange={(v) => definir("comparaison", v)} />
+          <SelecteurMenu libelle="Agence" options={optionsAgence} valeur={agence} onChange={(v) => definir("agence", v)} />
         </div>
 
         <div className="ml-auto flex items-center gap-[var(--esp-2)]">
@@ -85,15 +80,14 @@ export function BarreHaute() {
           >
             <Search size={14} strokeWidth={1.5} aria-hidden="true" />
             <span className="hidden sm:inline">Rechercher</span>
-            <kbd className="hidden rounded border border-bordure px-[5px] py-[1px] text-[10px] text-texte-3 sm:inline">
-              ⌘K
-            </kbd>
+            <kbd className="hidden rounded border border-bordure px-[5px] py-[1px] text-[10px] text-texte-3 sm:inline">⌘K</kbd>
           </button>
           <button
             type="button"
-            disabled
-            title="Disponible avec les premiers tableaux (lot 2)"
-            className="hidden h-9 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-3)] text-[13px] text-texte-2 opacity-40 sm:flex"
+            disabled={feuilles.length === 0}
+            onClick={exporterEcran}
+            title={feuilles.length === 0 ? "Aucun tableau à exporter sur cet écran" : `Exporter ${feuilles.length} tableau(x) de l'écran en XLSX`}
+            className="hidden h-9 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-3)] text-[13px] text-texte-2 transition-colors enabled:hover:bg-surface-2 enabled:hover:text-texte disabled:opacity-40 sm:flex"
           >
             <Download size={14} strokeWidth={1.5} aria-hidden="true" />
             Exporter

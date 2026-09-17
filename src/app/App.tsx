@@ -3,6 +3,8 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Layout } from "@/app/Layout";
 import { OuvertureAnimation } from "@/app/OuvertureAnimation";
+import { FournisseurFicheIndicateur } from "@/composants/FicheIndicateur";
+import { FournisseurExportEcran } from "@/app/exportEcran";
 import { EcranVueEnsemble } from "@/ecrans/vue-ensemble";
 import { EcranTerritoires } from "@/ecrans/territoires";
 import { EcranFunnel } from "@/ecrans/funnel";
@@ -30,22 +32,26 @@ export function App() {
   return (
     <QueryClientProvider client={clientRequetes}>
       <BrowserRouter>
-        <OuvertureAnimation onTermine={() => setOuvertureTerminee(true)} />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<EcranVueEnsemble />} />
-            <Route path="/territoires" element={<EcranTerritoires />} />
-            <Route path="/funnel" element={<EcranFunnel />} />
-            <Route path="/ventes" element={<EcranVentes />} />
-            <Route path="/forecast" element={<EcranForecast />} />
-            <Route path="/pose" element={<EcranPose />} />
-            <Route path="/plans-action" element={<EcranPlansAction />} />
-            <Route path="/qualite" element={<EcranQualite />} />
-            <Route path="/automatisations" element={<EcranAutomatisations />} />
-            <Route path="/analyste" element={<EcranAnalyste />} />
-            <Route path="/methode" element={<EcranMethode />} />
-          </Route>
-        </Routes>
+        <FournisseurFicheIndicateur>
+          <FournisseurExportEcran>
+            <OuvertureAnimation onTermine={() => setOuvertureTerminee(true)} />
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<EcranVueEnsemble />} />
+                <Route path="/territoires" element={<EcranTerritoires />} />
+                <Route path="/funnel" element={<EcranFunnel />} />
+                <Route path="/ventes" element={<EcranVentes />} />
+                <Route path="/forecast" element={<EcranForecast />} />
+                <Route path="/pose" element={<EcranPose />} />
+                <Route path="/plans-action" element={<EcranPlansAction />} />
+                <Route path="/qualite" element={<EcranQualite />} />
+                <Route path="/automatisations" element={<EcranAutomatisations />} />
+                <Route path="/analyste" element={<EcranAnalyste />} />
+                <Route path="/methode" element={<EcranMethode />} />
+              </Route>
+            </Routes>
+          </FournisseurExportEcran>
+        </FournisseurFicheIndicateur>
       </BrowserRouter>
     </QueryClientProvider>
   );
