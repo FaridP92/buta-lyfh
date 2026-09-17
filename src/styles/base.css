@@ -1,0 +1,134 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Sous-ensembles latin et latin-ext seulement (DESIGN.md §2, ARCHITECTURE.md §5) */
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-ext-400.css";
+@import "@fontsource/instrument-sans/latin-400.css";
+@import "@fontsource/instrument-sans/latin-ext-400.css";
+@import "@fontsource/instrument-sans/latin-600.css";
+@import "@fontsource/instrument-sans/latin-ext-600.css";
+@import "@fontsource/jetbrains-mono/latin-400.css";
+@import "@fontsource/jetbrains-mono/latin-ext-400.css";
+@import "@fontsource/jetbrains-mono/latin-600.css";
+@import "@fontsource/jetbrains-mono/latin-ext-600.css";
+
+@theme {
+  --font-serif-titre: "Instrument Serif", ui-serif, serif;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --color-fond: var(--fond);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-bordure: var(--bordure);
+  --color-texte: var(--texte);
+  --color-texte-2: var(--texte-2);
+  --color-texte-3: var(--texte-3);
+  --color-ambre: var(--ambre);
+  --color-menthe: var(--menthe);
+  --color-bleu: var(--bleu);
+  --color-violet: var(--violet);
+  --color-alerte: var(--alerte);
+  --color-succes: var(--succes);
+  --color-attention: var(--attention);
+  --color-ambre-texte: var(--ambre-texte);
+  --color-menthe-texte: var(--menthe-texte);
+}
+
+* {
+  border-color: var(--bordure);
+}
+
+html {
+  background: var(--fond);
+}
+
+body {
+  background: var(--fond);
+  color: var(--texte);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* grain tres discret sur le fond, DESIGN.md §1 : "un fond qui n'est pas un aplat numerique" */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+#racine {
+  position: relative;
+  z-index: 1;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--ambre) 30%, transparent);
+  color: var(--texte);
+}
+
+:focus-visible {
+  outline: 2px solid var(--menthe);
+  outline-offset: 2px;
+}
+
+.chiffre {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+@keyframes buta-point {
+  0% {
+    opacity: 0;
+    transform: translateY(-0.05em) scale(0);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-0.05em) scale(1.35);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-0.05em) scale(1);
+  }
+}
+
+@keyframes buta-lettre {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes buta-rail-glisse {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
