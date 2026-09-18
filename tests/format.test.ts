@@ -5,6 +5,7 @@ import {
   formatMoisAbrege,
   formatMontant,
   formatNombre,
+  formatProbabilite,
   formatTaux,
   formatVariationPoints,
 } from "@/lib/format";
@@ -37,6 +38,18 @@ describe("formatTaux", () => {
 
   it("affiche n. d. pour une valeur absente", () => {
     expect(formatTaux(null)).toBe("n. d.");
+  });
+});
+
+describe("formatProbabilite", () => {
+  it("borne la lecture sous 1 % et au-dessus de 99 %", () => {
+    expect(formatProbabilite(0.2)).toBe("< 1 %");
+    expect(formatProbabilite(99.7)).toBe("> 99 %");
+  });
+
+  it("arrondit à l'entier entre les deux bornes", () => {
+    expect(formatProbabilite(42.6)).toBe("43 %");
+    expect(formatProbabilite(null)).toBe("n. d.");
   });
 });
 

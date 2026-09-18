@@ -112,7 +112,7 @@ export function EcranVueEnsemble() {
   const optionCarte: EChartsOption | null = carte.prete && agencesDim.donnees ? construireOptionCarte(agencesDim.donnees, lignesAgences, tokens) : null;
 
   const colonnesAgences: Colonne<(typeof lignesAgences)[number]>[] = [
-    { cle: "agence", libelle: "Agence", valeur: (l) => l.nom, rendu: (l) => <span className="text-texte">{l.nom}</span> },
+    { cle: "agence", libelle: "Agence", valeur: (l) => l.nom, rendu: (l) => <span className="whitespace-nowrap text-texte">{l.nom}</span> },
     { cle: "ventes", libelle: "Ventes", numerique: true, largeur: "64px", valeur: (l) => l.kpi?.ventes ?? null, rendu: (l) => formatNombre(l.kpi?.ventes ?? null) },
     { cle: "ecart", libelle: "Écart obj.", numerique: true, largeur: "88px", valeur: (l) => l.kpi?.ecart_objectif_pct ?? null, rendu: (l) => (l.kpi?.ecart_objectif_pct === null || l.kpi?.ecart_objectif_pct === undefined ? "n. d." : `${l.kpi.ecart_objectif_pct > 0 ? "+" : ""}${formatTaux(l.kpi.ecart_objectif_pct)}`) },
     { cle: "marge", libelle: "Marge", numerique: true, largeur: "76px", valeur: (l) => l.kpi?.taux_marge ?? null, rendu: (l) => formatTaux(l.kpi?.taux_marge ?? null) },

@@ -34,6 +34,14 @@ export function formatTaux(valeur: number | null | undefined, decimales = 1): st
   return `${formatNombreFr(valeur, decimales)}${ESPACE_FINE}%`;
 }
 
+/** Probabilité en pourcentage entier, bornée en lecture : « < 1 % » et « > 99 % » plutôt que 0 et 100. */
+export function formatProbabilite(valeur: number | null | undefined): string {
+  if (estVide(valeur)) return "n. d.";
+  if (valeur < 1) return `<${ESPACE_FINE}1${ESPACE_FINE}%`;
+  if (valeur > 99) return `>${ESPACE_FINE}99${ESPACE_FINE}%`;
+  return formatTaux(valeur, 0);
+}
+
 export function formatVariationPoints(valeur: number | null | undefined, decimales = 1): string {
   if (estVide(valeur)) return "n. d.";
   const signe = valeur > 0 ? "+" : "";

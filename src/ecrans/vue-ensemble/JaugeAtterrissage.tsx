@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatMontant, formatTaux } from "@/lib/format";
+import { formatMontant, formatProbabilite, formatTaux } from "@/lib/format";
 import { ecartPct } from "@/lib/periode";
 import { cn } from "@/lib/cn";
 
@@ -51,7 +51,7 @@ export function JaugeAtterrissage({ realise, central, bas, haut, objectif, proba
             {ecart >= 0 ? "+" : ""}{formatTaux(ecart)} vs objectif
           </span>
         )}
-        {probabilite !== null && <span className="text-[12px] text-texte-3">probabilité d'atteinte {formatTaux(probabilite, 0)}</span>}
+        {probabilite !== null && <span className="text-[12px] text-texte-3">probabilité d'atteinte {formatProbabilite(probabilite)}</span>}
       </div>
 
       <div className="relative h-10">
