@@ -96,7 +96,8 @@ export function EcranFunnel() {
       rendu: (l: (typeof canauxMatrice)[number]) => {
         const c = matrice.get(`${l.code}|${a.code}`);
         if (!c || c.leads === 0) return <span className="text-texte-3">n. d.</span>;
-        const intensite = Math.round((60 * (c.taux_conversion ?? 0)) / conversionMax);
+        // Intensité plafonnée à 35 % : au-delà, le texte clair perdait son contraste (Lighthouse 3,3:1 à 60 %) ; le trait porte le volume.
+        const intensite = Math.round((35 * (c.taux_conversion ?? 0)) / conversionMax);
         return (
           <span className="inline-flex flex-col items-end gap-[2px]" title={`${formatNombre(c.leads)} leads, ${formatNombre(c.signatures)} ventes nettes`}>
             <span className="rounded-[6px] px-[6px] py-[1px] text-texte" style={{ backgroundColor: `color-mix(in srgb, var(--ambre) ${intensite}%, transparent)` }}>{formatTaux(c.taux_conversion)}</span>
@@ -215,7 +216,7 @@ export function EcranFunnel() {
             description={`Leads sans RDV planifié à 48 h par agence et sur huit cohortes pour ${perimetreLibelle}`}
             requete={`select mois, agence, sans_rdv_48h from buta.mart_funnel where canal = 'TOUS' and mois between '${ajouterMois(moisPublie, -7)}-01' and '${moisPublie}-01'`}
             exportCSV={{ colonnes: [{ cle: "agence", libelle: "Agence" }, { cle: "valeur", libelle: "Leads sans RDV à 48 h" }], lignes: attenteAgences.map((a) => ({ agence: a.nom, valeur: a.valeur })) }}
-            enfantsSous={<p className="text-[12px] text-texte-2">Relance à 48 h : <Link to="/plans-action" className="text-texte underline-offset-2 hover:underline">plan d'action « rappel des leads sans RDV »</Link> (écran Plans d'action, lot 3).</p>} />
+            enfantsSous={<p className="text-[12px] text-texte-2">Relance à 48 h : <Link to="/plans-action" className="text-texte underline decoration-texte-3 underline-offset-2 hover:decoration-texte">plan d'action « relancer sous 48 heures tout lead sans RDV planifié »</Link> (écran Plans d'action).</p>} />
         ) : <Carte className="lg:col-span-5" titre="Leads sans RDV planifié"><Squelette hauteur={360} /></Carte>}
       </div>
 
