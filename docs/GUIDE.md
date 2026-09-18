@@ -6,7 +6,7 @@ Adresse : https://buta.lyfh.fr (sur ordinateur ou téléphone, sans compte).
 
 ## 1. En une page
 
-**Ce que c'est.** Un cockpit de pilotage d'un réseau d'installateurs (photovoltaïque, pompes à chaleur, chauffe-eau thermodynamiques, poêles, bornes), du lead à l'encaissement : ventes, marge, funnel, forecast, qualité des données, territoires, automatisation. Construit seul, en trois jours, comme démonstrateur personnel à l'appui d'une candidature au poste de Responsable Performance chez Butagaz Eco-énergie.
+**Ce que c'est.** Un cockpit de pilotage d'un réseau d'installateurs (photovoltaïque, pompes à chaleur, chauffe-eau thermodynamiques, poêles, bornes), du lead à l'encaissement : ventes, marge, funnel, forecast, pose et encaissement, plans d'action et rituels, qualité des données, territoires, automatisation. Construit seul, en trois jours, comme démonstrateur personnel à l'appui d'une candidature au poste de Responsable Performance chez Butagaz Eco-énergie.
 
 **Ce que ce n'est pas.** Ni un outil Butagaz, ni une base de données Butagaz, ni une recommandation d'implantation. Aucun logo, aucune couleur de marque, aucun chiffre présenté comme celui de l'entreprise. Le nom reprend la racine de la marque par choix personnel ; il est isolé dans une constante et un sous-domaine, un renommage prend dix minutes.
 
@@ -26,9 +26,9 @@ L'annonce demande cinq choses. Chacune a son écran.
 |---|---|---|
 | Construire et fiabiliser le pilotage du lead à l'encaissement | Vue d'ensemble, Funnel, Qualité | Un seul flux de données, des définitions écrites, douze contrôles de cohérence exécutés chaque matin, un badge de fraîcheur |
 | Analyser et éclairer la décision (écarts de CA, marge, conversion, forecast) | Ventes et marge, Forecast | Cascade de l'écart (volume, mix, prix, remise), atterrissage en éventail avec probabilité d'atteinte, hypothèses écrites et testables au curseur |
-| Transformer l'analyse en plans d'action (leads, mix, panier, remises, annulations, coûts d'acquisition, délais) | Funnel, Ventes et marge, Forecast (risques et opportunités) | Chaque anomalie est nommée, chiffrée, datée ; les plans d'action et rituels arrivent au palier B |
-| Professionnaliser les rituels (revues de performance, de pipe, de marge, de forecast) | Vue d'ensemble (« Ce que dit le mois »), alertes du matin | Un ordre du jour qui se lit en trente secondes ; la revue hebdomadaire générée arrive au palier B |
-| Faire évoluer outils, référentiels, BI, automatisation | Qualité (référentiels, lignage), Méthode (export Power BI), n8n | Réconciliation des libellés d'une agence intégrée, export en modèle en étoile pour Power BI, workflows quotidiens journalisés |
+| Transformer l'analyse en plans d'action (leads, mix, panier, remises, annulations, coûts d'acquisition, délais) | Funnel, Ventes et marge, Forecast (risques et opportunités), Plans d'action | Chaque anomalie est nommée, chiffrée, datée ; douze plans avec propriétaire, gain attendu, échéance et indicateur suivi |
+| Professionnaliser les rituels (revues de performance, de pipe, de marge, de forecast) | Plans d'action et rituels, Vue d'ensemble (« Ce que dit le mois »), alertes du matin | Quatre rituels avec ordre du jour et indicateurs, revue hebdomadaire rédigée chaque lundi à partir des faits SQL (faits, lecture, décisions proposées) |
+| Faire évoluer outils, référentiels, BI, automatisation | Qualité (référentiels, lignage), Automatisations, Méthode (export Power BI) | Réconciliation des libellés d'une agence intégrée, export en modèle en étoile avec mesures DAX, workflows n8n visibles avec leur journal |
 
 Le contexte du poste (plusieurs entités rachetées, territoires et canaux de maturité différente, changement d'échelle) est joué dans la simulation : une agence intégrée en juin 2026 avec ses écarts de référentiels, des départements couverts à distance, un canal de leads achetés qui dérape, une agence qui remise trop.
 
@@ -91,7 +91,33 @@ La question : la confiance dans le chiffre, rendue visible.
 
 Ce qu'on dit : « un chiffre auquel on ne peut pas faire confiance ne sert à rien ; les contrôles tournent chaque matin et l'anomalie est portée à l'écran plutôt que cachée ».
 
-### 3.7 Méthode et auteur
+### 3.7 Pose et encaissement · « Ce qui est signé et pas encore posé »
+La question : quel délai entre signature et pose, quelle charge pour les équipes, ce qui reste à encaisser.
+- Six KPI : délai signature vers pose (médiane), poses dans les délais (à moins de 60 jours), carnet de pose en jours ouvrés, encaissé, en attente d'encaissement, aides en attente (mandat financier, hypothèse de simulation).
+- Calendrier de charge semaine × agence : quatre semaines réalisées puis la semaine en cours et onze semaines planifiées, en part de la capacité (techniciens × 5 jours).
+- Délai de pose sur place contre à distance sur douze mois (H5 : 48 jours contre 74 au dernier mois), lecture du carnet par règles, tableau encaissement et carnet par agence.
+
+Ce qu'on dit : « le CA signé ne vaut que s'il est posé et encaissé ; la distance et la capacité technique se lisent ici ».
+
+### 3.8 Plans d'action et rituels · « Ce qu'on a décidé de changer »
+La question : quels leviers sont engagés, par qui, pour quel gain, et comment on en parle chaque semaine.
+- Douze plans simulés cohérents avec les histoires (plafonner les leads achetés de Bordeaux Métropole, plafonner la remise en Saintonge, renfort de pose au Bassin d'Arcachon, aligner le référentiel du Nord), avec propriétaire (code), gain attendu, statut, échéance, avancement et indicateur suivi.
+- Revue hebdomadaire au format faits, lecture, décisions proposées : rédigée à partir des faits SQL de la semaine (par règles, ou par le modèle chaque lundi à 07:00 via n8n, chaque nombre vérifié dans les faits), archive des semaines précédentes.
+- Quatre rituels : revue de pipe (hebdomadaire), de marge et de forecast (mensuelles), de performance (trimestrielle), avec ordre du jour type et indicateurs.
+
+Ce qu'on dit : « une analyse qui ne devient pas un plan avec un propriétaire et une date n'a pas servi ».
+
+### 3.9 Automatisations · « Ce qui tourne chaque matin »
+La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a marché.
+- Les workflows n8n (journée simulée à 06:00, contrôles qualité à 06:20, revue hebdomadaire le lundi, santé toutes les six heures, gestion des erreurs), leur dernière et leur prochaine exécution, leur export JSON.
+- Journal des cinquante dernières exécutions, schéma du flux de n8n aux écrans.
+
+Ce qu'on dit : « le cockpit vit sans moi le matin ; si quelque chose casse, je le sais avant les autres ».
+
+### 3.10 Analyste (disponible seulement si l'évaluation passe 90 %)
+Question en langage naturel ; le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base répond, le modèle rédige sans calculer, chaque nombre de la réponse est vérifié dans les lignes. Refus explicites (conseil, hors périmètre, non couvert), quotas, budget visible. Tant que la clé du modèle n'est pas posée, l'écran est retiré de la navigation.
+
+### 3.11 Méthode et auteur
 Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture, l'export Power BI (zip de vingt tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).
 
 ## 4. D'où viennent les données
@@ -137,7 +163,7 @@ Une suite de vingt tests SQL (un par histoire, plus des contrôles de cohérence
 ## 5. Comment l'utiliser
 
 ### 5.1 Navigation
-Rail à gauche (icônes, libellé au survol) : Vue d'ensemble, Territoires, Funnel, Ventes et marge, Forecast, Qualité, Méthode. Sur téléphone, un tiroir. Le monogramme en haut ramène à l'accueil.
+Rail à gauche (icônes, libellé au survol) : Vue d'ensemble, Territoires, Funnel, Ventes et marge, Forecast, Pose et encaissement, Plans d'action et rituels, Qualité, Automatisations, Méthode. Sur téléphone, un tiroir. Le monogramme en haut ramène à l'accueil. Un écran non fini n'apparaît nulle part.
 
 ### 5.2 Filtres globaux, dans l'adresse
 Période (mois, trimestre, année à date), comparaison (objectif ou N-1), agence (toutes ou une). Les filtres vivent dans l'URL : un lien partagé montre la même vue (`?periode=2026-05&comparaison=n1&agence=SAI`). Le titre de chaque écran s'adapte à l'agence choisie.
@@ -149,7 +175,7 @@ Période (mois, trimestre, année à date), comparaison (objectif ou N-1), agenc
 - Bouton « i » sur chaque KPI et chaque graphique : la fiche de l'indicateur.
 - Menu de chaque graphique : plein écran, image PNG, export CSV, voir la requête SQL.
 - Tableaux : tri par colonne, export CSV ou XLSX ; le bouton « Exporter » de la barre haute exporte le tableau principal de l'écran.
-- Page Méthode : export Power BI (zip de vingt tables CSV et `modele_etoile.md` qui décrit le modèle en étoile, le grain et les clés).
+- Page Méthode : export Power BI (zip de vingt et une tables CSV, `modele_etoile.md` qui décrit le modèle en étoile, `mesures.dax` avec quarante mesures et `LISEZMOI.md` pour l'import).
 
 ### 5.5 Thème et mobile
 Thème sombre par défaut, clair au bouton en haut à droite (les graphiques suivent). Tout se lit à 375 px sans zoom.
