@@ -13,7 +13,7 @@
     "verif:tirets": "tsx scripts/verif-tirets.ts",
     "verif:sources": "tsx scripts/verif-sources.ts",
     "check": "npm run typecheck && npm run lint && npm run test && npm run verif:tirets && npm run verif:sources",
-    "e2e": "playwright test",
+    "e2e": "npm run build && playwright test",
     "test:sql": "tsx scripts/tests-sql.ts",
     "instantane": "tsx scripts/instantane.ts",
     "ingerer:marche": "tsx scripts/ingerer-marche.ts",
