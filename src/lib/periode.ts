@@ -226,15 +226,23 @@ export interface LigneFunnel {
   poses: number;
   encaissements: number;
   cohorte_mature: boolean;
+  /** Présents dans mart_funnel, facultatifs pour les jeux d'essai. */
+  rdv_planifies?: number;
+  signatures_nettes?: number;
+  sans_rdv_48h?: number;
 }
 
 export interface CohorteAgregee {
   leads: number;
+  rdvPlanifies: number;
   rdv: number;
   devis: number;
   signatures: number;
+  /** Signatures nettes des annulations à 90 jours. */
+  signaturesNettes: number;
   poses: number;
   encaissements: number;
+  sansRdv48h: number;
   /** Vrai seulement si toutes les cohortes de la période ont plus de 90 jours. */
   mature: boolean;
 }
@@ -243,10 +251,12 @@ export interface CohorteAgregee {
 export function agregerFunnel(lignes: readonly LigneFunnel[], debut: string, fin: string): CohorteAgregee | null {
   const retenues = lignes.filter((l) => moisDe(l.mois) >= debut && moisDe(l.mois) <= fin);
   if (retenues.length === 0) return null;
-  const somme = (cle: Exclude<keyof LigneFunnel, "mois" | "cohorte_mature">) => retenues.reduce((s, l) => s + l[cle], 0);
+  const somme = (cle: Exclude<keyof LigneFunnel, "mois" | "cohorte_mature">) => retenues.reduce((s, l) => s + (l[cle] ?? 0), 0);
+  const signatures = somme("signatures");
   return {
-    leads: somme("leads"), rdv: somme("rdv_tenus"), devis: somme("devis"), signatures: somme("signatures"),
-    poses: somme("poses"), encaissements: somme("encaissements"), mature: retenues.every((l) => l.cohorte_mature),
+    leads: somme("leads"), rdvPlanifies: somme("rdv_planifies"), rdv: somme("rdv_tenus"), devis: somme("devis"), signatures,
+    signaturesNettes: retenues.some((l) => l.signatures_nettes !== undefined) ? somme("signatures_nettes") : signatures,
+    poses: somme("poses"), encaissements: somme("encaissements"), sansRdv48h: somme("sans_rdv_48h"), mature: retenues.every((l) => l.cohorte_mature),
   };
 }
 

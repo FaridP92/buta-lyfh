@@ -13,6 +13,8 @@ interface CarteGraphiqueProps {
   sousTitre?: string;
   option: EChartsOption;
   hauteur?: number;
+  /** Hauteur sur mobile quand le graphique a besoin de plus que les 260 px par défaut. */
+  hauteurMobile?: number;
   description: string;
   /** Données tabulaires derrière le graphique, pour l'export CSV. */
   exportCSV?: { colonnes: readonly ColonneExport[]; lignes: readonly LigneExport[] };
@@ -25,7 +27,7 @@ interface CarteGraphiqueProps {
 }
 
 /** Carte + graphique + menu (plein écran, PNG, CSV, requête), DESIGN.md §3 et §5. */
-export function CarteGraphique({ titre, sousTitre, option, hauteur = 320, description, exportCSV, requete, codeIndicateur, onEvenements, enfantsSous, className }: CarteGraphiqueProps) {
+export function CarteGraphique({ titre, sousTitre, option, hauteur = 320, hauteurMobile, description, exportCSV, requete, codeIndicateur, onEvenements, enfantsSous, className }: CarteGraphiqueProps) {
   const ref = useRef<GraphiqueRef>(null);
   const [pleinEcran, setPleinEcran] = useState(false);
   const [voirRequete, setVoirRequete] = useState(false);
@@ -70,7 +72,7 @@ export function CarteGraphique({ titre, sousTitre, option, hauteur = 320, descri
   return (
     <>
       <Carte titre={titre} {...(sousTitre ? { sousTitre } : {})} actions={menu} {...(className ? { className } : {})}>
-        <Graphique ref={ref} option={option} hauteur={hauteur} description={description} {...(onEvenements ? { onEvenements } : {})} />
+        <Graphique ref={ref} option={option} hauteur={hauteur} {...(hauteurMobile ? { hauteurMobile } : {})} description={description} {...(onEvenements ? { onEvenements } : {})} />
         {enfantsSous}
       </Carte>
 

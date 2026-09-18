@@ -119,13 +119,18 @@ describe("agregerFunnel et etapesFunnel", () => {
     { mois: "2026-08", leads: 80, rdv_tenus: 35, devis: 20, signatures: 6, poses: 3, encaissements: 1, cohorte_mature: false },
   ];
   it("additionne les cohortes de la période et ne les déclare mûres que si toutes le sont", () => {
-    expect(agregerFunnel(cohortes, "2026-07", "2026-08")).toEqual({ leads: 180, rdv: 80, devis: 50, signatures: 16, poses: 11, encaissements: 9, mature: false });
+    expect(agregerFunnel(cohortes, "2026-07", "2026-08")).toEqual({ leads: 180, rdvPlanifies: 0, rdv: 80, devis: 50, signatures: 16, signaturesNettes: 16, poses: 11, encaissements: 9, sansRdv48h: 0, mature: false });
     expect(agregerFunnel(cohortes, "2026-07", "2026-07")?.mature).toBe(true);
     expect(agregerFunnel(cohortes, "2026-09", "2026-09")).toBeNull();
   });
   it("calcule le taux de chaque étape par rapport à la précédente", () => {
     const etapes = etapesFunnel(agregerFunnel(cohortes, "2026-07", "2026-07") as NonNullable<ReturnType<typeof agregerFunnel>>);
     expect(etapes.map((e) => e.taux)).toEqual([null, 45, 66.7, 33.3, 80, 100]);
-    expect(etapesFunnel({ leads: 0, rdv: 0, devis: 0, signatures: 0, poses: 0, encaissements: 0, mature: true }).map((e) => e.taux)).toEqual([null, null, null, null, null, null]);
+    expect(etapesFunnel({ leads: 0, rdvPlanifies: 0, rdv: 0, devis: 0, signatures: 0, signaturesNettes: 0, poses: 0, encaissements: 0, sansRdv48h: 0, mature: true }).map((e) => e.taux)).toEqual([null, null, null, null, null, null]);
+  });
+  it("reprend les signatures nettes et les leads en attente quand les colonnes existent", () => {
+    const c = agregerFunnel([{ mois: "2026-07-01", leads: 100, rdv_planifies: 50, rdv_tenus: 45, devis: 30, signatures: 10, signatures_nettes: 9, poses: 8, encaissements: 8, sans_rdv_48h: 40, cohorte_mature: true }], "2026-07", "2026-07");
+    expect(c).toMatchObject({ rdvPlanifies: 50, signaturesNettes: 9, sansRdv48h: 40 });
+    expect(agregerFunnel(cohortes, "2026-07", "2026-07")?.signaturesNettes).toBe(agregerFunnel(cohortes, "2026-07", "2026-07")?.signatures);
   });
 });

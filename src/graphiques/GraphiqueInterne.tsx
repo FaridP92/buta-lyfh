@@ -9,6 +9,7 @@ import {
   VisualMapComponent,
   GeoComponent,
   GraphicComponent,
+  TitleComponent,
 } from "echarts/components";
 import { CanvasRenderer } from "echarts/renderers";
 import ReactEChartsCore from "echarts-for-react/lib/core";
@@ -17,7 +18,7 @@ import type { GraphiqueRef } from "./Graphique";
 
 echarts.use([
   BarChart, BoxplotChart, HeatmapChart, LineChart, MapChart, PieChart, SankeyChart, ScatterChart, EffectScatterChart,
-  GridComponent, LegendComponent, MarkLineComponent, TooltipComponent, VisualMapComponent, GeoComponent, GraphicComponent,
+  GridComponent, LegendComponent, MarkLineComponent, TooltipComponent, VisualMapComponent, GeoComponent, GraphicComponent, TitleComponent,
   CanvasRenderer,
 ]);
 

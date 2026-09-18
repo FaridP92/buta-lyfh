@@ -11,8 +11,9 @@ export interface GraphiqueRef {
 
 export interface GraphiqueProps {
   option: EChartsOption;
-  /** Hauteur bureau ; 260 px sur mobile (DESIGN.md §5). */
+  /** Hauteur bureau ; 260 px sur mobile (DESIGN.md §5), sauf hauteur mobile explicite (Sankey). */
   hauteur?: number;
+  hauteurMobile?: number;
   description: string;
   onEvenements?: Record<string, (params: unknown) => void>;
   notMerge?: boolean;
@@ -22,11 +23,11 @@ export interface GraphiqueProps {
 const Interne = lazy(() => import("./GraphiqueInterne"));
 
 export const Graphique = forwardRef<GraphiqueRef, GraphiqueProps>(function Graphique(
-  { option, hauteur = 320, description, onEvenements, notMerge },
+  { option, hauteur = 320, hauteurMobile, description, onEvenements, notMerge },
   ref,
 ) {
   const mobile = useEstMobile();
-  const h = mobile ? Math.min(hauteur, 260) : hauteur;
+  const h = mobile ? (hauteurMobile ?? Math.min(hauteur, 260)) : hauteur;
   return (
     <Suspense fallback={<Squelette hauteur={h} />}>
       <Interne ref={ref} option={option} hauteur={h} description={description} onEvenements={onEvenements ?? undefined} notMerge={notMerge ?? undefined} />

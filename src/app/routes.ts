@@ -47,7 +47,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/funnel",
     libelle: "Funnel et leads",
     icone: Waypoints,
-    disponible: false,
+    disponible: true,
     palier: "A",
     lot: "2",
     objectif: "Où se perd la conversion, quel canal vaut son coût, quels leads attendent.",
