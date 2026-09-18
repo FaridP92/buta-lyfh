@@ -122,6 +122,25 @@ body::before {
   }
 }
 
+/* Qualité (DESIGN.md §11) : les douze contrôles se cochent en cascade, 60 ms d'écart posés en ligne. */
+@keyframes buta-coche {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Lignage : les flux se tracent de gauche à droite. */
+@keyframes buta-trace {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -156,6 +156,10 @@ export const VUES = {
       taux_marge_cible: nombre, duree_pose_jt: nombre, aide_moyenne: nombre, part_mix_base: nombre, profil_saison: z.string(),
     })
     .passthrough(),
+  mart_reconciliation_libelles: z
+    .object({ agence: z.string(), libelle_source: z.string(), produit_code: z.string(), libelle_referentiel: z.string(), dossiers: nombre, premier_lead: date, dernier_lead: date })
+    .passthrough(),
+  dim_statut: z.object({ code: z.string(), libelle: z.string(), ordre: nombre }).passthrough(),
   dim_canal: z
     .object({ code: z.string(), libelle: z.string(), cout_modele: z.string(), mention_legale: z.string().nullable() })
     .passthrough(),

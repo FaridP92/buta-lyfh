@@ -92,7 +92,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/qualite",
     libelle: "Qualité et référentiels",
     icone: ShieldCheck,
-    disponible: false,
+    disponible: true,
     palier: "A",
     lot: "3",
     objectif: "La confiance dans le chiffre, rendue visible : douze contrôles, fraîcheur, référentiels.",
