@@ -115,7 +115,7 @@ export function EcranAutomatisations() {
       <Carte titre="Journal des exécutions" sousTitre={lignes.length === 0 ? "Toutes automatisations confondues (table automatisation_run)" : `${formatNombre(Math.min(lignes.length, JOURNAL_MAX))} dernière${lignes.length > 1 ? "s" : ""} exécution${lignes.length > 1 ? "s" : ""}, toutes automatisations confondues (table automatisation_run)`} nu>
         {journal.donnees === undefined ? <Squelette hauteur={320} /> : (
           <Tableau colonnes={colonnes} lignes={journalVisible} cleLigne={(l) => String(l.id)} triInitial={{ cle: "debute_le", sens: "desc" }} compact nomExport="journal-automatisations"
-            vide={`Aucune exécution journalisée : les workflows sont créés dans n8n et attendent leur publication (credential Supabase) ; en attendant, la journée simulée est publiée d'avance par script${publieeJusquAu ? ` jusqu'au ${formatDateCourte(publieeJusquAu)}` : ""}. La première ligne apparaîtra à la première exécution publiée.`} />
+            vide={`Aucune exécution journalisée : les workflows sont créés dans n8n et attendent leur publication (credential Supabase) ; en attendant, la journée simulée est publiée d'avance par script${publieeJusquAu ? ` jusqu'au ${formatDateCourte(publieeJusquAu)}` : ""} et les vues sont rafraîchies chaque matin par une tâche pg_cron de secours. La première ligne apparaîtra à la première exécution publiée.`} />
         )}
       </Carte>
 
