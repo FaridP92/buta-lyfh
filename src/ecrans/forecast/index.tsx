@@ -124,7 +124,7 @@ export function EcranForecast() {
         {chargement || !optionFan || !atterrissage || !hypotheses ? (
           <Carte className="lg:col-span-8" titre={`Éventail d'atterrissage ${annee}`}><Squelette hauteur={360} /></Carte>
         ) : (
-          <CarteGraphique className="lg:col-span-8" titre={`Éventail d'atterrissage ${annee}`} sousTitre={`CA signé HT cumulé pour ${perimetreLibelle} : réalisé, objectif, projection et intervalle à 68 %${curseurActif ? ` ; hypothèse testée : pipe signé à ${formatTaux(tauxCurseur)}` : ""}`}
+          <CarteGraphique className="lg:col-span-8" titre={`Éventail d'atterrissage ${annee}`} sousTitre={`CA signé HT cumulé pour ${perimetreLibelle} : réalisé, objectif, projection et intervalle à 68 %${curseurActif ? ` ; hypothèse testée : pipe signé à ${formatTaux(tauxCurseur)}` : ""}`}
             option={optionFan} hauteur={360} codeIndicateur="ATTERR" description={`Éventail d'atterrissage ${annee} : réalisé ${formatMontant(hypotheses.realiseADate)}, central ${formatMontant(atterrissage.central)}, bas ${formatMontant(atterrissage.bas)}, haut ${formatMontant(atterrissage.haut)}, objectif ${formatMontant(hypotheses.objectifAnnuel)}`}
             requete={`select * from buta.mart_forecast where agence = '${agenceVue}' and annee = ${annee}`}
             exportCSV={{ colonnes: [{ cle: "mois", libelle: "Mois" }, { cle: "realise", libelle: "Réalisé cumulé (€)" }, { cle: "objectif", libelle: "Objectif cumulé (€)" }, { cle: "central", libelle: "Central (€)" }, { cle: "bas", libelle: "Bas (€)" }, { cle: "haut", libelle: "Haut (€)" }],
@@ -132,7 +132,7 @@ export function EcranForecast() {
             enfantsSous={(
               <dl className="grid grid-cols-2 gap-x-[var(--esp-4)] gap-y-1 text-[12px] sm:grid-cols-4">
                 <div><dt className="text-texte-3">Atterrissage central</dt><dd className="chiffre text-[15px] text-texte">{formatMontant(atterrissage.central)}</dd></div>
-                <div><dt className="text-texte-3">Intervalle à 68 %</dt><dd className="chiffre text-[15px] text-texte">{formatMontant(atterrissage.bas)} à {formatMontant(atterrissage.haut)}</dd></div>
+                <div><dt className="text-texte-3">Intervalle à 68 %</dt><dd className="chiffre text-[15px] text-texte">{formatMontant(atterrissage.bas)} à {formatMontant(atterrissage.haut)}</dd></div>
                 <div><dt className="text-texte-3">Écart à l'objectif</dt><dd className={`chiffre text-[15px] ${atterrissage.ecartPct !== null && atterrissage.ecartPct < 0 ? "text-alerte" : "text-succes"}`}>{atterrissage.ecartPct === null ? "n. d." : `${atterrissage.ecartPct > 0 ? "+" : ""}${formatTaux(atterrissage.ecartPct)}`}</dd></div>
                 <div><dt className="text-texte-3">Probabilité d'atteinte</dt><dd className="chiffre text-[15px] text-texte">{formatProbabilite(atterrissage.probabilite)}</dd></div>
               </dl>

@@ -60,7 +60,7 @@ export function JaugeAtterrissage({ realise, central, bas, haut, objectif, proba
           <div
             className="absolute top-[12px] h-4 rounded-full border border-texte-3/40 transition-opacity duration-300"
             style={{ left: pct(bas), width: `calc(${pct(haut)} - ${pct(bas)})`, opacity: phase >= 2 ? 1 : 0 }}
-            title={`Intervalle à 68 % : ${formatMontant(bas)} à ${formatMontant(haut)}`}
+            title={`Intervalle à 68 % : ${formatMontant(bas)} à ${formatMontant(haut)}`}
           />
         )}
         <div

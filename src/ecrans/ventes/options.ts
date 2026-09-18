@@ -117,7 +117,7 @@ export function optionProduitsMensuels(
     xAxis: { ...base.xAxis, type: "category", data: mois.map((m) => libelleMoisAxe(m)) },
     yAxis: [
       { ...base.yAxis, type: "value", axisLabel: { ...base.yAxis.axisLabel, formatter: (v: number) => formatMontant(v) } },
-      { ...base.yAxis, type: "value", splitLine: { show: false }, min: 0, max: 50, axisLabel: { ...base.yAxis.axisLabel, formatter: (v: number) => `${formatNombre(v)} %` } },
+      { ...base.yAxis, type: "value", splitLine: { show: false }, min: 0, max: 50, axisLabel: { ...base.yAxis.axisLabel, formatter: (v: number) => `${formatNombre(v)} %` } },
     ],
     tooltip: { ...base.tooltip, trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: t.grille } }, valueFormatter: (v: unknown) => (typeof v === "number" ? formatMontant(v) : "n. d.") },
     series: [
@@ -164,7 +164,7 @@ export function optionMatrice(
     yAxis: { ...base.yAxis, type: "category", data: agences.map((a) => a.nom), inverse: true, axisLabel: { ...base.yAxis.axisLabel, fontFamily: t.police }, splitLine: { show: true, lineStyle: { color: t.grille } } },
     visualMap: {
       type: "continuous", dimension: 3, min, max, orient: "horizontal", left: "center", bottom: 0, itemWidth: 10, itemHeight: 120,
-      text: [`${formatNombre(max)} %`, `${formatNombre(min)} %`], textStyle: { color: t.texte3, fontSize: 11 },
+      text: [`${formatNombre(max)} %`, `${formatNombre(min)} %`], textStyle: { color: t.texte3, fontSize: 11 },
       inRange: { color: [t.alerte, t.attention, t.succes] }, calculable: false,
     },
     tooltip: { ...base.tooltip, trigger: "item", formatter: (p: unknown) => {
@@ -187,7 +187,7 @@ export function optionAnnulations(lignes: readonly { nom: string; aDistance: num
     ...base,
     grid: { left: 8, right: 12, top: 32, bottom: 8, containLabel: true },
     legend: { ...base.legend, data: ["À distance", "Sur place"] },
-    xAxis: { ...base.xAxis, type: "value", axisLabel: { ...base.xAxis.axisLabel, formatter: (v: number) => `${formatNombre(v)} %` }, splitLine: { lineStyle: { color: t.grille } } },
+    xAxis: { ...base.xAxis, type: "value", axisLabel: { ...base.xAxis.axisLabel, formatter: (v: number) => `${formatNombre(v)} %` }, splitLine: { lineStyle: { color: t.grille } } },
     yAxis: { ...base.yAxis, type: "category", data: lignes.map((l) => l.nom), inverse: true, axisLabel: { ...base.yAxis.axisLabel, fontFamily: t.police }, splitLine: { show: false } },
     tooltip: { ...base.tooltip, trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: t.grille } }, valueFormatter: (v: unknown) => (typeof v === "number" ? formatTaux(v) : "n. d.") },
     series: [
@@ -208,7 +208,7 @@ export function optionRemises(
     ...base,
     grid: { left: 8, right: 12, top: 36, bottom: 8, containLabel: true },
     xAxis: { ...base.xAxis, type: "category", data: lignes.map((l) => l.nom), axisLabel: { ...base.xAxis.axisLabel, interval: 0, fontSize: mobile ? 10 : 11, ...(mobile ? { rotate: 40 } : {}) } },
-    yAxis: { ...base.yAxis, type: "value", name: "taux de remise", axisLabel: { ...base.yAxis.axisLabel, formatter: (v: number) => `${formatNombre(v)} %` } },
+    yAxis: { ...base.yAxis, type: "value", name: "taux de remise", axisLabel: { ...base.yAxis.axisLabel, formatter: (v: number) => `${formatNombre(v)} %` } },
     tooltip: { ...base.tooltip, trigger: "item", formatter: (p: unknown) => {
       const { name, dataIndex } = p as { name: string; dataIndex: number };
       const l = lignes[dataIndex];

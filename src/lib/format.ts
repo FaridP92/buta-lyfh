@@ -34,7 +34,7 @@ export function formatTaux(valeur: number | null | undefined, decimales = 1): st
   return `${formatNombreFr(valeur, decimales)}${ESPACE_FINE}%`;
 }
 
-/** Probabilité en pourcentage entier, bornée en lecture : « < 1 % » et « > 99 % » plutôt que 0 et 100. */
+/** Probabilité en pourcentage entier, bornée en lecture : « < 1 % » et « > 99 % » plutôt que 0 et 100. */
 export function formatProbabilite(valeur: number | null | undefined): string {
   if (estVide(valeur)) return "n. d.";
   if (valeur < 1) return `<${ESPACE_FINE}1${ESPACE_FINE}%`;

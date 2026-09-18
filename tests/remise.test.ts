@@ -8,7 +8,7 @@ function point(agence: string, periode: string, devis: number, tauxSignature: nu
   };
 }
 
-// Agence A : remise fixe à 4 %, signature à 30 % ; agence B : 4 % puis 9 %, signature 34 % puis 38 % (+0,8 point par point).
+// Agence A : remise fixe à 4 %, signature à 30 % ; agence B : 4 % puis 9 %, signature 34 % puis 38 % (+0,8 point par point).
 const JEU: PointRemise[] = [
   point("A", "2026-01-01", 100, 30, 4), point("A", "2026-02-01", 100, 30, 4), point("A", "2026-03-01", 100, 30, 4), point("A", "2026-04-01", 100, 30, 4),
   point("B", "2026-01-01", 100, 34, 4), point("B", "2026-02-01", 100, 34, 4), point("B", "2026-03-01", 100, 38, 9), point("B", "2026-04-01", 100, 38, 9),
@@ -64,7 +64,7 @@ describe("seuilRentable et penteRequise", () => {
     expect(seuilRentable(1.8, 32, 4, 30)).toBe(8.1);
   });
 
-  it("calcule la pente pour laquelle 8 % serait optimal", () => {
+  it("calcule la pente pour laquelle 8 % serait optimal", () => {
     // b = 32 / (30 + 4 - 16) = 1,78
     expect(penteRequise(8, 32, 4, 30)).toBe(1.78);
     expect(penteRequise(20, 32, 4, 30)).toBeNull();

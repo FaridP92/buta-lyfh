@@ -1,6 +1,8 @@
 /**
  * Aucun tiret long (cadratin, demi-cadratin, barre) dans src/, docs/,
  * supabase/, n8n/ (CLAUDE.md). Le tiret simple - est accepté.
+ * Dans src/ seulement : espace insécable fine (U+202F) avant % après un chiffre
+ * ou une accolade fermante de gabarit (docs/DESIGN.md §2), jamais l'espace ordinaire.
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -9,6 +11,9 @@ import { join, relative } from "node:path";
 // lui-même contenir aucun tiret long pour passer son propre contrôle.
 const TIRETS_LONGS = [0x2014, 0x2013, 0x2015].map((point) => String.fromCodePoint(point));
 const DOSSIERS = ["src", "docs", "supabase", "n8n", "scripts"];
+// Un chiffre ou une accolade fermante de gabarit (`${valeur} %`) suivi d'une espace ordinaire puis de % ;
+// les opérateurs modulo (`i % 2`) ne sont pas concernés.
+const ESPACE_ORDINAIRE_AVANT_POURCENT = /(\d|\})\x20%/;
 const EXTENSIONS_IGNOREES = new Set([".png", ".jpg", ".jpeg", ".svg", ".woff", ".woff2", ".ico"]);
 const RACINE = process.cwd();
 
@@ -51,6 +56,10 @@ for (const dossier of DOSSIERS) {
           );
         }
       }
+      if (dossier === "src" && ESPACE_ORDINAIRE_AVANT_POURCENT.test(ligne)) {
+        nbErreurs += 1;
+        console.error(`${relative(RACINE, fichier)}:${index + 1} porte une espace ordinaire avant % (attendu : espace fine U+202F)`);
+      }
     });
   }
 }
@@ -60,4 +69,4 @@ if (nbErreurs > 0) {
   process.exit(1);
 }
 
-console.log("verif:tirets : aucun tiret long trouvé.");
+console.log("verif:tirets : aucun tiret long, aucune espace ordinaire avant % dans src/.");

@@ -26,7 +26,7 @@ describe("agregerVentes", () => {
     expect(a?.ca_signe).toBe(280_000);
     expect(a?.taux_marge).toBe(26.8); // 75 000 / 280 000
     expect(a?.panier_moyen).toBe(9333);
-    // Remise pondérée par le prix catalogue : (4 % × 104 000 + 10 % × 200 000) / 304 000 = 7,95 %
+    // Remise pondérée par le prix catalogue : (4 % × 104 000 + 10 % × 200 000) / 304 000 = 7,95 %
     expect(a?.taux_remise).toBe(7.9);
     expect(a?.taux_annulation).toBe(11.1); // 4 / 36
   });
@@ -35,7 +35,7 @@ describe("agregerVentes", () => {
     const a = agregerVentes(LIGNES.filter((l) => l.agence === "SAI" && l.produit === "PV3"), "2026-01", "2026-02");
     expect(a?.signatures_a_distance).toBe(12);
     expect(a?.signatures_sur_place).toBe(24);
-    // (25 % × 4 + 12,5 % × 8) / 12 = 16,7 % ; (0 × 8 + 12,5 % × 16) / 24 = 8,3 %
+    // (25 % × 4 + 12,5 % × 8) / 12 = 16,7 % ; (0 × 8 + 12,5 % × 16) / 24 = 8,3 %
     expect(a?.taux_annulation_a_distance).toBe(16.7);
     expect(a?.taux_annulation_sur_place).toBe(8.3);
   });
@@ -86,8 +86,8 @@ describe("expliquerEcart", () => {
 
   it("classe les causes par poids et détaille volume et remises", () => {
     const e = expliquerEcart(faits);
-    expect(e.causes[0]).toBe("Le volume : -120,0\u202fk€ (217 ventes contre 231), 83 % de l'écart.");
-    expect(e.causes[1]).toBe("Les remises : -22,0\u202fk€ (taux moyen 4,6\u202f% contre 4,0\u202f%), 15 % de l'écart.");
+    expect(e.causes[0]).toBe("Le volume : -120,0\u202fk€ (217 ventes contre 231), 83 % de l'écart.");
+    expect(e.causes[1]).toBe("Les remises : -22,0\u202fk€ (taux moyen 4,6\u202f% contre 4,0\u202f%), 15 % de l'écart.");
     expect(e.causes).toHaveLength(4);
   });
 

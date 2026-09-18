@@ -108,7 +108,7 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
   );
 }
 
-/** Mini courbe douze mois : ligne 1,5 px, aire à 12 %, point ambre sur la dernière valeur. */
+/** Mini courbe douze mois : ligne 1,5 px, aire à 12 %, point ambre sur la dernière valeur. */
 function MiniCourbe({ serie }: { serie: readonly (number | null)[] }) {
   const largeur = 96;
   const hauteur = 34;

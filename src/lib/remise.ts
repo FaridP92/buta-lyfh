@@ -4,7 +4,7 @@ import { formatNombre, formatTaux } from "@/lib/format";
  * ELAST_REMISE (INDICATEURS.md) : pente du taux de signature des devis en fonction du taux de remise,
  * estimée par régression pondérée à effets fixes agence sur les couples agence × mois de mart_remises,
  * puis lecture économique : niveau de remise qui maximise la marge sous ce modèle linéaire, et pente
- * qu'il faudrait pour qu'une remise de référence (8 %) soit ce niveau. Démonstration de méthode sur
+ * qu'il faudrait pour qu'une remise de référence (8 %) soit ce niveau. Démonstration de méthode sur
  * un jeu simulé, jamais une règle de gestion.
  */
 export interface PointRemise {
@@ -25,7 +25,7 @@ export interface ElasticiteRemise {
   /** Couples agence × mois retenus et agences représentées. */
   points: number;
   agences: number;
-  /** Points de signature gagnés par point de remise, et intervalle à 95 %. */
+  /** Points de signature gagnés par point de remise, et intervalle à 95 %. */
   pente: number;
   erreurType: number;
   intervalle: [number, number];
@@ -149,7 +149,7 @@ function pointsTexte(valeur: number): string {
 export function phraseRemise(e: ElasticiteRemise | null): string {
   if (!e) return "Pas assez de couples agence × mois clos pour estimer la pente du taux de signature en fonction de la remise.";
   const [bas, haut] = e.intervalle;
-  const estimation = `Dans ce jeu simulé, la régression à effets fixes agence sur ${formatNombre(e.points)} couples agence × mois (${formatNombre(e.agences)} agences) retrouve ${pointsTexte(e.pente)} de signature par point de remise (intervalle à 95 % : ${pointsTexte(bas)} à ${pointsTexte(haut)}), cohérent avec l'hypothèse posée dans le générateur (Saintonge : +4 points de signature pour +5 points de remise).`;
+  const estimation = `Dans ce jeu simulé, la régression à effets fixes agence sur ${formatNombre(e.points)} couples agence × mois (${formatNombre(e.agences)} agences) retrouve ${pointsTexte(e.pente)} de signature par point de remise (intervalle à 95 % : ${pointsTexte(bas)} à ${pointsTexte(haut)}), cohérent avec l'hypothèse posée dans le générateur (Saintonge : +4 points de signature pour +5 points de remise).`;
   let lecture: string;
   if (e.seuil > 0) {
     lecture = `À cette pente, avec ${formatTaux(e.margeAvantRemise)} de marge avant remise et ${formatTaux(e.tauxSignature)} de signature, la marge est maximale autour de ${formatTaux(e.seuil)} de remise (${formatTaux(e.seuilBorneHaute)} à la borne haute de l'intervalle).`;

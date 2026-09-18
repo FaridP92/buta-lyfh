@@ -23,7 +23,7 @@ export function optionCalendrierCharge(semaines: readonly string[], agences: rea
     yAxis: { ...base.yAxis, type: "category", inverse: true, data: agences.map((a) => (mobile ? a.code : a.nom)), splitArea: { show: false }, axisLabel: { ...base.yAxis.axisLabel, fontSize: 11 } },
     visualMap: {
       type: "continuous", min: 0, max: 100, orient: "horizontal", left: "center", bottom: 0, itemWidth: 10, itemHeight: 120,
-      text: ["100 %", "0 %"], textStyle: { color: t.texte3, fontSize: 11 }, inRange: { color: [t.surface2, t.ambre, t.alerte] }, calculable: false,
+      text: ["100 %", "0 %"], textStyle: { color: t.texte3, fontSize: 11 }, inRange: { color: [t.surface2, t.ambre, t.alerte] }, calculable: false,
     },
     series: [{
       type: "heatmap",

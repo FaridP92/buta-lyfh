@@ -96,7 +96,7 @@ export function EcranFunnel() {
       rendu: (l: (typeof canauxMatrice)[number]) => {
         const c = matrice.get(`${l.code}|${a.code}`);
         if (!c || c.leads === 0) return <span className="text-texte-3">n. d.</span>;
-        // Intensité plafonnée à 35 % : au-delà, le texte clair perdait son contraste (Lighthouse 3,3:1 à 60 %) ; le trait porte le volume.
+        // Intensité plafonnée à 35 % : au-delà, le texte clair perdait son contraste (Lighthouse 3,3:1 à 60 %) ; le trait porte le volume.
         const intensite = Math.round((35 * (c.taux_conversion ?? 0)) / conversionMax);
         return (
           <span className="inline-flex flex-col items-end gap-[2px]" title={`${formatNombre(c.leads)} leads, ${formatNombre(c.signatures)} ventes nettes`}>

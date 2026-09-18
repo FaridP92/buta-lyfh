@@ -47,7 +47,7 @@ describe("nombresNonTraces", () => {
   });
   it("rejette un nombre calculé ou inventé", () => {
     const autorises = nombresAutorises(lignes, "", lignes.length);
-    expect(nombresNonTraces("La marge brute atteint donc 53,7 k€ (238,6 × 22,5 %).", autorises)).toEqual(["53.7"]);
+    expect(nombresNonTraces("La marge brute atteint donc 53,7 k€ (238,6 × 22,5 %).", autorises)).toEqual(["53.7"]);
     // « 9 » serait accepté par le mois « 09 » de la date : c'est voulu ; « 7 » ne figure nulle part.
     expect(nombresNonTraces("Le réseau compte 7 agences.", autorises)).toEqual(["7"]);
   });

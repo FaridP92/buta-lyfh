@@ -160,10 +160,10 @@ export function EcranTerritoires() {
                     <li key={cle} className="flex flex-col gap-1">
                       <div className="flex items-baseline justify-between gap-2 text-[12px]">
                         <label htmlFor={id} className="text-texte-2">{LIBELLES_COMPOSANTES[cle]}</label>
-                        <span className="chiffre text-texte">{Number.isNaN(valeur) ? "n. d." : formatNombre(Math.round(valeur))}<span className="ml-1 text-texte-3">· poids {formatNombre(Math.round(poids[cle] * 100))} %{penalite ? " (pénalité)" : ""}</span></span>
+                        <span className="chiffre text-texte">{Number.isNaN(valeur) ? "n. d." : formatNombre(Math.round(valeur))}<span className="ml-1 text-texte-3">· poids {formatNombre(Math.round(poids[cle] * 100))} %{penalite ? " (pénalité)" : ""}</span></span>
                       </div>
                       <div className="h-[6px] w-full overflow-hidden rounded-full bg-surface-2"><div className={penalite ? "h-full rounded-full bg-texte-3" : "h-full rounded-full bg-ambre"} style={{ width: `${Number.isNaN(valeur) ? 0 : Math.max(0, Math.min(100, valeur))}%`, transition: "width 500ms cubic-bezier(0.22, 1, 0.36, 1)" }} /></div>
-                      <input id={id} type="range" min={0} max={BORNES[cle].max} step={BORNES[cle].pas} value={poids[cle]} onChange={(e) => setPoids((p) => ({ ...p, [cle]: Number(e.target.value) }))} className="h-1 w-full cursor-pointer accent-ambre" aria-valuetext={`poids ${formatNombre(Math.round(poids[cle] * 100))} %`} />
+                      <input id={id} type="range" min={0} max={BORNES[cle].max} step={BORNES[cle].pas} value={poids[cle]} onChange={(e) => setPoids((p) => ({ ...p, [cle]: Number(e.target.value) }))} className="h-1 w-full cursor-pointer accent-ambre" aria-valuetext={`poids ${formatNombre(Math.round(poids[cle] * 100))} %`} />
                     </li>
                   );
                 })}

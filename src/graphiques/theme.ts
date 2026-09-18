@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 /**
  * Thème ECharts maison (DESIGN.md §5), lu dans les tokens CSS au moment du rendu
- * pour suivre la bascule sombre et clair : fond transparent, grilles à 6 % de blanc,
+ * pour suivre la bascule sombre et clair : fond transparent, grilles à 6 % de blanc,
  * axes sans ligne, étiquettes 12 px en texte secondaire, palette de six séries
  * dans un ordre fixe (ambre, menthe, bleu, violet, alerte, gris).
  */

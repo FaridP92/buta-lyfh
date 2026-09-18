@@ -52,7 +52,7 @@ export const HISTOIRES = [
   {
     code: "H3",
     titre: "Saintonge",
-    texte: "Taux de remise porté de 4 % à 9 % à partir d'avril 2026 : conversion gagnée, marge perdue.",
+    texte: "Taux de remise porté de 4 % à 9 % à partir d'avril 2026 : conversion gagnée, marge perdue.",
   },
   {
     code: "H4",
@@ -74,7 +74,7 @@ export const HISTOIRES = [
     code: "H7",
     titre: "Bassin d'Arcachon",
     texte:
-      "Capacité de pose réduite de 25 % de mai à août 2026 : carnet de pose allongé, CA posé en retrait alors que le CA signé tient.",
+      "Capacité de pose réduite de 25 % de mai à août 2026 : carnet de pose allongé, CA posé en retrait alors que le CA signé tient.",
   },
 ] as const;
 
