@@ -237,3 +237,5 @@ Plan lot 4a (dix lignes) :
 8. Publication d'avance jusqu'au 25 septembre (`npm run publier -- --jusqua 2026-09-25`), contrôle que l'application montre la veille et que C11 reste vert.
 9. Relecture du palier A (sept écrans, 1280 et 375, DESIGN.md §9 et §11), corrections, `npm run check`, e2e.
 10. Déploiement, e2e contre la production, journal, commit, push.
+
+Guide de présentation (`docs/GUIDE.md`, demandé le 18 septembre) : ce que c'est, à quoi ça sert, les écrans un par un avec la phrase à dire, l'origine des données, l'usage, le quotidien du Responsable Performance (rituels, sept décisions jouées par les histoires), l'architecture en langage simple, les questions probables, le glossaire des formules, la démonstration en trois minutes. Hors périmètre applicatif, aucun impact sur le code.
