@@ -79,7 +79,7 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
   const favorable = tendance === null ? null : variation?.plusBasMieux ? tendance <= 0 : tendance >= 0;
 
   return (
-    <article className={cn("relative flex h-[132px] flex-col justify-between rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)] shadow-[var(--ombre-carte)]", grise && "opacity-70")}>
+    <article className={cn("relative flex min-h-[132px] flex-col justify-between gap-[var(--esp-2)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)] shadow-[var(--ombre-carte)]", grise && "opacity-70")}>
       <div className="flex items-start justify-between gap-[var(--esp-2)]">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">{libelle}</p>

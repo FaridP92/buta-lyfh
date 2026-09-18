@@ -13,14 +13,20 @@ export interface Fraicheur {
 
 async function lireFraicheur(): Promise<Fraicheur> {
   if (supabase) {
-    const { data, error } = await supabase
-      .from("mart_fraicheur")
-      .select("date_reference, ingere_le")
-      .eq("source", "journee_simulee")
-      .maybeSingle();
-    if (!error && data) {
-      const ligne = SchemaFraicheur.parse(data);
-      return { source: "supabase", journee: ligne.date_reference, integreeLe: ligne.ingere_le };
+    // Base injoignable (DNS, projet en pause) : on n'attend pas plus de cinq secondes avant le secours statique.
+    try {
+      const { data, error } = await supabase
+        .from("mart_fraicheur")
+        .select("date_reference, ingere_le")
+        .eq("source", "journee_simulee")
+        .abortSignal(AbortSignal.timeout(5_000))
+        .maybeSingle();
+      if (!error && data) {
+        const ligne = SchemaFraicheur.parse(data);
+        return { source: "supabase", journee: ligne.date_reference, integreeLe: ligne.ingere_le };
+      }
+    } catch {
+      // Secours statique ci-dessous.
     }
   }
   const reponse = await fetch("/data/instantane/_meta.json");

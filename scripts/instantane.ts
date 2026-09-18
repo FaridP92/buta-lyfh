@@ -5,7 +5,7 @@
  * Tolère l'absence de vues ou de schéma exposé : avertissement et code 0
  * (DEPLOIEMENT_VPS.md §2) tant que le lot 1 n'est pas en ligne.
  */
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { chargerEnv } from "./lib/bd";
 
@@ -81,26 +81,32 @@ async function principal(): Promise<void> {
       console.warn(`${vue} : ${erreur instanceof Error ? erreur.message : String(erreur)}`);
     }
   }
+  const cheminMeta = join(DOSSIER, "_meta.json");
   if (echecs === VUES.length) {
-    console.warn("instantané : aucune vue accessible (schéma buta non exposé ou vues absentes), instantané vide.");
+    // Base injoignable (projet en pause, réseau) : l'instantané précédent et sa méta restent tels quels,
+    // le site continue de servir la dernière journée publiée connue.
+    console.warn("instantané : aucune vue accessible (base injoignable ou vues absentes), instantané précédent conservé.");
+    return;
   }
   // _meta.json existe toujours dans le bundle : le front le lit sans erreur console, même vide.
-  const journee = (meta["mart_kpi_mensuel"] ?? 0) > 0 ? await journeePubliee(url, cle) : null;
-  writeFileSync(
-    join(DOSSIER, "_meta.json"),
-    JSON.stringify({ genere_le: new Date().toISOString(), journee_publiee: journee, lignes: meta }, null, 2),
-  );
+  const precedente = existsSync(cheminMeta) ? (JSON.parse(readFileSync(cheminMeta, "utf-8")) as { journee_publiee?: string | null }).journee_publiee ?? null : null;
+  const journee = (meta["mart_kpi_mensuel"] ?? 0) > 0 ? (await journeePubliee(url, cle)) ?? precedente : precedente;
+  writeFileSync(cheminMeta, JSON.stringify({ genere_le: new Date().toISOString(), journee_publiee: journee, lignes: meta }, null, 2));
   console.log(`instantané écrit dans public/data/instantane (${VUES.length - echecs} vue(s)).`);
 }
 
 async function journeePubliee(url: string, cle: string): Promise<string | null> {
-  const reponse = await fetch(`${url}/rest/v1/mart_fraicheur?select=date_reference&source=eq.journee_simulee`, {
-    headers: { apikey: cle, Authorization: `Bearer ${cle}`, "Accept-Profile": "buta" },
-    signal: AbortSignal.timeout(15_000),
-  });
-  if (!reponse.ok) return null;
-  const lignes = (await reponse.json()) as { date_reference: string | null }[];
-  return lignes[0]?.date_reference ?? null;
+  try {
+    const reponse = await fetch(`${url}/rest/v1/mart_fraicheur?select=date_reference&source=eq.journee_simulee`, {
+      headers: { apikey: cle, Authorization: `Bearer ${cle}`, "Accept-Profile": "buta" },
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!reponse.ok) return null;
+    const lignes = (await reponse.json()) as { date_reference: string | null }[];
+    return lignes[0]?.date_reference ?? null;
+  } catch {
+    return null;
+  }
 }
 
 principal().catch((erreur: unknown) => {

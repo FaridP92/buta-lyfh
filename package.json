@@ -20,6 +20,7 @@
     "generer:activite": "tsx scripts/generer-activite.ts",
     "publier": "tsx scripts/generer-activite.ts --publier",
     "revue": "tsx --tsconfig tsconfig.app.json scripts/publier-revue.ts",
+    "n8n:wf3": "tsx scripts/generer-code-wf3.ts",
     "export:powerbi": "tsx scripts/export-powerbi.ts",
     "deploiement": "bash scripts/deploiement.sh"
   },
