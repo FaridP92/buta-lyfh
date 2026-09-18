@@ -261,3 +261,17 @@ Lot 4b (18 septembre, en cours) :
 - La revue hebdomadaire par règles est publiée pour les semaines du 17 août au 7 septembre avec le modèle « règles » et un coût nul ; WF3 la remplacera par la rédaction du modèle chaque lundi.
 - Redéploiement d'une Edge Function par le MCP : passer `import_map_path: "deno.json"` explicitement, sinon le chemin absolu du déploiement précédent est concaténé et refusé.
 - Plan Supabase gratuit : deux projets actifs ; `dvf-insights` en pause, `renovscope` actif jusqu'à mardi.
+
+### Session 3, 18 septembre 2026 : lot 5
+
+Plan lot 5 (dix lignes) :
+1. Lighthouse (Brave) sur les écrans du lot 4b : Automatisations 96, Plans d'action 100, Pose 81 puis 100 après squelettes de même hauteur (CLS 0,39 vers 0).
+2. Débordement horizontal à 375 px vérifié sur les dix écrans en production : aucun.
+3. Relecture par workflow de réfutation à trois lentilles (faits contre DONNEES.md et INDICATEURS.md ; forme et typographie contre DESIGN.md §9 et §11 ; recruteur Butagaz simulé), captures 1280 et 375 de production, sans juge de synthèse ; corrections.
+4. Playwright élargi : filtres d'URL, export, écrans du lot 4b, redirection des écrans non finis, mobile.
+5. Accessibilité clavier : parcours au clavier de la palette, des menus, des tableaux ; noms accessibles.
+6. Écran Analyste : évaluation des 24 questions dès que la clé est posée ; mise en navigation si le seuil de 90 % est atteint, sinon retrait définitif.
+7. n8n : rattachement du credential, exécutions manuelles, lignes de journal, publication (WF0 d'abord), exports JSON dans `n8n/`.
+8. Test téléphone 4G, thème clair, retour d'onglet (badge).
+9. Journal final, `docs/REPRISE.md`, guide à jour.
+10. Gel lundi 21 septembre à 20 h : rejeu de la publication d'avance, dernier déploiement, e2e production.
