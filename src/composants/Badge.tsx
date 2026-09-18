@@ -3,10 +3,12 @@ import { cn } from "@/lib/cn";
 
 type VarianteBadge = "simule" | "reel" | "instantane";
 
+// « simulé » et « instantané » se remplacent l'un l'autre au même endroit quand la base répond : même largeur,
+// sinon la ligne d'en-tête change de nombre de lignes sur téléphone (décalage de mise en page mesuré sous 4G).
 const STYLES: Record<VarianteBadge, string> = {
-  simule: "border-ambre/60 text-ambre-texte",
+  simule: "min-w-[96px] justify-center border-ambre/60 text-ambre-texte",
   reel: "border-menthe/60 text-menthe-texte",
-  instantane: "border-texte-3/60 text-texte-3",
+  instantane: "min-w-[96px] justify-center border-texte-3/60 text-texte-3",
 };
 
 interface BadgeProps {

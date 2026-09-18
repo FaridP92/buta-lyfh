@@ -48,10 +48,10 @@ Ce qu'on dit : « en trente secondes je sais ce qui a bougé, où, et de combien
 
 ### 3.2 Ventes et marge · « D'où vient l'écart de chiffre d'affaires »
 La question : pourquoi le CA n'est pas là où il devrait être, et qui gagne de l'argent.
-- Six KPI : CA signé, CA posé, taux de marge brute, panier moyen, remise moyenne, taux d'annulation à 60 jours.
+- Six KPI : CA signé, CA posé, taux de marge brute, panier moyen, remise moyenne, taux d'annulation à 60 jours (affiché « n. d. » tant que les signatures de la période n'ont pas 60 jours : sur le mois en cours, la carte le dit au lieu de montrer un taux tronqué).
 - Cascade de l'écart de CA contre l'objectif (ou N-1) : effet volume, effet mix, effet prix, effet remise, résiduel nul par construction (formule télescopique, écrite dans la fiche). L'axe est tronqué et l'écran le dit. Bouton « Expliquer » : constat, causes classées, action, sources, par règles.
 - CA par produit sur douze mois avec le taux de marge en courbe (la saisonnalité se lit : photovoltaïque au printemps, chauffage à l'automne, août creux).
-- « Quelle agence gagne de l'argent » : CA, écarts, marge brute, marge après acquisition, résultat d'agence, remise, annulations. Des agences gagnantes et perdantes, comme dans un vrai réseau.
+- « Quelle agence gagne de l'argent » : CA, écarts, marge brute, marge après acquisition, résultat d'agence, ventes par commercial, remise, annulations. Des agences gagnantes et perdantes, comme dans un vrai réseau (sur un mois plein, le réseau gagne de 12 à 200 k€ avec une à cinq agences en perte ; en cours de mois, le résultat est souvent négatif parce que les coûts d'acquisition sont engagés à la création du lead alors que la marge n'arrive qu'à la signature, quelques semaines plus tard : c'est une chose à dire si la question vient).
 - Matrice agence × produit (taille = CA, couleur = marge), annulations à distance contre sur place, boîtes à moustaches des remises par agence.
 - La phrase sur les remises : une régression à effets fixes agence retrouve la pente plantée dans la simulation (0,84 point de signature par point de remise, intervalle à 95 % de 0,15 à 1,52) et en tire la lecture économique : à cette pente, aucune remise n'augmente la marge ; il faudrait 1,78 point de signature par point de remise pour qu'une remise de 8 % soit le bon niveau. Présentée comme une démonstration de méthode sur données simulées, jamais comme une règle applicable à un réseau réel.
 
@@ -60,7 +60,7 @@ Ce qu'on dit : « l'écart se décompose, la remise se mesure, la marge après a
 ### 3.3 Funnel et leads · « Où se perd la conversion »
 La question : à quelle étape on perd, quel canal vaut son coût, quels leads attendent.
 - Six KPI en cohortes (rattachées au mois de création du lead) : leads, taux de RDV, taux de devis, taux de signature, coût par lead, coût par vente. Les taux sont mesurés sur la dernière cohorte mûre (mai 2026 le 17 septembre : 41,8 % de RDV, 67,8 % de devis, 33,8 % de signature, 98 € par lead, 914 € par vente) ; les leads du mois en cours sont comparés à N-1 au prorata des jours publiés.
-- Sankey du lead à l'encaissement avec les pertes en branches (sans suite, sans devis, refus, annulations) et les dossiers en attente en gris ; sélecteur de canal ; se redessine quand on change d'agence.
+- Sankey du lead à l'encaissement avec les branches sortantes (sans RDV, sans devis, devis non signés, annulations) ; sur une cohorte de moins de 90 jours, ces branches sont grises « à date » parce qu'un devis pas encore signé n'est pas un refus ; sélecteur de canal ; se redessine quand on change d'agence. La matrice canal × agence et la qualité des leads par canal se lisent sur la dernière cohorte close à 90 jours (mai 2026 au 17 septembre), le sous-titre le dit.
 - Matrice canal × agence (conversion en couleur, volume en trait), vingt mois de leads par canal avec les ventes nettes en courbe, qualité des leads par canal (« à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux à coût), leads sans rendez-vous planifié à 48 heures par agence et par cohorte.
 
 Ce qu'on dit : « la cohorte est la seule façon honnête de mesurer une conversion ; un lead de septembre n'a pas fini de convertir ».
@@ -68,7 +68,7 @@ Ce qu'on dit : « la cohorte est la seule façon honnête de mesurer une convers
 ### 3.4 Forecast et atterrissage · « Où finit l'année 2026 »
 La question : où on atterrit, avec quelles hypothèses, quels risques, quelles opportunités.
 - Éventail cumulé : réalisé, objectif, atterrissage central, intervalle à 68 %, ligne de la journée publiée.
-- Hypothèses écrites et chiffrées : devis en cours de moins de 90 jours et leur montant, taux de signature observés par tranche d'âge des devis, taux d'annulation à six mois, pipe pondéré, run-rate trois mois saisonnalisé, écart-type mensuel. Un curseur « taux de signature du pipe » recalcule l'atterrissage sans rien écrire en base : on peut tester « et si le pipe signait à 20 % ? ».
+- Hypothèses écrites et chiffrées : devis en cours de moins de 90 jours et leur montant, taux de signature observés par tranche d'âge des devis, taux d'annulation à six mois, pipe pondéré, run-rate trois mois saisonnalisé et la part retenue au-delà des 45 jours couverts par le pipe (réalisé + pipe + part retenue = atterrissage central, on peut le refaire de tête), écart-type mensuel. Un curseur « taux de signature du pipe » recalcule l'atterrissage sans rien écrire en base : on peut tester « et si le pipe signait à 20 % ? ».
 - Tableau par agence : réalisé, objectif, central, bas à haut, écart, probabilité d'atteinte, pipe pondéré, statut.
 - Risques et opportunités calculés par règles avec le montant et la date de calcul.
 
@@ -101,7 +101,7 @@ Ce qu'on dit : « le CA signé ne vaut que s'il est posé et encaissé ; la dist
 
 ### 3.8 Plans d'action et rituels · « Ce qu'on a décidé de changer »
 La question : quels leviers sont engagés, par qui, pour quel gain, et comment on en parle chaque semaine.
-- Douze plans simulés cohérents avec les histoires (plafonner les leads achetés de Bordeaux Métropole, plafonner la remise en Saintonge, renfort de pose au Bassin d'Arcachon, aligner le référentiel du Nord), avec propriétaire (code), gain attendu, statut, échéance, avancement et indicateur suivi.
+- Douze plans simulés cohérents avec les histoires (plafonner les leads achetés de Bordeaux Métropole, plafonner la remise en Saintonge, renfort de pose au Bassin d'Arcachon, aligner le référentiel du Nord), avec propriétaire (code), gain de marge attendu et avancement déclarés par le propriétaire (le renfort de pose d'Arcachon vaut 80 k€ de marge, pas le CA posé qu'il protège), statut, échéance et indicateur suivi.
 - Revue hebdomadaire au format faits, lecture, décisions proposées : rédigée à partir des faits SQL de la semaine (par règles, ou par le modèle chaque lundi à 07:00 via n8n, chaque nombre vérifié dans les faits), archive des semaines précédentes.
 - Quatre rituels : revue de pipe (hebdomadaire), de marge et de forecast (mensuelles), de performance (trimestrielle), avec ordre du jour type et indicateurs.
 

@@ -188,7 +188,7 @@ export function EcranVentes() {
           <h1 className="font-serif-titre text-[32px] leading-[1.1] text-texte max-md:text-[26px]">
             {agence === "toutes" ? "D'où vient l'écart de chiffre d'affaires" : `${nomAgence(agence)} : d'où vient l'écart`}
           </h1>
-          <p className="mt-1 text-[13px] text-texte-2">
+          <p className="mt-1 text-[13px] text-texte-2 max-md:min-h-[2lh]">
             {periode.libelle} · {comparaison === "objectif" ? "vs objectif" : "vs N-1"}{mentionProrata} · {kpiTous.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">simulé</Badge>}
           </p>
         </div>

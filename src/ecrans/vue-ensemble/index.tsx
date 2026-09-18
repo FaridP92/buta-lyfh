@@ -132,7 +132,8 @@ export function EcranVueEnsemble() {
           <h1 className="font-serif-titre text-[32px] leading-[1.1] text-texte max-md:text-[26px]">
             {agence === "toutes" ? "Le réseau" : nomAgence(agence)} {periode.type === "mois" ? "ce mois-ci" : `sur ${periode.libelle}`}
           </h1>
-          <p className="mt-1 text-[13px] text-texte-2">
+          {/* Hauteur réservée sur téléphone : la mention du prorata arrive avec les données et ferait sauter la ligne. */}
+          <p className="mt-1 text-[13px] text-texte-2 max-md:min-h-[2lh]">
             {periode.libelle} · {comparaison === "objectif" ? "vs objectif" : "vs N-1"}{mentionProrata} · {kpi.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">simulé</Badge>}
           </p>
           {/* Sur téléphone, le pied de page est neuf écrans plus bas : l'objet du site tient en une ligne sous le titre. */}
