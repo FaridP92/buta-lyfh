@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { BoutonFiche } from "@/composants/FicheIndicateur";
 import { formatDelaiJours, formatMontant, formatNombre, formatTaux, formatVariationPoints } from "@/lib/format";
 import { cn } from "@/lib/cn";
@@ -96,7 +96,7 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
           </p>
           {variation && (
             <p className={cn("mt-[6px] flex items-center gap-1 text-[12px]", favorable === null ? "text-texte-3" : favorable ? "text-succes" : "text-alerte")}>
-              {tendance === null || nulle ? <Minus size={12} strokeWidth={1.5} aria-hidden="true" /> : tendance > 0 ? <ArrowUpRight size={12} strokeWidth={1.5} aria-hidden="true" /> : <ArrowDownRight size={12} strokeWidth={1.5} aria-hidden="true" />}
+              {tendance === null || nulle ? null : tendance > 0 ? <ArrowUpRight size={12} strokeWidth={1.5} aria-hidden="true" /> : <ArrowDownRight size={12} strokeWidth={1.5} aria-hidden="true" />}
               <span className="chiffre">
                 {tendance === null ? "n. d." : variation.unite === "pts" ? formatVariationPoints(tendance) : `${tendance > 0 ? "+" : ""}${formatTaux(tendance)}`}
               </span>
@@ -110,7 +110,7 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
   );
 }
 
-/** Mini courbe douze mois : ligne 1,5 px, aire à 12 %, point ambre sur la dernière valeur. */
+/** Mini courbe douze mois : ligne 1,5 px, aire à 12 %, point ambre sur la dernière valeur. */
 function MiniCourbe({ serie }: { serie: readonly (number | null)[] }) {
   const largeur = 96;
   const hauteur = 34;

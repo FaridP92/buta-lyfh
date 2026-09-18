@@ -16,13 +16,11 @@ import { Squelette } from "@/composants/Squelette";
 import { Graphique } from "@/graphiques/Graphique";
 import { optionBase, useTokensGraphique } from "@/graphiques/theme";
 import { useCarte } from "@/graphiques/cartes";
-import { agregerFunnel, agregerKpi, ecartPct, ecartPoints, etapesFunnel, moisDe, moisEntre, periodeN1, type CohorteAgregee, type LigneKpi } from "@/lib/periode";
-import { formatDateCourte, formatDelaiJours, formatMontant, formatNombre, formatTaux } from "@/lib/format";
+import { agregerFunnel, agregerKpi, ecartPct, ecartPoints, etapesFunnel, libelleMois, moisDe, moisEntre, periodeN1, type CohorteAgregee, type LigneKpi } from "@/lib/periode";
+import { formatDateCourte, formatDelaiJours, formatMontantUnite, formatNombre, formatTaux, uniteMontantPour } from "@/lib/format";
 import { phrasesDuMois, sommerEffets } from "@/lib/phrases";
 import { ExplicationEcart } from "@/composants/ExplicationEcart";
 import { JaugeAtterrissage } from "./JaugeAtterrissage";
-
-const MOIS_LONGS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
 export function EcranVueEnsemble() {
   const filtres = useFiltres();
@@ -69,7 +67,7 @@ export function EcranVueEnsemble() {
     const c = funnel.donnees?.find((x) => moisDe(x.mois) === m);
     return c && c.cohorte_mature ? c.taux_conversion : null;
   });
-  const libelleCohorte = derniereCohorte ? `cohorte de ${MOIS_LONGS[Number(derniereCohorte.mois.slice(5, 7)) - 1]}, à 90 jours` : "aucune cohorte mature";
+  const libelleCohorte = derniereCohorte ? `cohorte de ${libelleMois(moisDe(derniereCohorte.mois))}, à 90 jours` : "aucune cohorte mature";
 
   const cohorteDuMois = useMemo(() => agregerFunnel(funnel.donnees ?? [], periode.debut, periode.fin), [funnel.donnees, periode.debut, periode.fin]);
 
@@ -112,13 +110,15 @@ export function EcranVueEnsemble() {
   const carte = useCarte("perimetre", "/geo/perimetre.geojson");
   const optionCarte: EChartsOption | null = carte.prete && agencesDim.donnees ? construireOptionCarte(agencesDim.donnees, lignesAgences, tokens) : null;
 
+  // Une seule unité pour la colonne Résultat : sinon « 11,7 k€ » et « 3 220 € » se côtoient et le tri ne se lit plus.
+  const uniteResultat = uniteMontantPour(lignesAgences.map((l) => l.kpi?.resultat));
   const colonnesAgences: Colonne<(typeof lignesAgences)[number]>[] = [
     { cle: "agence", libelle: "Agence", valeur: (l) => l.nom, rendu: (l) => <span className="whitespace-nowrap text-texte">{l.nom}</span> },
     // L'écart à l'objectif en deuxième colonne : c'est la première chose lue, et la seule visible sans défiler sur téléphone.
     { cle: "ecart", libelle: "Écart obj.", numerique: true, largeur: "88px", valeur: (l) => l.kpi?.ecart_objectif_pct ?? null, rendu: (l) => (l.kpi?.ecart_objectif_pct === null || l.kpi?.ecart_objectif_pct === undefined ? "n. d." : `${l.kpi.ecart_objectif_pct > 0 ? "+" : ""}${formatTaux(l.kpi.ecart_objectif_pct)}`) },
     { cle: "ventes", libelle: "Ventes", numerique: true, largeur: "64px", valeur: (l) => l.kpi?.ventes ?? null, rendu: (l) => formatNombre(l.kpi?.ventes ?? null) },
     { cle: "marge", libelle: "Marge", numerique: true, largeur: "76px", valeur: (l) => l.kpi?.taux_marge ?? null, rendu: (l) => formatTaux(l.kpi?.taux_marge ?? null) },
-    { cle: "resultat", libelle: "Résultat", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "84px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => formatMontant(l.kpi?.resultat ?? null) },
+    { cle: "resultat", libelle: "Résultat", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "84px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => formatMontantUnite(l.kpi?.resultat ?? null, uniteResultat) },
     { cle: "delai", libelle: "Délai", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "64px", valeur: (l) => l.kpi?.delai_pose_median ?? null, rendu: (l) => formatDelaiJours(l.kpi?.delai_pose_median ?? null) },
     { cle: "statut", libelle: "Statut", triable: false, valeur: (l) => statutEcart(l.kpi?.ecart_objectif_pct), rendu: (l) => <Pastille statut={statutEcart(l.kpi?.ecart_objectif_pct)} texte={libelleStatut(l.kpi?.ecart_objectif_pct)} /> },
   ];
@@ -136,8 +136,8 @@ export function EcranVueEnsemble() {
           <p className="mt-1 text-[13px] text-texte-2 max-md:min-h-[2lh]">
             {periode.libelle} · {comparaison === "objectif" ? "vs objectif" : "vs N-1"}{mentionProrata} · {kpi.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">simulé</Badge>}
           </p>
-          {/* Sur téléphone, le pied de page est neuf écrans plus bas : l'objet du site tient en une ligne sous le titre. */}
-          <p className="mt-2 text-[12px] leading-[1.45] text-texte-3 md:hidden">
+          {/* L'objet du site en une ligne sous le titre : le pied de page est plusieurs écrans plus bas. */}
+          <p className="mt-2 max-w-[62ch] text-[12px] leading-[1.45] text-texte-3">
             Démonstrateur personnel de Frédéric Poissonnier, candidature Responsable Performance : marché réel, activité d'un réseau d'installateurs simulée.{" "}
             <Link to="/methode" className="underline underline-offset-2 hover:text-texte">Méthode</Link>
           </p>

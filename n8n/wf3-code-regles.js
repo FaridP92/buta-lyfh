@@ -31,15 +31,15 @@ var revue = (() => {
     return new Intl.NumberFormat("fr-FR", {
       minimumFractionDigits: decimales,
       maximumFractionDigits: decimales
-    }).format(valeur);
+    }).format(valeur).replace(/\u202F/g, "\xA0");
   }
   function formatMontant(valeur) {
     if (estVide(valeur)) return "n. d.";
     let abs = Math.abs(valeur);
-    return abs >= 1e6 ? `${formatNombreFr(valeur / 1e6, 1)}\u202FM\u20AC` : abs >= 1e4 ? `${formatNombreFr(valeur / 1e3, 1)}\u202Fk\u20AC` : `${formatNombreFr(valeur, 0)}\u202F\u20AC`;
+    return abs >= 1e6 ? `${formatNombreFr(valeur / 1e6, 1)}\xA0M\u20AC` : abs >= 1e4 ? `${formatNombreFr(valeur / 1e3, 1)}\xA0k\u20AC` : `${formatNombreFr(valeur, 0)}\xA0\u20AC`;
   }
   function formatTaux(valeur, decimales = 1) {
-    return estVide(valeur) ? "n. d." : `${formatNombreFr(valeur, decimales)}\u202F%`;
+    return estVide(valeur) ? "n. d." : `${formatNombreFr(valeur, decimales)}\xA0%`;
   }
   function formatNombre(valeur) {
     return estVide(valeur) ? "n. d." : formatNombreFr(valeur, 0);
@@ -84,7 +84,7 @@ var revue = (() => {
     } else
       lecture.push(`Signatures : ${formatNombre(r.signatures)}, sans semaine de comparaison.`);
     let sousObjectif = ecartsAgences.filter((e) => e.pct <= -20), auDessus = ecartsAgences.filter((e) => e.pct > 0);
-    if (ecartsAgences.length > 0 && (lecture.push(sousObjectif.length > 0 ? `${formatNombre(sousObjectif.length)} agence${sousObjectif.length > 1 ? "s sont" : " est"} \xE0 plus de 20\u202F% sous ${comparaisonLibelle} au prorata du mois : ${sousObjectif.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")}.` : `Aucune agence n'est \xE0 plus de 20\u202F% sous ${comparaisonLibelle} au prorata du mois.`), lecture.push(auDessus.length > 0 ? `${auDessus.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")} d\xE9passe${auDessus.length > 1 ? "nt" : ""} ${comparaisonLibelle}.` : `Aucune agence ne d\xE9passe ${comparaisonLibelle} ce mois-ci.`)), reseauEcart && reseauEcart.ecart_total) {
+    if (ecartsAgences.length > 0 && (lecture.push(sousObjectif.length > 0 ? `${formatNombre(sousObjectif.length)} agence${sousObjectif.length > 1 ? "s sont" : " est"} \xE0 plus de 20\xA0% sous ${comparaisonLibelle} au prorata du mois : ${sousObjectif.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")}.` : `Aucune agence n'est \xE0 plus de 20\xA0% sous ${comparaisonLibelle} au prorata du mois.`), lecture.push(auDessus.length > 0 ? `${auDessus.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")} d\xE9passe${auDessus.length > 1 ? "nt" : ""} ${comparaisonLibelle}.` : `Aucune agence ne d\xE9passe ${comparaisonLibelle} ce mois-ci.`)), reseauEcart && reseauEcart.ecart_total) {
       let effets = [
         { nom: "volume", v: reseauEcart.effet_volume ?? 0 },
         { nom: "mix", v: reseauEcart.effet_mix ?? 0 },
@@ -93,7 +93,7 @@ var revue = (() => {
       ].sort((a, b) => Math.abs(b.v) - Math.abs(a.v)), premier = effets[0], second = effets[1];
       if (premier) {
         let part = Math.round(100 * premier.v / reseauEcart.ecart_total);
-        lecture.push(`L'\xE9cart du r\xE9seau tient d'abord au ${premier.nom} (${formatMontant(premier.v)}, ${formatNombre(part)}\u202F% de l'\xE9cart)${second ? ` puis au ${second.nom} (${formatMontant(second.v)})` : ""}.`);
+        lecture.push(`L'\xE9cart du r\xE9seau tient d'abord au ${premier.nom} (${formatMontant(premier.v)}, ${formatNombre(part)}\xA0% de l'\xE9cart)${second ? ` puis au ${second.nom} (${formatMontant(second.v)})` : ""}.`);
       }
     }
     lecture.push(f.alertes.length === 0 ? "Aucune alerte n'appelle de d\xE9cision cette semaine." : `Les alertes du matin appellent une d\xE9cision : ${f.alertes.map((a) => a.nom_bassin).join(", ")}.`);

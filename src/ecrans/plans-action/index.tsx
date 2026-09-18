@@ -44,7 +44,7 @@ export function EcranPlansAction() {
     { cle: "levier", libelle: "Levier", triable: false, rendu: (l) => <span className="block max-w-[420px] text-[14px] leading-[1.35] text-texte">{l.levier}</span> },
     { cle: "nom_bassin", libelle: "Agence", largeur: "130px", valeur: (l) => l.nom_bassin ?? "Réseau", rendu: (l) => <span className="whitespace-nowrap text-texte-2">{l.nom_bassin ?? "Réseau"}</span> },
     { cle: "proprietaire_code", libelle: "Propriétaire", largeur: "100px", secondaire: true, rendu: (l) => <span className="chiffre text-[12px] text-texte-3">{l.proprietaire_code}</span> },
-    { cle: "gain_attendu", libelle: "Gain de marge attendu", numerique: true, largeur: "128px", rendu: (l) => (l.gain_attendu > 0 ? formatMontant(l.gain_attendu) : "qualité") },
+    { cle: "gain_attendu", libelle: "Gain de marge attendu", numerique: true, largeur: "128px", rendu: (l) => (l.gain_attendu > 0 ? formatMontant(l.gain_attendu) : <span title="Levier de qualité, sans gain chiffré">n. d.</span>) },
     { cle: "statut", libelle: "Statut", largeur: "96px", valeur: (l) => statutPlan(l.statut).texte, rendu: (l) => { const s = statutPlan(l.statut); return <Pastille statut={s.statut} texte={s.texte} />; } },
     { cle: "echeance", libelle: "Échéance", largeur: "88px", rendu: (l) => <span className="chiffre text-[13px]">{formatDateCourte(l.echeance)}</span> },
     { cle: "avancement", libelle: "Avancement déclaré", numerique: true, largeur: "136px", rendu: (l) => (

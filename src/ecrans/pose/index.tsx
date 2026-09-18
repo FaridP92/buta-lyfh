@@ -25,6 +25,8 @@ export function EcranPose() {
   const mobile = useEstMobile();
   const n1 = periodeN1(periode);
   const journee = journeePubliee ?? `${moisPublie}-01`;
+  // Les sous-titres de carte commencent par une capitale, « le réseau » compris.
+  const perimetreTitre = perimetreLibelle.charAt(0).toUpperCase() + perimetreLibelle.slice(1);
 
   const delais = useVue("mart_delais", { egal: { agence: agenceVue }, ordre: "mois" });
   const pose = useVue("mart_pose", { entre: { colonne: "semaine", de: `${ajouterMois(moisPublie, -3)}-01`, a: `${ajouterMois(moisPublie, 4)}-01` }, ordre: "semaine" });
@@ -131,7 +133,7 @@ export function EcranPose() {
         <Carte titre="Calendrier de charge des équipes de pose" sousTitre="Chargement des semaines"><Squelette hauteur={agencesCalendrier.length > 1 ? 380 : 180} /></Carte>
       )}
       {optionCalendrier ? (
-        <CarteGraphique titre="Calendrier de charge des équipes de pose" sousTitre={`${perimetreLibelle} : charge en part de la capacité (techniciens actifs × 5 jours), quatre semaines réalisées (cadre plein) puis la semaine en cours et onze semaines planifiées (cadre pointillé) ; au-delà de 100 %, surcharge en rouge ; case vide : aucune pose cette semaine-là`}
+        <CarteGraphique titre="Calendrier de charge des équipes de pose" sousTitre={`${perimetreTitre} : charge en part de la capacité (techniciens actifs × 5 jours), quatre semaines réalisées (cadre plein) puis la semaine en cours et onze semaines planifiées (cadre pointillé) ; au-delà de 100 %, surcharge en rouge ; case vide : aucune pose cette semaine-là`}
           option={optionCalendrier} hauteur={agencesCalendrier.length > 1 ? 380 : 180} hauteurMobile={agencesCalendrier.length > 1 ? 420 : 200} codeIndicateur="PROD_TECH"
           description={`Calendrier de charge semaine × agence pour ${perimetreLibelle} : ${calendrier.semaines.length} semaines, charge réalisée puis planifiée en pourcentage de la capacité`}
           requete={`select semaine, agence, capacite_jt_semaine, jt_poses, poses_planifiees, charge_planifiee_pct from buta.mart_pose where semaine between '${ajouterMois(moisPublie, -3)}-01' and '${ajouterMois(moisPublie, 4)}-01'`}
@@ -143,7 +145,7 @@ export function EcranPose() {
           <Carte className="lg:col-span-7" titre="Délai de pose : sur place contre à distance" sousTitre="Chargement des douze mois"><Squelette hauteur={300} /></Carte>
         )}
         {optionCouverture ? (
-          <CarteGraphique className="lg:col-span-7" titre="Délai de pose : sur place contre à distance" sousTitre={`${perimetreLibelle}, douze mois : médiane signature vers pose selon que le département a une agence ou est couvert à distance (H5)`}
+          <CarteGraphique className="lg:col-span-7" titre="Délai de pose : sur place contre à distance" sousTitre={`${perimetreTitre}, douze mois : médiane signature vers pose selon que le département a une agence ou est couvert à distance (H5)`}
             option={optionCouverture} hauteur={300} codeIndicateur="D_SIGN_POSE"
             description={`Délai médian de pose sur douze mois pour ${perimetreLibelle} : sur place ${surPlaceDernier ? formatDelaiJours(surPlaceDernier.delai_signature_pose_median) : "n. d."}, à distance ${dernierMoisCouverture ? formatDelaiJours(dernierMoisCouverture.delai_signature_pose_median) : "n. d."} au dernier mois`}
             requete={`select mois, departement, delai_signature_pose_median from buta.mart_delais where agence = '${agenceVue}' and departement in ('SUR_PLACE', 'A_DISTANCE') order by mois`}

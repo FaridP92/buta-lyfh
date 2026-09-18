@@ -8,7 +8,7 @@ function point(agence: string, periode: string, devis: number, tauxSignature: nu
   };
 }
 
-// Agence A : remise fixe à 4 %, signature à 30 % ; agence B : 4 % puis 9 %, signature 34 % puis 38 % (+0,8 point par point).
+// Agence A : remise fixe à 4 %, signature à 30 % ; agence B : 4 % puis 9 %, signature 34 % puis 38 % (+0,8 point par point).
 const JEU: PointRemise[] = [
   point("A", "2026-01-01", 100, 30, 4), point("A", "2026-02-01", 100, 30, 4), point("A", "2026-03-01", 100, 30, 4), point("A", "2026-04-01", 100, 30, 4),
   point("B", "2026-01-01", 100, 34, 4), point("B", "2026-02-01", 100, 34, 4), point("B", "2026-03-01", 100, 38, 9), point("B", "2026-04-01", 100, 38, 9),
@@ -64,7 +64,7 @@ describe("seuilRentable et penteRequise", () => {
     expect(seuilRentable(1.8, 32, 4, 30)).toBe(8.1);
   });
 
-  it("calcule la pente pour laquelle 8 % serait optimal", () => {
+  it("calcule la pente pour laquelle 8 % serait optimal", () => {
     // b = 32 / (30 + 4 - 16) = 1,78
     expect(penteRequise(8, 32, 4, 30)).toBe(1.78);
     expect(penteRequise(20, 32, 4, 30)).toBeNull();
@@ -76,14 +76,14 @@ describe("phraseRemise", () => {
     const phrase = phraseRemise(estimerElasticite(JEU));
     expect(phrase).toContain("retrouve 0,8 point de signature par point de remise");
     expect(phrase).toContain("aucun niveau de remise n'augmente la marge");
-    expect(phrase).toMatch(/il faudrait 1,\d+ point de signature par point de remise pour qu'une remise de 8\u202f% soit le bon niveau/);
+    expect(phrase).toMatch(/il faudrait 1,\d+ point de signature par point de remise pour qu'une remise de 8\u00a0% soit le bon niveau/);
     expect(phrase).toContain("pas une règle applicable à un réseau réel");
   });
 
   it("annonce le niveau optimal quand il existe", () => {
     const e = estimerElasticite(JEU);
     const fort = e ? { ...e, pente: 1.8, intervalle: [1.5, 2.1] as [number, number], seuil: 8.1, seuilBorneHaute: 9.4 } : null;
-    expect(phraseRemise(fort)).toContain("la marge est maximale autour de 8,1\u202f% de remise (9,4\u202f% à la borne haute");
+    expect(phraseRemise(fort)).toContain("la marge est maximale autour de 8,1\u00a0% de remise (9,4\u00a0% à la borne haute");
   });
 
   it("explique l'absence d'estimation", () => {

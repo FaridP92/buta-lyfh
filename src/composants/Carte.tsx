@@ -21,8 +21,9 @@ export function Carte({ titre, sousTitre, actions, children, className, nu = fal
         className,
       )}
     >
+      {/* Sur téléphone, les actions (sélecteurs, menus) passent sous le titre au lieu de l'écraser (flex-wrap sous md). */}
       {(titre || actions) && (
-        <header className={cn("flex items-start justify-between gap-[var(--esp-3)]", nu ? "px-[var(--esp-4)] pt-[var(--esp-4)]" : "", "mb-[var(--esp-3)]")}>
+        <header className={cn("flex flex-wrap items-start justify-between gap-[var(--esp-3)] md:flex-nowrap", nu ? "px-[var(--esp-4)] pt-[var(--esp-4)]" : "", "mb-[var(--esp-3)]")}>
           <div className="min-w-0">
             {titre && <h2 className="text-[15px] font-semibold leading-tight text-texte">{titre}</h2>}
             {sousTitre && <p className="mt-[2px] text-[12px] leading-snug text-texte-2">{sousTitre}</p>}

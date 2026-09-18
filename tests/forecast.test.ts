@@ -28,7 +28,7 @@ describe("recalculerAtterrissage", () => {
   });
 
   it("déplace le central avec le curseur et arrondit la probabilité à cinq points", () => {
-    // À 45 % de signature du pipe : pipe = 5 985 182, central = 29 266 244, au-dessus de l'objectif de 78 k€ sur un écart-type de 529 k€ : Φ(0,15) = 56 % → 55.
+    // À 45 % de signature du pipe : pipe = 5 985 182, central = 29 266 244, au-dessus de l'objectif de 78 k€ sur un écart-type de 529 k€ : Φ(0,15) = 56 % → 55.
     const a = recalculerAtterrissage(H, 45);
     expect(a.pipe).toBe(5_985_182);
     expect(a.central).toBe(29_266_244);
@@ -106,7 +106,7 @@ describe("risquesEtOpportunites", () => {
 
   it("distingue objectif atteignable, borne haute au-dessus, pipe fort et pipe faible", () => {
     const s = risquesEtOpportunites(agences, poses);
-    expect(s.some((x) => x.type === "opportunite" && x.texte.includes("Bassin d'Arcachon") && x.texte.includes("probabilité d'atteinte 95\u202f%"))).toBe(true);
+    expect(s.some((x) => x.type === "opportunite" && x.texte.includes("Bassin d'Arcachon") && x.texte.includes("probabilité d'atteinte 95\u00a0%"))).toBe(true);
     expect(s.some((x) => x.type === "opportunite" && x.texte.includes("Born : la borne haute"))).toBe(true);
     expect(s.some((x) => x.type === "opportunite" && x.texte.includes("Born : pipe pondéré"))).toBe(true);
     expect(s.some((x) => x.type === "risque" && x.texte.includes("Born") && x.texte.includes("moins d'un mois de run-rate"))).toBe(true);

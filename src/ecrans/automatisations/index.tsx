@@ -64,7 +64,7 @@ export function EcranAutomatisations() {
       <header className="flex flex-wrap items-end justify-between gap-[var(--esp-3)]">
         <div>
           <h1 className="font-serif-titre text-[32px] leading-[1.1] text-texte max-md:text-[26px]">Ce qui tourne chaque matin</h1>
-          <p className="mt-1 text-[13px] text-texte-2">Workflows n8n, dernière exécution, journal · {journal.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">journal en direct</Badge>}</p>
+          <p className="mt-1 text-[13px] text-texte-2">Workflows n8n, dernière exécution, journal · {journal.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : lignes.length === 0 ? <Badge variante="instantane">en attente de publication</Badge> : <Badge variante="simule">journal en direct</Badge>}</p>
         </div>
         <p className="text-[12px] text-texte-3">
           Sept derniers jours : {resume.executions === 0 ? "aucune exécution journalisée" : `${formatNombre(resume.executions)} exécution${resume.executions > 1 ? "s" : ""}, ${formatTaux(resume.taux_reussite, 0)} sans erreur`}
@@ -115,7 +115,7 @@ export function EcranAutomatisations() {
       <Carte titre="Journal des exécutions" sousTitre={lignes.length === 0 ? "Toutes automatisations confondues (table automatisation_run)" : `${formatNombre(Math.min(lignes.length, JOURNAL_MAX))} dernière${lignes.length > 1 ? "s" : ""} exécution${lignes.length > 1 ? "s" : ""}, toutes automatisations confondues (table automatisation_run)`} nu>
         {journal.donnees === undefined ? <Squelette hauteur={320} /> : (
           <Tableau colonnes={colonnes} lignes={journalVisible} cleLigne={(l) => String(l.id)} triInitial={{ cle: "debute_le", sens: "desc" }} compact nomExport="journal-automatisations"
-            vide={`Aucune exécution journalisée : les workflows sont créés dans n8n et attendent leur publication (credential Supabase) ; en attendant, la journée simulée est publiée d'avance par script${publieeJusquAu ? ` jusqu'au ${formatDateCourte(publieeJusquAu)}` : ""} et les vues sont rafraîchies chaque matin par une tâche pg_cron de secours. La première ligne apparaîtra à la première exécution publiée.`} />
+            vide={`Aucune exécution journalisée : les workflows sont créés dans n8n et attendent leur publication (identifiant de connexion Supabase) ; en attendant, la journée simulée est publiée d'avance par script${publieeJusquAu ? ` jusqu'au ${formatDateCourte(publieeJusquAu)}` : ""} et les vues sont rafraîchies chaque matin par une tâche pg_cron de secours. La première ligne apparaîtra à la première exécution publiée.`} />
         )}
       </Carte>
 
@@ -124,7 +124,7 @@ export function EcranAutomatisations() {
       </Carte>
 
       <LigneSources sources={[{ nom: "Vue mart_automatisation (journal n8n en direct), catalogue des workflows du dépôt", reference: `lu le ${formatDateHeure(maintenant)}` }]}
-        hypotheses="Prochaine exécution déduite du déclencheur en heure de Paris ; les exports JSON sont ceux du dossier n8n/ du dépôt, sans aucun secret (les credentials n'y figurent que par leur nom)." />
+        hypotheses="Prochaine exécution déduite du déclencheur en heure de Paris ; les exports JSON sont ceux du dossier n8n/ du dépôt, sans aucun secret (les identifiants de connexion n'y figurent que par leur nom)." />
     </div>
   );
 }

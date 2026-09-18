@@ -80,13 +80,13 @@ export function EcranQualite() {
           {bloquantsKo > 0 && <p className="mt-[var(--esp-2)] text-[12px] text-alerte">{formatNombre(bloquantsKo)} contrôle{bloquantsKo > 1 ? "s" : ""} bloquant{bloquantsKo > 1 ? "s" : ""} en échec : la journée est publiée, l'anomalie est portée à l'écran plutôt que masquée.</p>}
         </div>
         {serieScore.length > 0 ? (
-          <CarteGraphique className="lg:col-span-8" titre="Score sur 90 jours" sousTitre={`${formatNombre(serieScore.length)} journée${serieScore.length > 1 ? "s" : ""} de contrôles disponible${serieScore.length > 1 ? "s" : ""} : l'historique se constitue au fil des journées publiées`} option={optionScore(serieScore, tokens)} hauteur={220} hauteurMobile={200} codeIndicateur="QUALITE"
+          <CarteGraphique className="lg:col-span-8" titre="Score des journées publiées" sousTitre={`${formatNombre(serieScore.length)} journée${serieScore.length > 1 ? "s" : ""} de contrôles disponible${serieScore.length > 1 ? "s" : ""} : l'historique se constitue au fil des journées publiées`} option={optionScore(serieScore, tokens)} hauteur={220} hauteurMobile={200} codeIndicateur="QUALITE"
             description={`Score de qualité par jour, ${formatNombre(serieScore.length)} points`} requete="select distinct jour, score_jour from buta.mart_qualite order by jour"
             exportCSV={{ colonnes: [{ cle: "jour", libelle: "Jour" }, { cle: "score", libelle: "Score" }], lignes: serieScore }} />
-        ) : <Carte className="lg:col-span-8" titre="Score sur 90 jours"><Squelette hauteur={220} /></Carte>}
+        ) : <Carte className="lg:col-span-8" titre="Score des journées publiées"><Squelette hauteur={220} /></Carte>}
       </div>
 
-      <Carte titre="Les douze contrôles" sousTitre="DONNEES.md §4.6 : règle, résultat du matin, lignes concernées, tendance sur la veille, échantillon" actions={<BoutonFiche code="QUALITE" />}>
+      <Carte titre="Les douze contrôles" sousTitre="Pour chaque contrôle : la règle, le résultat du matin, les lignes concernées, la tendance sur la veille, un échantillon" actions={<BoutonFiche code="QUALITE" />}>
         {qualite.donnees === undefined ? <Squelette hauteur={400} /> : (
           <ol className="flex flex-col divide-y divide-bordure">
             {controles.map((c, i) => {
@@ -130,7 +130,7 @@ export function EcranQualite() {
         <Carte className="lg:col-span-5" titre="Fraîcheur des sources" sousTitre="Date de référence, ingestion, prochaine mise à jour">
           {fraicheur.donnees === undefined ? <Squelette hauteur={200} /> : (
             <table className="w-full text-[13px]">
-              <thead><tr className="border-b border-bordure text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3"><th className="py-1 text-left">Source</th><th className="py-1 text-right">Référence</th><th className="py-1 text-right">Ingérée</th><th className="py-1 text-right">Prochaine</th></tr></thead>
+              <thead><tr className="border-b border-bordure text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3"><th className="py-1 text-left">Source</th><th className="py-1 text-right">Référence</th><th className="py-1 text-right">Chargée</th><th className="py-1 text-right">Prochaine</th></tr></thead>
               <tbody>
                 {(fraicheur.donnees ?? []).map((f) => (
                   <tr key={f.source} className="border-b border-bordure/60">
@@ -164,7 +164,7 @@ export function EcranQualite() {
           </div>
           <div>
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Produits ({formatNombre(produits.donnees?.length ?? 0)})</p>
-            <ul className="flex flex-col gap-[2px] text-texte-2">{[...(produits.donnees ?? [])].sort((a, b) => b.prix_catalogue - a.prix_catalogue).map((p) => <li key={p.code} className="flex justify-between gap-2"><span><span className="chiffre mr-1 text-texte-3">{p.code}</span>{p.libelle}</span><span className="chiffre text-texte-3">{formatMontant(p.prix_catalogue)} · {formatNombreDecimal(p.duree_pose_jt, 1)} jt de pose</span></li>)}</ul>
+            <ul className="flex flex-col gap-[2px] text-texte-2">{[...(produits.donnees ?? [])].sort((a, b) => b.prix_catalogue - a.prix_catalogue).map((p) => <li key={p.code} className="flex justify-between gap-2"><span><span className="chiffre mr-1 text-texte-3">{p.code}</span>{p.libelle}</span><span className="chiffre text-texte-3">{formatMontant(p.prix_catalogue)} · {formatNombreDecimal(p.duree_pose_jt, 1)} jours-technicien de pose</span></li>)}</ul>
           </div>
           <div>
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Statuts ({formatNombre(statuts.donnees?.length ?? 0)})</p>

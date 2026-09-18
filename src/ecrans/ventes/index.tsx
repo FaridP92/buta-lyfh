@@ -14,7 +14,7 @@ import { Squelette } from "@/composants/Squelette";
 import { useTokensGraphique } from "@/graphiques/theme";
 import { useEstMobile } from "@/lib/useEstMobile";
 import { agregerKpi, ajouterMois, ecartPct, ecartPoints, moisDe, moisEntre, periodeN1, type LigneKpi } from "@/lib/periode";
-import { formatDateCourte, formatMontant, formatNombreDecimal, formatTaux } from "@/lib/format";
+import { formatDateCourte, formatMontant, formatMontantUnite, formatNombreDecimal, formatTaux, uniteMontantPour } from "@/lib/format";
 import { expliquerEcart, sommerEffets } from "@/lib/phrases";
 import { ExplicationEcart } from "@/composants/ExplicationEcart";
 import { estimerElasticite, phraseRemise } from "@/lib/remise";
@@ -164,14 +164,17 @@ export function EcranVentes() {
   const clePeriode = `${periode.param}|${agenceVue}|${comparaison}`;
   const chargement = kpiTous.donnees === undefined;
 
+  // Une seule unité par colonne de montants (résultat, marge après acquisition) : chiffres alignés, tri lisible.
+  const uniteResultat = uniteMontantPour(lignesAgences.map((l) => l.kpi?.resultat));
+  const uniteMargeAcq = uniteMontantPour(lignesAgences.map((l) => l.kpi?.marge_apres_acquisition));
   const colonnesAgences: Colonne<(typeof lignesAgences)[number]>[] = [
     { cle: "agence", libelle: "Agence", valeur: (l) => l.nom, rendu: (l) => <span className="whitespace-nowrap text-texte">{l.nom}</span> },
     { cle: "ca", libelle: "CA signé", numerique: true, largeur: "92px", valeur: (l) => l.kpi?.ca_signe ?? null, rendu: (l) => formatMontant(l.kpi?.ca_signe ?? null) },
     { cle: "ecart", libelle: "Écart obj.", numerique: true, largeur: "88px", valeur: (l) => l.kpi?.ecart_objectif_pct ?? null, rendu: (l) => pctSigne(l.kpi?.ecart_objectif_pct) },
     { cle: "ecart_n1", libelle: "Écart N-1", numerique: true, largeur: "88px", secondaire: true, valeur: (l) => l.ecartN1, rendu: (l) => pctSigne(l.ecartN1) },
     { cle: "marge", libelle: "Marge brute", numerique: true, largeur: "96px", valeur: (l) => l.kpi?.taux_marge ?? null, rendu: (l) => formatTaux(l.kpi?.taux_marge ?? null) },
-    { cle: "marge_acq", libelle: "Après acquisition", numerique: true, largeur: "120px", secondaire: true, valeur: (l) => l.kpi?.marge_apres_acquisition ?? null, rendu: (l) => formatMontant(l.kpi?.marge_apres_acquisition ?? null) },
-    { cle: "resultat", libelle: "Résultat", numerique: true, largeur: "92px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => <span className={(l.kpi?.resultat ?? 0) < 0 ? "text-alerte" : "text-texte"}>{formatMontant(l.kpi?.resultat ?? null)}</span> },
+    { cle: "marge_acq", libelle: "Après acquisition", numerique: true, largeur: "120px", secondaire: true, valeur: (l) => l.kpi?.marge_apres_acquisition ?? null, rendu: (l) => formatMontantUnite(l.kpi?.marge_apres_acquisition ?? null, uniteMargeAcq) },
+    { cle: "resultat", libelle: "Résultat", numerique: true, largeur: "92px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => <span className={(l.kpi?.resultat ?? 0) < 0 ? "text-alerte" : "text-texte"}>{formatMontantUnite(l.kpi?.resultat ?? null, uniteResultat)}</span> },
     { cle: "productivite", libelle: "Ventes / commercial", numerique: true, largeur: "112px", secondaire: true, valeur: (l) => l.kpi?.productivite_commerciale ?? null, rendu: (l) => formatNombreDecimal(l.kpi?.productivite_commerciale ?? null, 1) },
     { cle: "remise", libelle: "Remise", numerique: true, largeur: "76px", secondaire: true, valeur: (l) => l.kpi?.taux_remise ?? null, rendu: (l) => formatTaux(l.kpi?.taux_remise ?? null) },
     // Le taux d'annulation à 60 jours n'est affiché que si toutes les signatures de la période ont 60 jours (sinon « n. d. »).
@@ -290,7 +293,7 @@ export function EcranVentes() {
       ) : <Carte titre="Remises"><Squelette hauteur={300} /></Carte>}
 
       <LigneSources simule sources={[{ nom: "Vues mart_kpi_mensuel, mart_ecarts, mart_ventes_produit, mart_remises", ...(filtres.journeePubliee ? { reference: `journée publiée du ${formatDateCourte(filtres.journeePubliee)}` } : {}) }]}
-        hypotheses="Objectif : réalisé 2025 × 1,15 ; N-1 indisponible pour 2025 ; coûts de revient au prix catalogue du dossier (DONNEES.md §3.3)." />
+        hypotheses="Objectif : réalisé 2025 × 1,15 ; N-1 indisponible pour 2025 ; coûts de revient (matériel et pose) fixés au prix catalogue de chaque dossier." />
     </div>
   );
 }

@@ -13,7 +13,7 @@ import { Squelette } from "@/composants/Squelette";
 import { useTokensGraphique } from "@/graphiques/theme";
 import { useCarte } from "@/graphiques/cartes";
 import { useEstMobile } from "@/lib/useEstMobile";
-import { formatDateCourte, formatNombre, formatTaux } from "@/lib/format";
+import { formatDateAnnee, formatDateCourte, formatNombre, formatTaux } from "@/lib/format";
 import { LIBELLES_COMPOSANTES, POIDS_DEFAUT, poidsParDefaut, recalculerIndices, type Composantes, type Poids } from "@/lib/indice";
 import { optionCommunes, optionFrance, optionGazCiterne, type CommuneCarte, type DepartementCarte } from "./options";
 
@@ -79,8 +79,8 @@ export function EcranTerritoires() {
     { cle: "maisons", libelle: "Maisons", numerique: true, largeur: "92px", secondaire: true, rendu: (l) => formatNombre(l.maisons) },
     { cle: "fioul", libelle: "Fioul", numerique: true, largeur: "84px", secondaire: true, rendu: (l) => formatNombre(l.fioul) },
     { cle: "gaz_citerne", libelle: "Citerne", numerique: true, largeur: "84px", secondaire: true, rendu: (l) => formatNombre(l.gaz_citerne) },
-    { cle: "solaire_pour_1000_maisons", libelle: "Solaire / 1 000", numerique: true, largeur: "104px", secondaire: true, rendu: (l) => (l.solaire_pour_1000_maisons === null ? "n. d." : formatNombre(Math.round(l.solaire_pour_1000_maisons))) },
-    { cle: "rge_pour_10000_maisons", libelle: "RGE / 10 000", numerique: true, largeur: "96px", secondaire: true, rendu: (l) => (l.rge_pour_10000_maisons === null ? "n. d." : formatNombre(Math.round(l.rge_pour_10000_maisons))) },
+    { cle: "solaire_pour_1000_maisons", libelle: "Solaire / 1 000", numerique: true, largeur: "104px", secondaire: true, rendu: (l) => (l.solaire_pour_1000_maisons === null ? "n. d." : formatNombre(Math.round(l.solaire_pour_1000_maisons))) },
+    { cle: "rge_pour_10000_maisons", libelle: "RGE / 10 000", numerique: true, largeur: "96px", secondaire: true, rendu: (l) => (l.rge_pour_10000_maisons === null ? "n. d." : formatNombre(Math.round(l.rge_pour_10000_maisons))) },
     { cle: "agences_simulees", libelle: "Agence simulée", triable: false, valeur: (l) => l.agences_simulees ?? "", rendu: (l) => <span className="block max-w-[220px] text-[12px] leading-[1.3] text-texte-2">{l.agences_simulees ? l.agences_simulees.split(",").map((c) => nomAgence(c.trim())).join(", ") : ""}</span> },
   ];
   const lignesTableau = useMemo(() => [...lignes].sort((a, b) => Number(b.perimetre) - Number(a.perimetre) || (b.indiceAffiche ?? -1) - (a.indiceAffiche ?? -1)), [lignes]);
@@ -95,9 +95,9 @@ export function EcranTerritoires() {
 
   const sources = [
     { nom: "Insee, Logement 2022", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "insee") ? { reference: `millésime ${dateDe(reference, "insee")?.slice(0, 4)}` } : {}) },
-    { nom: "ADEME, liste des installateurs RGE", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "rge") ? { reference: `ingérée le ${formatDateCourte(dateDe(reference, "rge") as string)}` } : {}) },
-    { nom: "RTE, registre des installations", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "rte") ? { reference: `au ${formatDateCourte(dateDe(reference, "rte") as string)}` } : {}) },
-    { nom: "ADEME, base DPE", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "dpe") ? { reference: `ingérée le ${formatDateCourte(dateDe(reference, "dpe") as string)}` } : {}) },
+    { nom: "ADEME, liste des installateurs RGE", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "rge") ? { reference: `chargée le ${formatDateCourte(dateDe(reference, "rge") as string)}` } : {}) },
+    { nom: "RTE, registre des installations", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "rte") ? { reference: `au ${formatDateAnnee(dateDe(reference, "rte") as string)}` } : {}) },
+    { nom: "ADEME, base DPE", licence: "Licence Ouverte 2.0", ...(dateDe(reference, "dpe") ? { reference: `chargée le ${formatDateCourte(dateDe(reference, "dpe") as string)}` } : {}) },
   ];
 
   return (
@@ -160,10 +160,10 @@ export function EcranTerritoires() {
                     <li key={cle} className="flex flex-col gap-1">
                       <div className="flex items-baseline justify-between gap-2 text-[12px]">
                         <label htmlFor={id} className="text-texte-2">{LIBELLES_COMPOSANTES[cle]}</label>
-                        <span className="chiffre text-texte">{Number.isNaN(valeur) ? "n. d." : formatNombre(Math.round(valeur))}<span className="ml-1 text-texte-3">· poids {formatNombre(Math.round(poids[cle] * 100))} %{penalite ? " (pénalité)" : ""}</span></span>
+                        <span className="chiffre text-texte">{Number.isNaN(valeur) ? "n. d." : formatNombre(Math.round(valeur))}<span className="ml-1 text-texte-3">· {penalite ? "pénalité" : "poids"} {formatNombre(Math.round(poids[cle] * 100))} %</span></span>
                       </div>
                       <div className="h-[6px] w-full overflow-hidden rounded-full bg-surface-2"><div className={penalite ? "h-full rounded-full bg-texte-3" : "h-full rounded-full bg-ambre"} style={{ width: `${Number.isNaN(valeur) ? 0 : Math.max(0, Math.min(100, valeur))}%`, transition: "width 500ms cubic-bezier(0.22, 1, 0.36, 1)" }} /></div>
-                      <input id={id} type="range" min={0} max={BORNES[cle].max} step={BORNES[cle].pas} value={poids[cle]} onChange={(e) => setPoids((p) => ({ ...p, [cle]: Number(e.target.value) }))} className="h-1 w-full cursor-pointer accent-ambre" aria-valuetext={`poids ${formatNombre(Math.round(poids[cle] * 100))} %`} />
+                      <input id={id} type="range" min={0} max={BORNES[cle].max} step={BORNES[cle].pas} value={poids[cle]} onChange={(e) => setPoids((p) => ({ ...p, [cle]: Number(e.target.value) }))} className="h-1 w-full cursor-pointer accent-ambre" aria-valuetext={`poids ${formatNombre(Math.round(poids[cle] * 100))} %`} />
                     </li>
                   );
                 })}
@@ -178,14 +178,14 @@ export function EcranTerritoires() {
         </Carte>
       </div>
 
-      <Carte titre="Les 96 départements" sousTitre={`Les onze du périmètre simulé en tête, puis les autres par indice${personnalise ? " recalculé avec les poids personnalisés" : ""} ; clic : sélectionner`} nu>
+      <Carte titre={tableauComplet ? "Les 96 départements" : "Départements, les 26 premiers"} sousTitre={`Les onze du périmètre simulé en tête, puis les autres par indice${personnalise ? " recalculé avec les poids personnalisés" : ""} ; clic : sélectionner`} nu>
         <div className="px-[var(--esp-2)] pb-[var(--esp-3)]">
           {departements.donnees === undefined ? <Squelette hauteur={400} /> : (
             <>
               <Tableau colonnes={colonnes} lignes={lignesVisibles} cleLigne={(l) => l.departement} compact nomExport="territoires-departements"
                 estActive={(l) => l.departement === selectionne?.departement} onLigneClic={(l) => setSelection(l.departement)} />
               <button type="button" onClick={() => setTableauComplet((v) => !v)} className="mt-[var(--esp-2)] px-[var(--esp-2)] text-[12px] text-texte-2 underline-offset-2 hover:text-texte hover:underline">
-                {tableauComplet ? "Réduire aux vingt-six premiers" : `Afficher les ${formatNombre(lignesTableau.length)} départements`}
+                {tableauComplet ? "Réduire aux 26 premiers" : `Afficher les ${formatNombre(lignesTableau.length)} départements`}
               </button>
             </>
           )}
@@ -205,7 +205,7 @@ export function EcranTerritoires() {
         </Carte>
       </div>
 
-      <LigneSources sources={sources} hypotheses="Composantes en rangs centiles sur les 96 départements de métropole ; communes classées parmi celles des onze départements. Contours : Etalab, admin express simplifié." />
+      <LigneSources sources={sources} hypotheses="Composantes en rangs centiles sur les 96 départements de métropole ; communes classées parmi celles des onze départements. Contours : Etalab, ADMIN EXPRESS simplifié." />
     </div>
   );
 }

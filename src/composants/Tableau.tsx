@@ -47,7 +47,7 @@ function valeurBrute<L>(colonne: Colonne<L>, ligne: L) {
 
 /**
  * Tableau (DESIGN.md §3) : lignes 40 px, en-tête collant, tri par colonne, chiffres alignés à droite en mono,
- * zébrure 3 %, ligne survolée surface haute, export CSV et XLSX, défilement horizontal explicite sur mobile.
+ * zébrure 3 %, ligne survolée surface haute, export CSV et XLSX, défilement horizontal explicite sur mobile.
  */
 export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, onLigneClic, nomExport, vide = "Aucune ligne pour cette période.", compact = false, ligneTotal }: TableauProps<L>) {
   const [tri, setTri] = useState<{ cle: string; sens: "asc" | "desc" } | null>(triInitial ?? null);
@@ -98,7 +98,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
                     className={cn("px-[var(--esp-2)] py-[var(--esp-2)] text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3", c.numerique ? "text-right" : "text-left", classesVisibilite(c))}
                   >
                     {triable ? (
-                      <button type="button" onClick={() => basculerTri(c.cle)} className={cn("inline-flex items-center gap-1 hover:text-texte", c.numerique && "flex-row-reverse", actif && "text-texte")} aria-label={`Trier par ${c.libelle}`}>
+                      <button type="button" onClick={() => basculerTri(c.cle)} className={cn("inline-flex items-center gap-1 uppercase tracking-[0.08em] hover:text-texte", c.numerique && "flex-row-reverse", actif && "text-texte")} aria-label={`Trier par ${c.libelle}`}>
                         {c.libelle}
                         {actif ? (tri.sens === "desc" ? <ArrowDown size={11} strokeWidth={1.5} aria-hidden="true" /> : <ArrowUp size={11} strokeWidth={1.5} aria-hidden="true" />) : <ArrowUpDown size={11} strokeWidth={1.5} className="opacity-40" aria-hidden="true" />}
                       </button>

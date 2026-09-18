@@ -17,7 +17,7 @@ const FAITS: FaitsRevue = {
     { agence: "HGI", mois: "2026-09-01", comparaison: "objectif", ca_realise: 124561, ca_comparaison: 95021, ecart_total: 29540, effet_volume: 21544, effet_mix: 6795, effet_prix: 451, effet_remise: 749, comparaison_disponible: true },
   ],
   alertes: [
-    { code: "CPV_LEADS_ACHETES", agence: "BDX", nom_bassin: "Bordeaux Métropole", gravite: "alerte", valeur: 48, texte: "Bordeaux Métropole : coût par vente des leads achetés +48 % vs T1 (cohortes jusqu'à 05/2026)" },
+    { code: "CPV_LEADS_ACHETES", agence: "BDX", nom_bassin: "Bordeaux Métropole", gravite: "alerte", valeur: 48, texte: "Bordeaux Métropole : coût par vente des leads achetés +48 % vs T1 (cohortes jusqu'à 05/2026)" },
     { code: "DOSSIERS_A_QUALIFIER", agence: "NOR", nom_bassin: "Nord", gravite: "attention", valeur: 123, texte: "Nord : 123 dossiers à qualifier, référentiel en cours d'alignement" },
   ],
   mention: "données d'activité simulées",
@@ -26,19 +26,19 @@ const FAITS: FaitsRevue = {
 describe("redigerRevue", () => {
   const r = redigerRevue(FAITS);
   it("liste les faits transmis sans en inventer", () => {
-    expect(r.faits[0]).toBe("Semaine du 07/09 au 13/09 : 961 leads, 315 RDV tenus, 35 signatures pour 284,5 k€ HT, 43 poses, 534,7 k€ encaissés.");
-    expect(r.faits[1]).toBe("Semaine précédente : 868 leads, 52 signatures, 451,3 k€ signés.");
-    expect(r.faits[2]).toBe("Agences : Saintonge signe le plus (12 signatures, 90,0\u202fk€), Marsan le moins (1, 6\u202f500\u202f€).");
-    expect(r.faits[3]).toContain("Septembre à date : 924,7 k€ signés contre 1,3 M€ pour l'objectif (-27,8 %)");
+    expect(r.faits[0]).toBe("Semaine du 07/09 au 13/09 : 961 leads, 315 RDV tenus, 35 signatures pour 284,5 k€ HT, 43 poses, 534,7 k€ encaissés.");
+    expect(r.faits[1]).toBe("Semaine précédente : 868 leads, 52 signatures, 451,3 k€ signés.");
+    expect(r.faits[2]).toBe("Agences : Saintonge signe le plus (12 signatures, 90,0\u00a0k€), Marsan le moins (1, 6\u00a0500\u00a0€).");
+    expect(r.faits[3]).toContain("Septembre à date : 924,7 k€ signés contre 1,3 M€ pour l'objectif (-27,8 %)");
     expect(r.faits[4]).toContain("2 alertes actives : Bordeaux Métropole : coût par vente");
   });
   it("écrit cinq phrases de lecture à partir des écarts entre faits", () => {
     expect(r.lecture).toHaveLength(5);
-    expect(r.lecture[0]).toBe("Leads en hausse de 10,7 % sur une semaine (961 contre 868).");
-    expect(r.lecture[1]).toContain("Signatures en retrait de 32,7 % et CA signé en retrait de 37,0 % : une semaine de conversion faible");
-    expect(r.lecture[2]).toBe("1 agence est à plus de 20 % sous l'objectif au prorata du mois : Marsan (-75,3 %).");
-    expect(r.lecture[3]).toBe("Haute Gironde (+31,1\u202f%) dépasse l'objectif.");
-    expect(r.lecture[4]).toContain("L'écart du réseau tient d'abord au volume (-237,9 k€, 67 % de l'écart) puis au mix");
+    expect(r.lecture[0]).toBe("Leads en hausse de 10,7 % sur une semaine (961 contre 868).");
+    expect(r.lecture[1]).toContain("Signatures en retrait de 32,7 % et CA signé en retrait de 37,0 % : une semaine de conversion faible");
+    expect(r.lecture[2]).toBe("1 agence est à plus de 20 % sous l'objectif au prorata du mois : Marsan (-75,3 %).");
+    expect(r.lecture[3]).toBe("Haute Gironde (+31,1\u00a0%) dépasse l'objectif.");
+    expect(r.lecture[4]).toContain("L'écart du réseau tient d'abord au volume (-237,9 k€, 67 % de l'écart) puis au mix");
   });
   it("propose trois décisions distinctes, chacune avec son indicateur", () => {
     expect(r.decisions.map((d) => d.indicateur)).toEqual(["CPV", "QUALITE", "TX_SIGN"]);

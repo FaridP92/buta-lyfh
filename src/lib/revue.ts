@@ -143,8 +143,8 @@ export function redigerRevue(f: FaitsRevue): Revue {
   const auDessus = ecartsAgences.filter((e) => e.pct > 0);
   if (ecartsAgences.length > 0) {
     lecture.push(sousObjectif.length > 0
-      ? `${formatNombre(sousObjectif.length)} agence${sousObjectif.length > 1 ? "s sont" : " est"} à plus de 20 % sous ${comparaisonLibelle} au prorata du mois : ${sousObjectif.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")}.`
-      : `Aucune agence n'est à plus de 20 % sous ${comparaisonLibelle} au prorata du mois.`);
+      ? `${formatNombre(sousObjectif.length)} agence${sousObjectif.length > 1 ? "s sont" : " est"} à plus de 20 % sous ${comparaisonLibelle} au prorata du mois : ${sousObjectif.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")}.`
+      : `Aucune agence n'est à plus de 20 % sous ${comparaisonLibelle} au prorata du mois.`);
     lecture.push(auDessus.length > 0 ? `${auDessus.map((e) => `${e.nom} (${signe(e.pct)})`).join(", ")} dépasse${auDessus.length > 1 ? "nt" : ""} ${comparaisonLibelle}.` : `Aucune agence ne dépasse ${comparaisonLibelle} ce mois-ci.`);
   }
   if (reseauEcart && reseauEcart.ecart_total) {
@@ -156,7 +156,7 @@ export function redigerRevue(f: FaitsRevue): Revue {
     const second = effets[1];
     if (premier) {
       const part = Math.round((100 * premier.v) / reseauEcart.ecart_total);
-      lecture.push(`L'écart du réseau tient d'abord au ${premier.nom} (${formatMontant(premier.v)}, ${formatNombre(part)} % de l'écart)${second ? ` puis au ${second.nom} (${formatMontant(second.v)})` : ""}.`);
+      lecture.push(`L'écart du réseau tient d'abord au ${premier.nom} (${formatMontant(premier.v)}, ${formatNombre(part)} % de l'écart)${second ? ` puis au ${second.nom} (${formatMontant(second.v)})` : ""}.`);
     }
   }
   lecture.push(f.alertes.length === 0 ? "Aucune alerte n'appelle de décision cette semaine." : `Les alertes du matin appellent une décision : ${f.alertes.map((a) => a.nom_bassin).join(", ")}.`);

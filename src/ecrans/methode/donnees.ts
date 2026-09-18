@@ -2,35 +2,35 @@ export const SOURCES_REELLES = [
   {
     nom: "Insee, Logement en 2022",
     contenu: "Résidences principales, maisons, propriétaires, mode de chauffage, à la commune",
-    licence: "Licence Ouverte 2.0",
+    licence: "Licence Ouverte 2.0",
     reference: "Millésime 2022, vérifié le 17 septembre 2026",
     lien: "https://www.insee.fr/fr/statistiques/fichier/8581474/base-cc-logement-2022_csv.zip",
   },
   {
     nom: "ADEME, liste des entreprises RGE",
     contenu: "Qualifications pompe à chaleur, photovoltaïque, chauffe-eau thermodynamique en cours de validité",
-    licence: "Licence Ouverte 2.0",
+    licence: "Licence Ouverte 2.0",
     reference: "Vérifié le 17 septembre 2026, rejeu mensuel par script",
     lien: "https://data.ademe.fr/datasets/liste-des-entreprises-rge-2",
   },
   {
     nom: "RTE (ODRÉ), registre des installations",
     contenu: "Installations et puissance solaire raccordées, par commune",
-    licence: "Licence Ouverte 2.0",
+    licence: "Licence Ouverte 2.0",
     reference: "Au 31 juillet 2026",
     lien: "https://odre.opendatasoft.com/explore/dataset/registre-national-installation-production-stockage-electricite-agrege",
   },
   {
     nom: "ADEME, DPE logements existants",
     contenu: "Maisons étiquette F ou G, énergie de chauffage (fioul, GPL, propane, butane)",
-    licence: "Licence Ouverte 2.0",
+    licence: "Licence Ouverte 2.0",
     reference: "Vérifié le 17 septembre 2026, rejeu mensuel par script",
     lien: "https://data.ademe.fr/datasets/dpe03existant",
   },
   {
     nom: "Contours géographiques",
     contenu: "Départements et communes du périmètre, simplifiés pour la carte",
-    licence: "Licence Ouverte 2.0",
+    licence: "Licence Ouverte 2.0",
     reference: "Annuelle",
     lien: "https://geo.api.gouv.fr",
   },
@@ -52,7 +52,7 @@ export const HISTOIRES = [
   {
     code: "H3",
     titre: "Saintonge",
-    texte: "Taux de remise porté de 4 % à 9 % à partir d'avril 2026 : conversion gagnée, marge perdue.",
+    texte: "Taux de remise porté de 4 % à 9 % à partir d'avril 2026 : conversion gagnée, marge perdue.",
   },
   {
     code: "H4",
@@ -74,7 +74,7 @@ export const HISTOIRES = [
     code: "H7",
     titre: "Bassin d'Arcachon",
     texte:
-      "Capacité de pose réduite de 25 % de mai à août 2026 : carnet de pose allongé, CA posé en retrait alors que le CA signé tient.",
+      "Capacité de pose réduite de 25 % de mai à août 2026 : carnet de pose allongé, CA posé en retrait alors que le CA signé tient.",
   },
 ] as const;
 

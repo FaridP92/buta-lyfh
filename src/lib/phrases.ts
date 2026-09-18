@@ -107,7 +107,7 @@ export function expliquerEcart(f: FaitsEcart): Explication {
     return "";
   };
   const causes = classes.map((e) => {
-    const part = total > 0 ? `, ${formatNombre(Math.round((Math.abs(e.valeur) / total) * 100))} % de l'écart` : "";
+    const part = total > 0 ? `, ${formatNombre(Math.round((Math.abs(e.valeur) / total) * 100))} % de l'écart` : "";
     const sujet = LIBELLES_EFFETS[e.cle].sujet;
     return `${sujet.charAt(0).toUpperCase() + sujet.slice(1)} : ${montantSigne(e.valeur)}${detail(e.cle)}${part}.`;
   });
@@ -152,7 +152,7 @@ export function phrasesDuMois(f: FaitsMois): [string, string, string] {
       p2 = "L'écart de chiffre d'affaires est nul : volume, mix, prix et remises se compensent.";
     } else {
       const part = Math.round((Math.abs(premier.valeur) / Math.abs(f.ecart.total)) * 100);
-      const explique = Math.abs(premier.valeur) <= Math.abs(f.ecart.total) ? `, soit ${formatNombre(part)} % de l'écart` : ", plus que l'écart lui-même, compensé par les autres effets";
+      const explique = Math.abs(premier.valeur) <= Math.abs(f.ecart.total) ? `, soit ${formatNombre(part)} % de l'écart` : ", plus que l'écart lui-même, compensé par les autres effets";
       const verbe = (cle: CleEffet, valeur: number) => (LIBELLES_EFFETS[cle].pluriel ? (valeur >= 0 ? "ajoutent" : "retirent") : valeur >= 0 ? "ajoute" : "retire");
       const secondTexte = second && Math.abs(second.valeur) >= 1000 ? ` ; ${LIBELLES_EFFETS[second.cle].sujet} ${verbe(second.cle, second.valeur)} ${formatMontant(Math.abs(second.valeur))}` : "";
       p2 = `L'écart de ${montantSigne(f.ecart.total)} tient d'abord ${LIBELLES_EFFETS[premier.cle].a} (${montantSigne(premier.valeur)}${explique})${secondTexte}.`;

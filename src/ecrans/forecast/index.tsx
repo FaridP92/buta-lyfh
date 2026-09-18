@@ -124,7 +124,7 @@ export function EcranForecast() {
         {chargement || !optionFan || !atterrissage || !hypotheses ? (
           <Carte className="lg:col-span-8" titre={`Éventail d'atterrissage ${annee}`}><Squelette hauteur={360} /></Carte>
         ) : (
-          <CarteGraphique className="lg:col-span-8" titre={`Éventail d'atterrissage ${annee}`} sousTitre={`CA signé HT cumulé pour ${perimetreLibelle} : réalisé, objectif, projection et intervalle à 68 %${curseurActif ? ` ; hypothèse testée : pipe signé à ${formatTaux(tauxCurseur)}` : ""}`}
+          <CarteGraphique className="lg:col-span-8" titre={`Éventail d'atterrissage ${annee}`} sousTitre={`CA signé HT cumulé pour ${perimetreLibelle} : réalisé, objectif, projection et intervalle à 68 %${curseurActif ? ` ; hypothèse testée : pipe signé à ${formatTaux(tauxCurseur)}` : ""}`}
             option={optionFan} hauteur={360} codeIndicateur="ATTERR" description={`Éventail d'atterrissage ${annee} : réalisé ${formatMontant(hypotheses.realiseADate)}, central ${formatMontant(atterrissage.central)}, bas ${formatMontant(atterrissage.bas)}, haut ${formatMontant(atterrissage.haut)}, objectif ${formatMontant(hypotheses.objectifAnnuel)}`}
             requete={`select * from buta.mart_forecast where agence = '${agenceVue}' and annee = ${annee}`}
             exportCSV={{ colonnes: [{ cle: "mois", libelle: "Mois" }, { cle: "realise", libelle: "Réalisé cumulé (€)" }, { cle: "objectif", libelle: "Objectif cumulé (€)" }, { cle: "central", libelle: "Central (€)" }, { cle: "bas", libelle: "Bas (€)" }, { cle: "haut", libelle: "Haut (€)" }],
@@ -132,7 +132,7 @@ export function EcranForecast() {
             enfantsSous={(
               <dl className="grid grid-cols-2 gap-x-[var(--esp-4)] gap-y-1 text-[12px] sm:grid-cols-4">
                 <div><dt className="text-texte-3">Atterrissage central</dt><dd className="chiffre text-[15px] text-texte">{formatMontant(atterrissage.central)}</dd></div>
-                <div><dt className="text-texte-3">Intervalle à 68 %</dt><dd className="chiffre text-[15px] text-texte">{formatMontant(atterrissage.bas)} à {formatMontant(atterrissage.haut)}</dd></div>
+                <div><dt className="text-texte-3">Intervalle à 68 %</dt><dd className="chiffre text-[15px] text-texte">{formatMontant(atterrissage.bas)} à {formatMontant(atterrissage.haut)}</dd></div>
                 <div><dt className="text-texte-3">Écart à l'objectif</dt><dd className={`chiffre text-[15px] ${atterrissage.ecartPct !== null && atterrissage.ecartPct < 0 ? "text-alerte" : "text-succes"}`}>{atterrissage.ecartPct === null ? "n. d." : `${atterrissage.ecartPct > 0 ? "+" : ""}${formatTaux(atterrissage.ecartPct)}`}</dd></div>
                 <div><dt className="text-texte-3">Probabilité d'atteinte</dt><dd className="chiffre text-[15px] text-texte">{formatProbabilite(atterrissage.probabilite)}</dd></div>
               </dl>
@@ -145,8 +145,8 @@ export function EcranForecast() {
               <dl className="grid grid-cols-[1fr_auto] gap-x-[var(--esp-3)] gap-y-[6px]">
                 <dt className="text-texte-2">Devis en cours (moins de 90 jours)</dt><dd className="chiffre text-right text-texte">{formatNombre(ligne.devis_en_cours)} · {formatMontant(ligne.montant_devis_en_cours)}</dd>
                 <dt className="text-texte-2">Signature observée, devis de 0 à 30 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_0_30)}</dd>
-                <dt className="text-texte-2">devis de 31 à 60 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_31_60)}</dd>
-                <dt className="text-texte-2">devis de 61 à 90 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_61_90)}</dd>
+                <dt className="text-texte-2">Devis de 31 à 60 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_31_60)}</dd>
+                <dt className="text-texte-2">Devis de 61 à 90 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_61_90)}</dd>
                 <dt className="text-texte-2">Annulation à six mois</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_annulation_6m)}</dd>
                 <dt className="text-texte-2">Pipe pondéré</dt><dd className="chiffre text-right text-texte">{formatMontant(atterrissage.pipe)}</dd>
                 <dt className="text-texte-2">Run-rate trois mois</dt><dd className="chiffre text-right text-texte">{formatMontant(ligne.run_rate_3m)} / mois</dd>

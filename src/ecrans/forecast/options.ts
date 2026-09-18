@@ -16,7 +16,7 @@ export function optionEventail(t: Trajectoire, moisCourant: number, objectifAnnu
     ...base,
     // La légende passe sur deux lignes en mobile : plus de place au-dessus du tracé.
     grid: { left: 8, right: mobile ? 12 : 24, top: mobile ? 64 : 40, bottom: 8, containLabel: true },
-    legend: { ...base.legend, data: ["Réalisé cumulé", "Objectif cumulé", "Central", "Intervalle à 68 %"] },
+    legend: { ...base.legend, data: ["Réalisé cumulé", "Objectif cumulé", "Central", "Intervalle à 68 %"] },
     xAxis: { ...base.xAxis, type: "category", boundaryGap: false, data: t.mois.map((m) => libelleMoisAxe(m)), axisLabel: { ...base.xAxis.axisLabel, interval: mobile ? 1 : 0 } },
     yAxis: { ...base.yAxis, type: "value", axisLabel: { ...base.yAxis.axisLabel, formatter: (v: number) => formatMontant(v) } },
     tooltip: { ...base.tooltip, trigger: "axis", valueFormatter: montant, axisPointer: { type: "line", lineStyle: { color: tokens.texte3 } } },
@@ -37,7 +37,7 @@ export function optionEventail(t: Trajectoire, moisCourant: number, objectifAnnu
       { name: "Objectif cumulé", type: "line", data: [...t.objectifCumule], symbol: "none", lineStyle: { color: tokens.menthe, width: 1.5, type: "dashed" }, itemStyle: { color: tokens.menthe }, animationDuration: 400, z: 3 },
       // Bande : socle transparent puis épaisseur colorée, empilés.
       { name: "bas", type: "line", stack: "bande", data: [...t.bas], symbol: "none", lineStyle: { opacity: 0 }, itemStyle: { opacity: 0 }, tooltip: { show: false }, animationDuration: 800, animationDelay: 500, z: 1 },
-      { name: "Intervalle à 68 %", type: "line", stack: "bande", data: largeurBande, symbol: "none", lineStyle: { opacity: 0 }, itemStyle: { color: tokens.ambre }, areaStyle: { color: tokens.ambre, opacity: 0.14 }, tooltip: { show: false }, animationDuration: 800, animationDelay: 500, z: 1 },
+      { name: "Intervalle à 68 %", type: "line", stack: "bande", data: largeurBande, symbol: "none", lineStyle: { opacity: 0 }, itemStyle: { color: tokens.ambre }, areaStyle: { color: tokens.ambre, opacity: 0.14 }, tooltip: { show: false }, animationDuration: 800, animationDelay: 500, z: 1 },
       { name: "Central", type: "line", data: [...t.central], symbol: "none", lineStyle: { color: tokens.ambre, width: 1.5, type: "dashed" }, itemStyle: { color: tokens.ambre }, animationDuration: 1000, animationEasing: "cubicOut", z: 3 },
       { name: "Bas", type: "line", data: [...t.bas], symbol: "none", lineStyle: { color: tokens.ambre, width: 1, opacity: 0.5 }, itemStyle: { color: tokens.ambre }, animationDuration: 800, animationDelay: 500, z: 2 },
       { name: "Haut", type: "line", data: [...t.haut], symbol: "none", lineStyle: { color: tokens.ambre, width: 1, opacity: 0.5 }, itemStyle: { color: tokens.ambre }, animationDuration: 800, animationDelay: 500, z: 2 },

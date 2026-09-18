@@ -4,7 +4,7 @@
  */
 const COLONNES: { titre: string; noeuds: string[] }[] = [
   { titre: "Sources", noeuds: ["Insee Logement 2022", "ADEME RGE", "RTE registre", "ADEME DPE", "Système source simulé"] },
-  { titre: "Staging", noeuds: ["marche_departement", "marche_commune", "rge_installateur", "fait_dossier, coûts, charges"] },
+  { titre: "Préparation", noeuds: ["marche_departement", "marche_commune", "rge_installateur", "fait_dossier, coûts, charges"] },
   { titre: "Vues mart", noeuds: ["mart_marche_*", "mart_kpi_mensuel, mart_ecarts", "mart_funnel, mart_couts", "mart_forecast, mart_pose", "mart_qualite, mart_alertes"] },
   { titre: "Écrans", noeuds: ["Territoires", "Vue d'ensemble, Ventes", "Funnel", "Forecast", "Qualité"] },
 ];

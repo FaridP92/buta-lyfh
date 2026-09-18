@@ -4,7 +4,7 @@ import { construireZipPowerBi, modeleEtoile } from "@/lib/powerbi";
 
 const VUES = [
   { nom: "mart_kpi_mensuel", lignes: [{ mois: "2026-08-01", agence: "SAI", ca_signe: 371500.5, taux_marge: 23.4 }, { mois: "2026-08-01", agence: "RESEAU", ca_signe: 1900000, taux_marge: null }] },
-  { nom: "mart_alertes", lignes: [{ code: "CPV", agence: "BDX", texte: "Bordeaux Métropole ; coût par vente +48 %" }] },
+  { nom: "mart_alertes", lignes: [{ code: "CPV", agence: "BDX", texte: "Bordeaux Métropole ; coût par vente +48 %" }] },
 ];
 
 describe("modeleEtoile", () => {
@@ -30,6 +30,6 @@ describe("construireZipPowerBi", () => {
     expect(csv).toContain("2026-08-01;SAI;371500,5;23,4");
     expect(csv).toContain("2026-08-01;RESEAU;1900000;");
     // Le point-virgule du texte est protégé par des guillemets.
-    expect(strFromU8(zip["mart_alertes.csv"] as Uint8Array)).toContain('"Bordeaux Métropole ; coût par vente +48 %"');
+    expect(strFromU8(zip["mart_alertes.csv"] as Uint8Array)).toContain('"Bordeaux Métropole ; coût par vente +48 %"');
   });
 });

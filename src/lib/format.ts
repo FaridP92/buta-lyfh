@@ -1,10 +1,11 @@
 /**
  * Formatage à la française (docs/DESIGN.md §2, docs/INDICATEURS.md conventions).
- * Espace insécable fine avant % et entre milliers, virgule décimale,
+ * Espace insécable (U+00A0) avant %, avant l'unité et entre milliers, virgule décimale,
+ * (l'espace fine U+202F se rend à 1,3 px dans Instrument Sans : le nombre collait à son unité, relecture du 18 septembre),
  * k€ et M€ à partir de 10 000 et 1 000 000, « n. d. » pour une valeur non calculable.
  */
 
-const ESPACE_FINE = " ";
+const ESPACE_FINE = " ";
 
 function estVide(valeur: number | null | undefined): valeur is null | undefined {
   return valeur === null || valeur === undefined || Number.isNaN(valeur);
@@ -14,7 +15,22 @@ function formatNombreFr(valeur: number, decimales: number): string {
   return new Intl.NumberFormat("fr-FR", {
     minimumFractionDigits: decimales,
     maximumFractionDigits: decimales,
-  }).format(valeur);
+  }).format(valeur).replace(/\u202F/g, ESPACE_FINE); // Intl sépare les milliers par l'espace fine : même caractère partout.
+}
+
+/** Unité d'affichage d'une colonne de montants, choisie une fois pour toute la colonne à partir du plus grand montant. */
+export type UniteMontant = "eur" | "keur" | "meur";
+export function uniteMontantPour(valeurs: readonly (number | null | undefined)[]): UniteMontant {
+  const max = Math.max(0, ...valeurs.map((v) => (estVide(v) ? 0 : Math.abs(v))));
+  return max >= 1_000_000 ? "meur" : max >= 10_000 ? "keur" : "eur";
+}
+
+/** Montant dans une unité imposée (colonne triable, axe de graphique) : les chiffres restent alignés. */
+export function formatMontantUnite(valeur: number | null | undefined, unite: UniteMontant, decimales?: number): string {
+  if (estVide(valeur)) return "n. d.";
+  if (unite === "meur") return `${formatNombreFr(valeur / 1_000_000, decimales ?? 1)}${ESPACE_FINE}M€`;
+  if (unite === "keur") return `${formatNombreFr(valeur / 1_000, decimales ?? 1)}${ESPACE_FINE}k€`;
+  return `${formatNombreFr(valeur, decimales ?? 0)}${ESPACE_FINE}€`;
 }
 
 export function formatMontant(valeur: number | null | undefined): string {
@@ -34,7 +50,7 @@ export function formatTaux(valeur: number | null | undefined, decimales = 1): st
   return `${formatNombreFr(valeur, decimales)}${ESPACE_FINE}%`;
 }
 
-/** Probabilité en pourcentage entier, bornée en lecture : « < 1 % » et « > 99 % » plutôt que 0 et 100. */
+/** Probabilité en pourcentage entier, bornée en lecture : « < 1 % » et « > 99 % » plutôt que 0 et 100. */
 export function formatProbabilite(valeur: number | null | undefined): string {
   if (estVide(valeur)) return "n. d.";
   if (valeur < 1) return `<${ESPACE_FINE}1${ESPACE_FINE}%`;

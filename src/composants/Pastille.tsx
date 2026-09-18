@@ -27,7 +27,7 @@ export function Pastille({ statut, texte, className }: PastilleProps) {
 
 /**
  * Statut d'un écart à l'objectif (INDICATEURS.md conventions) : vert au-dessus,
- * ambre entre 0 et -5 %, rouge en dessous ; un indicateur « plus bas = mieux » inverse.
+ * ambre entre 0 et -5 %, rouge en dessous ; un indicateur « plus bas = mieux » inverse.
  */
 export function statutEcart(ecartPct: number | null | undefined, plusBasMieux = false): Statut {
   if (ecartPct === null || ecartPct === undefined || Number.isNaN(ecartPct)) return "neutre";

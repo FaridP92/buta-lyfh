@@ -17,9 +17,10 @@ export function optionSankey(noeuds: readonly NoeudSankey[], liens: readonly Lie
       return `${name} : <b>${formatNombre(value)}</b>${total > 0 ? ` · ${formatTaux((100 * value) / total)} des leads` : ""}`;
     } },
     series: [{
-      type: "sankey", left: 8, right: mobile ? 84 : 150, top: 12, bottom: 12,
+      // Sur téléphone, le flux se lit de haut en bas : les libellés ont toute la largeur au lieu de s'empiler dans le tiers droit.
+      type: "sankey", left: 8, right: mobile ? 8 : 150, top: mobile ? 8 : 12, bottom: mobile ? 8 : 12, orient: mobile ? "vertical" : "horizontal",
       // Alignement à gauche : chaque perte sort juste après son étape, au lieu d'être rejetée en dernière colonne.
-      nodeWidth: mobile ? 10 : 14, nodeGap: mobile ? 18 : 16, nodeAlign: "left", draggable: false,
+      nodeWidth: mobile ? 12 : 14, nodeGap: mobile ? 14 : 16, nodeAlign: "left", draggable: false,
       emphasis: { focus: "adjacency" },
       data: noeuds.map((n) => ({ name: n.nom, itemStyle: { color: couleur(n), borderWidth: 0 } })),
       links: liens.map((l) => ({ source: l.source, target: l.cible, value: l.valeur })),
@@ -38,7 +39,8 @@ export function optionCourbeCanaux(mois: readonly string[], canaux: readonly { c
   const base = optionBase(t);
   return {
     ...base,
-    grid: { left: 8, right: 8, top: mobile ? 84 : 56, bottom: 8, containLabel: true },
+    // Assez de place sous la légende de huit canaux (deux lignes) pour les titres d'axe « leads » et « ventes ».
+    grid: { left: 8, right: 8, top: mobile ? 100 : 76, bottom: 8, containLabel: true },
     legend: { ...base.legend, data: [...canaux.map((c) => c.libelle), "Ventes nettes"], itemGap: 10 },
     xAxis: { ...base.xAxis, type: "category", data: mois.map((m) => libelleMoisAxe(m)), axisLabel: { ...base.xAxis.axisLabel, interval: mobile ? 3 : 1 } },
     yAxis: [

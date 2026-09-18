@@ -5,14 +5,14 @@ Intention : un cockpit nocturne, précis et calme. Pas de néons partout, pas de
 ## 1. Tokens (CSS variables, thème sombre par défaut, thème clair complet)
 Sombre : fond `--fond: #0B0F17` (avec un très léger grain, bruit à 3 % d'opacité, pour que le fond ne soit pas un aplat numérique) ; surface `--surface: #111827` ; surface haute `--surface-2: #161F2E` ; bordure `--bordure: rgba(255,255,255,0.08)` ; texte `--texte: #E6EAF2` ; texte secondaire `--texte-2: #9AA4B8` ; texte tertiaire `--texte-3: #808A9D` (5,5:1 sur le fond, 4,8:1 sur la surface haute ; la valeur initiale #6B7488 faisait 4,1:1) ; accent ambre `--ambre: #F5B700` (actions, sélection, réseau) ; accent menthe `--menthe: #2DD4BF` (PAC, positif) ; bleu `--bleu: #60A5FA` (photovoltaïque, information) ; violet `--violet: #A78BFA` (autres produits) ; alerte `--alerte: #FB7185` ; succès `--succes: #34D399` ; attention `--attention: #FBBF24`.
 Clair : fond `#F7F8FB`, surface `#FFFFFF`, surface haute `#F1F3F8`, bordure `rgba(15,23,42,0.08)`, texte `#0F172A`, texte secondaire `#475569`, texte tertiaire `#5B677D`. Les accents sont assombris davantage que 10 % pour tenir le AA : ambre `#A67C00`, menthe `#127A70`, bleu `#2A63BD`, violet `#6E4FCB`, alerte `#C42D47`, succès `#157A55`, attention `#A36F00` (tous au moins 3:1 sur les trois fonds, ratios calculés au lot 0). Deux tokens dédiés au texte coloré, `--ambre-texte` et `--menthe-texte` (`#8A6500` et `#0F766E` en clair, identiques aux accents en sombre), parce qu'un accent à 3:1 suffit à un point ou une bordure mais pas à un libellé de 11 px (4,5:1).
-Palette des séries (ordre fixe) : ambre, menthe, bleu, violet, alerte, gris `#94A3B8`. Sept produits maximum sur un graphique ; au-delà, regrouper en « autres ».
+Palette des séries (ordre fixe) : ambre, menthe, bleu, violet, alerte, gris `#94A3B8`, rose `#F472B6` (clair `#B0367A`), cyan `#22D3EE` (clair `#0E7F96`) ; les deux dernières ont été ajoutées le 18 septembre parce que huit produits et huit canaux se partageaient six couleurs. Huit séries maximum sur un graphique ; au-delà, regrouper en « autres ».
 Bascule de thème dans la barre haute, respect de `prefers-color-scheme`, choix mémorisé en localStorage.
 
-## 2. Typographie (polices auto-hébergées via Fontsource, aucune requête vers Google)
+## 2. Typographie (polices auto-hébergées, fichiers Fontsource copiés dans `public/fonts/` et préchargés, aucune requête vers Google)
 - Titres d'écran : Instrument Serif, 32 px desktop, 26 px mobile, interlettrage -0,01 em. Un seul titre serif par écran.
 - Interface : Instrument Sans, 14 px de base, 15 px sur les tableaux, 12 px pour les métadonnées ; poids 400 et 600 seulement.
 - Chiffres : JetBrains Mono, `font-variant-numeric: tabular-nums`, 28 px pour les KPI (36 px desktop), 13 px dans les tableaux. Les unités sont en Instrument Sans, texte secondaire.
-- Format français : espace insécable fine avant `%` et entre milliers, virgule décimale, « k€ » et « M€ » à partir de 10 000 et 1 000 000 avec une décimale.
+- Format français : espace insécable (U+00A0, pas la fine U+202F qui se rend à 1,3 px dans Instrument Sans) avant `%`, avant l'unité et entre milliers, virgule décimale, « k€ » et « M€ » à partir de 10 000 et 1 000 000 avec une décimale.
 
 ## 3. Grille et composants
 - Contenu maximal 1440 px, marges 24 px (16 px mobile), grille 12 colonnes, gouttière 16 px. Rail gauche 76 px (icônes 20 px, libellé au survol après 300 ms), barre haute 56 px collante.
@@ -64,7 +64,7 @@ Le niveau attendu est celui d'un produit conçu par un studio, pas d'un gabarit.
 | États vides en gris avec une icône triste | Une phrase utile et un lien vers l'action, dans la même typographie que le reste |
 | Animations d'apparition partout, sans lien avec le contenu | Le mouvement suit la donnée : une barre part de sa base, un chiffre monte, un flux coule, un contour se trace ; rien ne bouge sans raison |
 | Densité faible, beaucoup de vide décoratif | Densité d'un poste de pilotage : plus d'information par écran, mais hiérarchisée, lisible à un mètre |
-Détails qui font la différence : chiffres tabulaires partout ; séparateurs d'un pixel, jamais deux ; libellés d'axe abrégés à la française (« janv. », « févr. ») ; virgule décimale ; espace fine avant % ; survol d'une ligne de tableau qui révèle une mini courbe ; raccourcis clavier indiqués en gris dans la palette ; curseur main uniquement sur ce qui est cliquable ; focus visible dessiné, pas le bleu par défaut du navigateur.
+Détails qui font la différence : chiffres tabulaires partout ; séparateurs d'un pixel, jamais deux ; libellés d'axe abrégés à la française (« janv. », « févr. ») ; virgule décimale ; espace insécable avant % ; survol d'une ligne de tableau qui révèle une mini courbe ; raccourcis clavier indiqués en gris dans la palette ; curseur main uniquement sur ce qui est cliquable ; focus visible dessiné, pas le bleu par défaut du navigateur.
 
 ## 10. Identité et logo (livrés au lot 0, en SVG uniquement)
 - Marque-mot « Buta.Lyfh » en Instrument Serif, le point médian remplacé par un point ambre légèrement plus grand que le corps (le signal, la donnée qui s'allume). Deux versions, fond sombre et fond clair, et une version monochrome.

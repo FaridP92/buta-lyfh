@@ -22,6 +22,8 @@
   --bleu: #60a5fa;
   --violet: #a78bfa;
   --alerte: #fb7185;
+  --rose: #f472b6;
+  --cyan: #22d3ee;
   --succes: #34d399;
   --attention: #fbbf24;
   --gris-serie: #94a3b8;
@@ -68,6 +70,8 @@
   --bleu: #2a63bd;
   --violet: #6e4fcb;
   --alerte: #c42d47;
+  --rose: #b0367a;
+  --cyan: #0e7f96;
   --succes: #157a55;
   --attention: #a36f00;
   --gris-serie: #5b677d;
@@ -94,6 +98,10 @@
     --bleu: #2a63bd;
     --violet: #6e4fcb;
     --alerte: #c42d47;
+    --rose: #b0367a;
+    --cyan: #0e7f96;
+  --rose: #b0367a;
+  --cyan: #0e7f96;
     --succes: #157a55;
     --attention: #a36f00;
     --gris-serie: #5b677d;

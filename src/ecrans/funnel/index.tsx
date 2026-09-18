@@ -49,7 +49,7 @@ export function EcranFunnel() {
   const cohorteMure = cohorte && !cohorte.mature ? derniereCohorteMature(lignesTous, periode.fin) : null;
   const moisMur = cohorteMure ? moisDe(cohorteMure.mois) : null;
   // Matrice canal × agence et qualité des leads par canal : sur la dernière cohorte close à 90 jours quand la période
-  // demandée n'a pas fini de convertir (une matrice de 0,0 % et des coûts par vente sur zéro vente ne disent rien).
+  // demandée n'a pas fini de convertir (une matrice de 0,0 % et des coûts par vente sur zéro vente ne disent rien).
   const debutCohortes = moisMur ?? periode.debut;
   const finCohortes = moisMur ?? periode.fin;
   const libelleCohortes = moisMur ? `Cohorte de ${libelleMois(moisMur)}, à 90 jours` : periode.libelle;
@@ -102,7 +102,7 @@ export function EcranFunnel() {
       rendu: (l: (typeof canauxMatrice)[number]) => {
         const c = matrice.get(`${l.code}|${a.code}`);
         if (!c || c.leads === 0) return <span className="text-texte-3">n. d.</span>;
-        // Intensité plafonnée à 35 % : au-delà, le texte clair perdait son contraste (Lighthouse 3,3:1 à 60 %) ; le trait porte le volume.
+        // Intensité plafonnée à 35 % : au-delà, le texte clair perdait son contraste (Lighthouse 3,3:1 à 60 %) ; le trait porte le volume.
         const intensite = Math.round((35 * (c.taux_conversion ?? 0)) / conversionMax);
         return (
           <span className="inline-flex flex-col items-end gap-[2px]" title={`${formatNombre(c.leads)} leads, ${formatNombre(c.signatures)} ventes nettes`}>
@@ -130,7 +130,7 @@ export function EcranFunnel() {
   const colonnesQualite: Colonne<(typeof canauxQualite)[number]>[] = [
     { cle: "canal", libelle: "Canal", valeur: (l) => libelleCanal(l.canal), rendu: (l) => <span className="whitespace-nowrap text-texte">{libelleCanal(l.canal)}</span> },
     { cle: "leads", libelle: "Leads", numerique: true, largeur: "72px", rendu: (l) => formatNombre(l.leads) },
-    { cle: "taux_rdv", libelle: "Taux RDV", numerique: true, largeur: "84px", rendu: (l) => formatTaux(l.taux_rdv) },
+    { cle: "taux_rdv", libelle: "Taux de RDV", numerique: true, largeur: "84px", rendu: (l) => formatTaux(l.taux_rdv) },
     { cle: "taux_conversion", libelle: "Conversion", numerique: true, largeur: "92px", rendu: (l) => formatTaux(l.taux_conversion) },
     { cle: "cout", libelle: "Coût", numerique: true, largeur: "84px", secondaire: true, rendu: (l) => formatMontant(l.cout) },
     { cle: "cout_par_lead", libelle: "Coût / lead", numerique: true, largeur: "92px", secondaire: true, rendu: (l) => (l.cout === 0 ? "sans coût" : formatMontant(l.cout_par_lead)) },
@@ -140,7 +140,7 @@ export function EcranFunnel() {
   ];
   useDeclarerExport("funnel-canaux", canauxQualite.length ? {
     nom: "Qualité des leads",
-    colonnes: [{ cle: "canal", libelle: "Canal" }, { cle: "leads", libelle: "Leads" }, { cle: "taux_rdv", libelle: "Taux RDV (%)" }, { cle: "taux_conversion", libelle: "Conversion (%)" }, { cle: "cout", libelle: "Coût (€)" }, { cle: "cout_par_lead", libelle: "Coût par lead (€)" }, { cle: "cout_par_vente", libelle: "Coût par vente (€)" }, { cle: "delai", libelle: "Délai lead vers RDV (j)" }, { cle: "a_revoir", libelle: "À revoir" }],
+    colonnes: [{ cle: "canal", libelle: "Canal" }, { cle: "leads", libelle: "Leads" }, { cle: "taux_rdv", libelle: "Taux de RDV (%)" }, { cle: "taux_conversion", libelle: "Conversion (%)" }, { cle: "cout", libelle: "Coût (€)" }, { cle: "cout_par_lead", libelle: "Coût par lead (€)" }, { cle: "cout_par_vente", libelle: "Coût par vente (€)" }, { cle: "delai", libelle: "Délai lead vers RDV (j)" }, { cle: "a_revoir", libelle: "À revoir" }],
     lignes: canauxQualite.map((c) => ({ canal: libelleCanal(c.canal), leads: c.leads, taux_rdv: c.taux_rdv, taux_conversion: c.taux_conversion, cout: c.cout, cout_par_lead: c.cout_par_lead, cout_par_vente: c.cout_par_vente, delai: c.delai_lead_rdv_median, a_revoir: c.a_revoir })),
   } : null);
 
@@ -220,11 +220,11 @@ export function EcranFunnel() {
         ) : <Carte className="lg:col-span-7" titre="Leads par canal et ventes"><Squelette hauteur={360} /></Carte>}
 
         {optionAttente ? (
-          <CarteGraphique className="lg:col-span-5" titre="Leads sans RDV planifié" sousTitre={`${formatNombre(attenteTotal)} leads de la cohorte ${moisPublie} créés depuis plus de 48 h sans rendez-vous planifié ; huit cohortes en courbe (grain mensuel, à défaut de semaines)`} option={optionAttente} hauteur={360} codeIndicateur="ATTENTE48"
+          <CarteGraphique className="lg:col-span-5" titre="Leads sans RDV planifié" sousTitre={`${formatNombre(attenteTotal)} leads de la cohorte de ${libelleMois(moisPublie)} créés depuis plus de 48 h sans rendez-vous planifié ; huit cohortes en courbe (grain mensuel, à défaut de semaines)`} option={optionAttente} hauteur={360} codeIndicateur="ATTENTE48"
             description={`Leads sans RDV planifié à 48 h par agence et sur huit cohortes pour ${perimetreLibelle}`}
             requete={`select mois, agence, sans_rdv_48h from buta.mart_funnel where canal = 'TOUS' and mois between '${ajouterMois(moisPublie, -7)}-01' and '${moisPublie}-01'`}
             exportCSV={{ colonnes: [{ cle: "agence", libelle: "Agence" }, { cle: "valeur", libelle: "Leads sans RDV à 48 h" }], lignes: attenteAgences.map((a) => ({ agence: a.nom, valeur: a.valeur })) }}
-            enfantsSous={<p className="text-[12px] text-texte-2">Relance à 48 h : <Link to="/plans-action" className="text-texte underline decoration-texte-3 underline-offset-2 hover:decoration-texte">plan d'action « relancer sous 48 heures tout lead sans RDV planifié »</Link> (écran Plans d'action).</p>} />
+            enfantsSous={<p className="text-[12px] text-texte-2">Relance à 48 h : <Link to="/plans-action" className="text-texte underline decoration-texte-3 underline-offset-2 hover:decoration-texte">plan d'action « relancer sous 48 h tout lead sans RDV planifié »</Link> (écran Plans d'action).</p>} />
         ) : <Carte className="lg:col-span-5" titre="Leads sans RDV planifié"><Squelette hauteur={360} /></Carte>}
       </div>
 

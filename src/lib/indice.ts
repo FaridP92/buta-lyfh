@@ -27,8 +27,8 @@ export const LIBELLES_COMPOSANTES: Record<keyof Composantes, string> = {
   volume: "Volume de propriétaires occupants",
   intensiteFioul: "Intensité fioul et gaz citerne",
   intensiteFg: "Intensité maisons F ou G",
-  frein: "Frein concurrence (RGE pour 10 000 maisons)",
-  saturation: "Saturation solaire (pour 1 000 maisons)",
+  frein: "Frein concurrence (RGE pour 10 000 maisons)",
+  saturation: "Saturation solaire (pour 1 000 maisons)",
 };
 
 /** Indice 0 à 100, deux décimales ; null si une composante manque. */

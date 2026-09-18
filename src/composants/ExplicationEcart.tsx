@@ -80,7 +80,7 @@ export function ExplicationEcart({ perimetre, mois, indicateur, repli, libelleBo
             {modele ? (modele.sources ?? []).join(" · ") : repli?.sources}
             <span className="mt-1 block">
               {modele
-                ? `Rédigé par le modèle${modele.modele ? ` (${modele.modele})` : ""} à partir des faits SQL du mois de ${libelleMois(mois)}, chaque nombre vérifié dans les faits${modele.cache ? ", réponse en cache" : modele.cout_eur ? `, coût ${formatMontant(modele.cout_eur)}`.replace(/0 €$/, "moins d'un centime") : ""}.`
+                ? `Rédigé par le modèle${modele.modele ? ` (${modele.modele})` : ""} à partir des faits SQL du mois de ${libelleMois(mois)}, chaque nombre vérifié dans les faits${modele.cache ? ", réponse en cache" : modele.cout_eur ? `, coût ${formatMontant(modele.cout_eur)}`.replace(/0 €$/, "moins d'un centime") : ""}.`
                 : chargement
                   ? "Phrases par règles ; le modèle rédige…"
                   : motifRepli

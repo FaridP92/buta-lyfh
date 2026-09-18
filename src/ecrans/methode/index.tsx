@@ -105,6 +105,7 @@ export function EcranMethode() {
           Vérifiées le 17 septembre 2026 par requête directe sur chaque source. Le détail des colonnes
           retenues et des chiffres de contrôle est dans le journal du projet.
         </p>
+        <p className="text-[11px] text-texte-3 md:hidden">Faire défiler horizontalement pour les autres colonnes.</p>
         <div className="overflow-x-auto rounded-[var(--rayon-carte)] border border-bordure">
           <table className="w-full min-w-[640px] border-collapse text-[13px]">
             <thead>
