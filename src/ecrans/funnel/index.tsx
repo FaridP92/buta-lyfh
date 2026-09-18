@@ -196,7 +196,7 @@ export function EcranFunnel() {
             description={`Leads sans RDV planifié à 48 h par agence et sur huit cohortes pour ${perimetreLibelle}`}
             requete={`select mois, agence, sans_rdv_48h from buta.mart_funnel where canal = 'TOUS' and mois between '${ajouterMois(moisPublie, -7)}-01' and '${moisPublie}-01'`}
             exportCSV={{ colonnes: [{ cle: "agence", libelle: "Agence" }, { cle: "valeur", libelle: "Leads sans RDV à 48 h" }], lignes: attenteAgences.map((a) => ({ agence: a.nom, valeur: a.valeur })) }}
-            enfantsSous={<p className="text-[12px] text-texte-2">Relance à 48 h : <Link to="/plans" className="text-texte underline-offset-2 hover:underline">plan d'action « rappel des leads sans RDV »</Link> (écran Plans d'action, lot 3).</p>} />
+            enfantsSous={<p className="text-[12px] text-texte-2">Relance à 48 h : <Link to="/plans-action" className="text-texte underline-offset-2 hover:underline">plan d'action « rappel des leads sans RDV »</Link> (écran Plans d'action, lot 3).</p>} />
         ) : <Carte className="lg:col-span-5" titre="Leads sans RDV planifié"><Squelette hauteur={360} /></Carte>}
       </div>
 
