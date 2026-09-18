@@ -12,7 +12,7 @@ import { LigneSources } from "@/composants/LigneSources";
 import { Squelette } from "@/composants/Squelette";
 import { Tableau, type Colonne } from "@/composants/Tableau";
 import { optionBase, useTokensGraphique, type TokensGraphique } from "@/graphiques/theme";
-import { formatDateCourte, formatDateHeure, formatMontant, formatNombre } from "@/lib/format";
+import { formatDateAnnee, formatDateCourte, formatDateHeure, formatMontant, formatNombre, formatNombreDecimal } from "@/lib/format";
 import { ecartPoints } from "@/lib/periode";
 import { Lignage } from "./Lignage";
 
@@ -70,7 +70,7 @@ export function EcranQualite() {
           <h1 className="font-serif-titre text-[32px] leading-[1.1] text-texte max-md:text-[26px]">Peut-on faire confiance au chiffre</h1>
           <p className="mt-1 text-[13px] text-texte-2">Contrôles du matin, fraîcheur des sources, référentiels, lignage · {qualite.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">simulé</Badge>}</p>
         </div>
-        <p className="text-[12px] text-texte-3">Contrôles exécutés le : {dernierJour ? formatDateCourte(dernierJour) : "n. d."}</p>
+        <p className="text-[12px] text-texte-3">Journée contrôlée : {dernierJour ? formatDateCourte(dernierJour) : "n. d."} (contrôles rejoués à chaque publication)</p>
       </header>
 
       <div className="grid gap-[var(--esp-3)] lg:grid-cols-12">
@@ -136,11 +136,11 @@ export function EcranQualite() {
                   <tr key={f.source} className="border-b border-bordure/60">
                     <td className="py-[6px] text-texte">{LIBELLES_SOURCES[f.source] ?? f.source}</td>
                     <td className="chiffre py-[6px] text-right text-texte-2">
-                      {f.date_reference ? formatDateCourte(f.date_reference) : "n. d."}
+                      {f.date_reference ? formatDateAnnee(f.date_reference) : "n. d."}
                       {f.disponible_jusqu_au && f.date_reference && f.disponible_jusqu_au > f.date_reference ? <span className="block text-[11px] text-texte-3">publiée d'avance jusqu'au {formatDateCourte(f.disponible_jusqu_au)}</span> : null}
                     </td>
                     <td className="chiffre py-[6px] text-right text-texte-2">{formatDateHeure(f.ingere_le)}</td>
-                    <td className="chiffre py-[6px] text-right text-texte-2">{f.prochaine ? formatDateCourte(f.prochaine) : "à la demande"}</td>
+                    <td className="chiffre py-[6px] text-right text-texte-2">{f.prochaine ? formatDateAnnee(f.prochaine) : "à la demande"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -164,7 +164,7 @@ export function EcranQualite() {
           </div>
           <div>
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Produits ({formatNombre(produits.donnees?.length ?? 0)})</p>
-            <ul className="flex flex-col gap-[2px] text-texte-2">{[...(produits.donnees ?? [])].sort((a, b) => b.prix_catalogue - a.prix_catalogue).map((p) => <li key={p.code} className="flex justify-between gap-2"><span><span className="chiffre mr-1 text-texte-3">{p.code}</span>{p.libelle}</span><span className="chiffre text-texte-3">{formatMontant(p.prix_catalogue)}</span></li>)}</ul>
+            <ul className="flex flex-col gap-[2px] text-texte-2">{[...(produits.donnees ?? [])].sort((a, b) => b.prix_catalogue - a.prix_catalogue).map((p) => <li key={p.code} className="flex justify-between gap-2"><span><span className="chiffre mr-1 text-texte-3">{p.code}</span>{p.libelle}</span><span className="chiffre text-texte-3">{formatMontant(p.prix_catalogue)} · {formatNombreDecimal(p.duree_pose_jt, 1)} jt de pose</span></li>)}</ul>
           </div>
           <div>
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Statuts ({formatNombre(statuts.donnees?.length ?? 0)})</p>

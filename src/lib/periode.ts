@@ -101,6 +101,8 @@ export interface LigneKpi {
   marge_brute: number;
   signatures_brutes: number;
   annulees_60j: number;
+  /** Faux quand les signatures du mois n'ont pas encore 60 jours : le taux d'annulation n'est pas comparable. */
+  cohorte_annulation_mature?: boolean;
   couts_acquisition: number;
   commissions: number;
   marge_apres_acquisition: number;
@@ -136,6 +138,8 @@ export interface KpiAgrege {
   signatures_brutes: number;
   annulees_60j: number;
   taux_annulation: number | null;
+  /** Vrai quand toutes les cohortes de signature de la période ont 60 jours : sinon le taux d'annulation s'affiche « n. d. ». */
+  annulation_mature: boolean;
   couts_acquisition: number;
   commissions: number;
   marge_apres_acquisition: number;
@@ -194,6 +198,7 @@ export function agregerKpi(lignes: readonly LigneKpi[], debut: string, fin: stri
     taux_remise: ratio(remises, catalogue, 100),
     signatures_brutes: sb, annulees_60j: an,
     taux_annulation: ratio(an, sb, 100),
+    annulation_mature: retenues.every((l) => l.cohorte_annulation_mature !== false),
     couts_acquisition: couts, commissions: com,
     marge_apres_acquisition: somme("marge_apres_acquisition"), charges: somme("charges"), resultat: somme("resultat"),
     taux_cac: ratio(couts + com, ca, 100),

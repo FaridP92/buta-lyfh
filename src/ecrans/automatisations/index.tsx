@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 import { Download } from "lucide-react";
 import { useDeclarerExport } from "@/app/exportEcran";
 import { useVue } from "@/donnees/useVue";
@@ -8,15 +10,33 @@ import { Pastille } from "@/composants/Pastille";
 import { Badge } from "@/composants/Badge";
 import { LigneSources } from "@/composants/LigneSources";
 import { Squelette } from "@/composants/Squelette";
-import { formatDateHeure, formatNombre, formatTaux } from "@/lib/format";
+import { formatDateCourte, formatDateHeure, formatNombre, formatTaux } from "@/lib/format";
 import { formatDuree, libelleDeclencheur, libelleStatut, prochaineExecution, resumerJournal, WORKFLOWS } from "@/lib/automatisations";
 import { SchemaFlux } from "./SchemaFlux";
 
 const JOURNAL_MAX = 50;
 const SEPT_JOURS_MS = 7 * 86_400_000;
 
+/**
+ * Exports JSON réellement publiés avec le site (dist/n8n/index.json, écrit au build) : sans cette liste, un lien
+ * vers un export absent recevrait la page HTML de l'application sous un nom .json (réécriture SPA du serveur).
+ */
+async function lireExportsDisponibles(): Promise<Set<string>> {
+  try {
+    const reponse = await fetch("/n8n/index.json");
+    if (!reponse.ok || !(reponse.headers.get("content-type") ?? "").includes("json")) return new Set();
+    return new Set(z.array(z.string()).parse(await reponse.json()));
+  } catch {
+    return new Set();
+  }
+}
+
 export function EcranAutomatisations() {
   const journal = useVue("mart_automatisation", { ordre: "-debute_le", limite: 200 });
+  const fraicheur = useVue("mart_fraicheur", { egal: { source: "journee_simulee" } });
+  const exports = useQuery({ queryKey: ["exports-n8n"], queryFn: lireExportsDisponibles, staleTime: Number.POSITIVE_INFINITY, retry: false });
+  const exportDisponible = (fichier: string) => exports.data?.has(fichier.split("/").pop() ?? "") ?? false;
+  const publieeJusquAu = fraicheur.donnees?.[0]?.disponible_jusqu_au ?? null;
   // Instant de rendu : la prochaine exécution s'en déduit ; rien ne bouge ensuite sans action (DESIGN.md §11).
   const maintenant = useMemo(() => new Date(), []);
   const lignes = journal.donnees ?? [];
@@ -77,9 +97,15 @@ export function EcranAutomatisations() {
                   <dd className="chiffre text-texte">{prochaine ? formatDateHeure(prochaine) : "sur événement"}</dd>
                   {derniere?.message ? (<><dt className="text-texte-3">Message</dt><dd className="text-texte-2">{derniere.message}</dd></>) : null}
                 </dl>
-                <a href={w.fichier} download className="mt-auto inline-flex w-fit items-center gap-[6px] rounded-[8px] border border-bordure px-[10px] py-[6px] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">
-                  <Download size={13} strokeWidth={1.5} aria-hidden="true" />Export JSON
-                </a>
+                {exportDisponible(w.fichier) ? (
+                  <a href={w.fichier} download className="mt-auto inline-flex w-fit items-center gap-[6px] rounded-[8px] border border-bordure px-[10px] py-[6px] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">
+                    <Download size={13} strokeWidth={1.5} aria-hidden="true" />Export JSON
+                  </a>
+                ) : (
+                  <span className="mt-auto inline-flex w-fit items-center gap-[6px] rounded-[8px] border border-dashed border-bordure px-[10px] py-[6px] text-[12px] text-texte-3" title="L'export JSON est publié avec le site une fois le workflow publié dans n8n">
+                    <Download size={13} strokeWidth={1.5} aria-hidden="true" />Export JSON après publication
+                  </span>
+                )}
               </Carte>
             );
           })}
@@ -89,7 +115,7 @@ export function EcranAutomatisations() {
       <Carte titre="Journal des exécutions" sousTitre={lignes.length === 0 ? "Toutes automatisations confondues (table automatisation_run)" : `${formatNombre(Math.min(lignes.length, JOURNAL_MAX))} dernière${lignes.length > 1 ? "s" : ""} exécution${lignes.length > 1 ? "s" : ""}, toutes automatisations confondues (table automatisation_run)`} nu>
         {journal.donnees === undefined ? <Squelette hauteur={320} /> : (
           <Tableau colonnes={colonnes} lignes={journalVisible} cleLigne={(l) => String(l.id)} triInitial={{ cle: "debute_le", sens: "desc" }} compact nomExport="journal-automatisations"
-            vide="Aucune exécution journalisée : la première ligne apparaît à la prochaine exécution planifiée." />
+            vide={`Aucune exécution journalisée : les workflows sont créés dans n8n et attendent leur publication (credential Supabase) ; en attendant, la journée simulée est publiée d'avance par script${publieeJusquAu ? ` jusqu'au ${formatDateCourte(publieeJusquAu)}` : ""}. La première ligne apparaîtra à la première exécution publiée.`} />
         )}
       </Carte>
 

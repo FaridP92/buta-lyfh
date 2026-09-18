@@ -29,7 +29,6 @@ export function EcranFunnel() {
   const n1 = periodeN1(periode);
 
   const funnel = useVue("mart_funnel", { egal: { agence: agenceVue }, ordre: "mois" });
-  const funnelPeriode = useVue("mart_funnel", { entre: { colonne: "mois", de: `${periode.debut}-01`, a: `${periode.fin}-01` } });
   const attente = useVue("mart_funnel", { egal: { canal: "TOUS" }, entre: { colonne: "mois", de: `${ajouterMois(moisPublie, -7)}-01`, a: `${moisPublie}-01` }, ordre: "mois" });
   const couts = useVue("mart_couts_acquisition", { egal: { agence: agenceVue }, ordre: "mois" });
   const kpiPeriode = useVue("mart_kpi_mensuel", { egal: { agence: agenceVue }, entre: { colonne: "mois", de: `${periode.debut}-01`, a: `${periode.fin}-01` } });
@@ -49,6 +48,13 @@ export function EcranFunnel() {
   // (une cohorte de moins de 90 jours n'a pas encore ses signatures : ses taux ne se comparent à rien).
   const cohorteMure = cohorte && !cohorte.mature ? derniereCohorteMature(lignesTous, periode.fin) : null;
   const moisMur = cohorteMure ? moisDe(cohorteMure.mois) : null;
+  // Matrice canal × agence et qualité des leads par canal : sur la dernière cohorte close à 90 jours quand la période
+  // demandée n'a pas fini de convertir (une matrice de 0,0 % et des coûts par vente sur zéro vente ne disent rien).
+  const debutCohortes = moisMur ?? periode.debut;
+  const finCohortes = moisMur ?? periode.fin;
+  const libelleCohortes = moisMur ? `Cohorte de ${libelleMois(moisMur)}, à 90 jours` : periode.libelle;
+  const mentionCohortes = moisMur ? " ; la période demandée n'a pas fini de convertir, la dernière cohorte close à 90 jours est affichée" : "";
+  const funnelPeriode = useVue("mart_funnel", { entre: { colonne: "mois", de: `${debutCohortes}-01`, a: `${finCohortes}-01` } });
   const cohorteTaux = cohorteMure ? agregerFunnel(lignesTous, moisDe(cohorteMure.mois), moisDe(cohorteMure.mois)) : cohorte;
   const cohorteTauxN1 = moisMur ? agregerFunnel(lignesTous, ajouterMois(moisMur, -12), ajouterMois(moisMur, -12)) : cohorteN1;
   const etapes = cohorteTaux ? etapesFunnel(cohorteTaux) : null;
@@ -81,7 +87,7 @@ export function EcranFunnel() {
   const optionsCanal = [{ valeur: "TOUS", libelle: "Tous canaux" }, ...(canauxDim.donnees ?? []).map((c) => ({ valeur: c.code, libelle: c.libelle }))];
 
   // Matrice canal × agence.
-  const matrice = useMemo(() => matriceCanalAgence(funnelPeriode.donnees ?? [], periode.debut, periode.fin), [funnelPeriode.donnees, periode.debut, periode.fin]);
+  const matrice = useMemo(() => matriceCanalAgence(funnelPeriode.donnees ?? [], debutCohortes, finCohortes), [funnelPeriode.donnees, debutCohortes, finCohortes]);
   const canauxMatrice = useMemo(() => {
     const codes = [...new Set([...matrice.keys()].map((k) => k.split("|")[0] as string))];
     return codes.map((code) => ({ code, libelle: libelleCanal(code), leads: AGENCES.reduce((s, a) => s + (matrice.get(`${code}|${a.code}`)?.leads ?? 0), 0) })).sort((a, b) => b.leads - a.leads);
@@ -119,8 +125,8 @@ export function EcranFunnel() {
   const optionCourbe = vingtMois.length > 0 && canauxCourbe.length > 0 ? optionCourbeCanaux(vingtMois, canauxCourbe, ventesNettes, tokens, mobile) : null;
 
   // Qualité des leads par canal : le verdict « à revoir » attend que les cohortes de la période aient 90 jours.
-  const cohorteEnCours = cohorte ? !cohorte.mature : false;
-  const canauxQualite = useMemo(() => agregerCoutsParCanal(((couts.donnees ?? []) as unknown as LigneCoutCanal[]), periode.debut, periode.fin), [couts.donnees, periode.debut, periode.fin]);
+  const cohorteEnCours = Boolean(cohorte && !cohorte.mature && !moisMur);
+  const canauxQualite = useMemo(() => agregerCoutsParCanal(((couts.donnees ?? []) as unknown as LigneCoutCanal[]), debutCohortes, finCohortes), [couts.donnees, debutCohortes, finCohortes]);
   const colonnesQualite: Colonne<(typeof canauxQualite)[number]>[] = [
     { cle: "canal", libelle: "Canal", valeur: (l) => libelleCanal(l.canal), rendu: (l) => <span className="whitespace-nowrap text-texte">{libelleCanal(l.canal)}</span> },
     { cle: "leads", libelle: "Leads", numerique: true, largeur: "72px", rendu: (l) => formatNombre(l.leads) },
@@ -189,12 +195,14 @@ export function EcranFunnel() {
           enfantsSous={(
             <div className="flex flex-wrap items-center justify-between gap-[var(--esp-2)]">
               <SelecteurMenu libelle="Canal" options={optionsCanal} valeur={canal} onChange={setCanal} />
-              <p className="text-[11px] text-texte-3">Ambre : étapes tenues · rouge : pertes (sans suite, sans devis, refus, annulation) · gris : en attente de pose ou d'encaissement.</p>
+              <p className="text-[11px] text-texte-3">{cohorteCanal.mature
+                ? "Ambre : étapes tenues · rouge : pertes (sans RDV, sans devis, devis non signés, annulations) · gris : en attente de pose ou d'encaissement."
+                : "Ambre : étapes tenues · rouge : annulations · gris : dossiers encore en cours à date (sans RDV, sans devis, devis non signés, à poser, à encaisser) ; la donnée ne distingue pas un refus d'un devis pas encore signé."}</p>
             </div>
           )} />
       ) : <Carte titre="Du lead à l'encaissement"><Squelette hauteur={380} /></Carte>}
 
-      <Carte titre="Conversion par canal et agence" sousTitre={`${periode.libelle} : ventes nettes / leads de la cohorte, intensité de la couleur = conversion, trait = volume de leads ; tri par colonne${mentionMature}`} nu actions={<BoutonFiche code="TX_CONV" />}>
+      <Carte titre="Conversion par canal et agence" sousTitre={`${libelleCohortes} : ventes nettes / leads de la cohorte, intensité de la couleur = conversion, trait = volume de leads ; tri par colonne${mentionCohortes}`} nu actions={<BoutonFiche code="TX_CONV" />}>
         <div className="px-[var(--esp-2)] pb-[var(--esp-3)]">
           {funnelPeriode.donnees === undefined ? <Squelette hauteur={300} /> : (
             <Tableau colonnes={colonnesMatrice} lignes={canauxMatrice} cleLigne={(l) => l.code} compact nomExport="funnel-matrice" />
@@ -220,7 +228,7 @@ export function EcranFunnel() {
         ) : <Carte className="lg:col-span-5" titre="Leads sans RDV planifié"><Squelette hauteur={360} /></Carte>}
       </div>
 
-      <Carte titre="Qualité des leads par canal" sousTitre={`${periode.libelle} : coûts d'acquisition hors commissions, cohortes de création ; « à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux à coût${cohorteEnCours ? " ; cohorte de moins de 90 jours, verdict provisoire" : ""}`} nu actions={<BoutonFiche code="CPV" />}>
+      <Carte titre="Qualité des leads par canal" sousTitre={`${libelleCohortes} : coûts d'acquisition hors commissions, cohortes de création ; « à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux à coût${cohorteEnCours ? " ; cohorte de moins de 90 jours, verdict provisoire" : ""}${mentionCohortes}`} nu actions={<BoutonFiche code="CPV" />}>
         <div className="px-[var(--esp-2)] pb-[var(--esp-3)]">
           {couts.donnees === undefined ? <Squelette hauteur={300} /> : (
             <Tableau colonnes={colonnesQualite} lignes={canauxQualite} cleLigne={(l) => l.canal} triInitial={{ cle: "leads", sens: "desc" }} compact nomExport="funnel-canaux" />

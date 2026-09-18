@@ -14,7 +14,7 @@ import { Squelette } from "@/composants/Squelette";
 import { useTokensGraphique } from "@/graphiques/theme";
 import { useEstMobile } from "@/lib/useEstMobile";
 import { agregerKpi, ajouterMois, ecartPct, ecartPoints, moisDe, moisEntre, periodeN1, type LigneKpi } from "@/lib/periode";
-import { formatDateCourte, formatMontant, formatTaux } from "@/lib/format";
+import { formatDateCourte, formatMontant, formatNombreDecimal, formatTaux } from "@/lib/format";
 import { expliquerEcart, sommerEffets } from "@/lib/phrases";
 import { ExplicationEcart } from "@/composants/ExplicationEcart";
 import { estimerElasticite, phraseRemise } from "@/lib/remise";
@@ -143,9 +143,10 @@ export function EcranVentes() {
     colonnes: [
       { cle: "agence", libelle: "Agence" }, { cle: "ca_signe", libelle: "CA signé (€)" }, { cle: "ecart_objectif_pct", libelle: "Écart objectif (%)" }, { cle: "ecart_n1", libelle: "Écart N-1 (%)" },
       { cle: "taux_marge", libelle: "Marge brute (%)" }, { cle: "marge_apres_acquisition", libelle: "Marge après acquisition (€)" }, { cle: "resultat", libelle: "Résultat (€)" },
-      { cle: "taux_remise", libelle: "Remise (%)" }, { cle: "taux_annulation", libelle: "Annulations (%)" },
+      { cle: "productivite_commerciale", libelle: "Ventes par commercial" },
+      { cle: "taux_remise", libelle: "Remise (%)" }, { cle: "taux_annulation", libelle: "Annulations à 60 jours (%)" },
     ],
-    lignes: lignesAgences.map((a) => ({ agence: a.nom, ca_signe: a.kpi?.ca_signe ?? null, ecart_objectif_pct: a.kpi?.ecart_objectif_pct ?? null, ecart_n1: a.ecartN1, taux_marge: a.kpi?.taux_marge ?? null, marge_apres_acquisition: a.kpi?.marge_apres_acquisition ?? null, resultat: a.kpi?.resultat ?? null, taux_remise: a.kpi?.taux_remise ?? null, taux_annulation: a.kpi?.taux_annulation ?? null })),
+    lignes: lignesAgences.map((a) => ({ agence: a.nom, ca_signe: a.kpi?.ca_signe ?? null, ecart_objectif_pct: a.kpi?.ecart_objectif_pct ?? null, ecart_n1: a.ecartN1, taux_marge: a.kpi?.taux_marge ?? null, marge_apres_acquisition: a.kpi?.marge_apres_acquisition ?? null, resultat: a.kpi?.resultat ?? null, productivite_commerciale: a.kpi?.productivite_commerciale ?? null, taux_remise: a.kpi?.taux_remise ?? null, taux_annulation: a.kpi?.annulation_mature ? a.kpi.taux_annulation : null })),
   } : null);
 
   // Remises : boîtes par agence sur la période, régression sur les mois clos de toutes les agences.
@@ -171,8 +172,10 @@ export function EcranVentes() {
     { cle: "marge", libelle: "Marge brute", numerique: true, largeur: "96px", valeur: (l) => l.kpi?.taux_marge ?? null, rendu: (l) => formatTaux(l.kpi?.taux_marge ?? null) },
     { cle: "marge_acq", libelle: "Après acquisition", numerique: true, largeur: "120px", secondaire: true, valeur: (l) => l.kpi?.marge_apres_acquisition ?? null, rendu: (l) => formatMontant(l.kpi?.marge_apres_acquisition ?? null) },
     { cle: "resultat", libelle: "Résultat", numerique: true, largeur: "92px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => <span className={(l.kpi?.resultat ?? 0) < 0 ? "text-alerte" : "text-texte"}>{formatMontant(l.kpi?.resultat ?? null)}</span> },
+    { cle: "productivite", libelle: "Ventes / commercial", numerique: true, largeur: "112px", secondaire: true, valeur: (l) => l.kpi?.productivite_commerciale ?? null, rendu: (l) => formatNombreDecimal(l.kpi?.productivite_commerciale ?? null, 1) },
     { cle: "remise", libelle: "Remise", numerique: true, largeur: "76px", secondaire: true, valeur: (l) => l.kpi?.taux_remise ?? null, rendu: (l) => formatTaux(l.kpi?.taux_remise ?? null) },
-    { cle: "annulations", libelle: "Annul.", numerique: true, largeur: "76px", secondaire: true, valeur: (l) => l.kpi?.taux_annulation ?? null, rendu: (l) => formatTaux(l.kpi?.taux_annulation ?? null) },
+    // Le taux d'annulation à 60 jours n'est affiché que si toutes les signatures de la période ont 60 jours (sinon « n. d. »).
+    { cle: "annulations", libelle: "Annul. 60 j", numerique: true, largeur: "84px", secondaire: true, valeur: (l) => (l.kpi?.annulation_mature ? l.kpi.taux_annulation : null), rendu: (l) => formatTaux(l.kpi?.annulation_mature ? l.kpi.taux_annulation : null) },
     { cle: "statut", libelle: "Statut", triable: false, valeur: (l) => statutEcart(l.kpi?.ecart_objectif_pct), rendu: (l) => <Pastille statut={statutEcart(l.kpi?.ecart_objectif_pct)} texte={libelleStatut(l.kpi?.ecart_objectif_pct)} /> },
   ];
 
@@ -206,8 +209,9 @@ export function EcranVentes() {
             serie={serieRatio("panier_moyen")} variation={{ valeur: ecartPct(actuel?.panier_moyen ?? null, precedent?.panier_moyen ?? null), unite: "pct", libelle: libelleN1 }} />
           <CarteKPI libelle="Remise moyenne" valeur={actuel?.taux_remise ?? null} format="pct" code="REMISE" clePeriode={clePeriode} decalageMs={320}
             serie={serieRatio("taux_remise")} variation={{ valeur: ecartPoints(actuel?.taux_remise ?? null, precedent?.taux_remise ?? null), unite: "pts", libelle: libelleN1, plusBasMieux: true }} />
-          <CarteKPI libelle="Taux d'annulation" sousLibelle="à 60 jours" valeur={actuel?.taux_annulation ?? null} format="pct" code="TX_ANNUL" clePeriode={clePeriode} decalageMs={400}
-            serie={serieRatio("taux_annulation")} variation={{ valeur: ecartPoints(actuel?.taux_annulation ?? null, precedent?.taux_annulation ?? null), unite: "pts", libelle: libelleN1, plusBasMieux: true }} />
+          <CarteKPI libelle="Taux d'annulation" sousLibelle={actuel && !actuel.annulation_mature ? "à 60 jours · cohorte de signature en cours" : "à 60 jours"} valeur={actuel?.annulation_mature ? actuel.taux_annulation : null} format="pct" code="TX_ANNUL" clePeriode={clePeriode} decalageMs={400}
+            motifNd="Les signatures de la période n'ont pas encore 60 jours : le taux ne se compare pas à une cohorte mûre"
+            serie={serieRatio("taux_annulation")} variation={{ valeur: actuel?.annulation_mature ? ecartPoints(actuel.taux_annulation, precedent?.taux_annulation ?? null) : null, unite: "pts", libelle: actuel?.annulation_mature ? libelleN1 : "60 jours non écoulés", plusBasMieux: true }} />
         </div>
       )}
 

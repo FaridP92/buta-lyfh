@@ -17,6 +17,17 @@ describe("fluxSankey", () => {
     expect(liens.find((l) => l.cible === "À encaisser")?.valeur).toBe(2);
   });
 
+  it("nomme les branches sortantes selon la maturité : en attente « à date » sur une cohorte en cours, pertes sur une cohorte mûre", () => {
+    const enCours = fluxSankey(cohorte);
+    expect(enCours.noeuds.find((n) => n.nom === "Devis non signés à date")?.type).toBe("attente");
+    expect(enCours.noeuds.find((n) => n.nom === "Sans RDV à date")?.type).toBe("attente");
+    expect(enCours.noeuds.some((n) => n.nom === "Refus")).toBe(false);
+    const mure = fluxSankey({ ...cohorte, mature: true });
+    expect(mure.noeuds.find((n) => n.nom === "Devis non signés")?.type).toBe("perte");
+    expect(mure.noeuds.find((n) => n.nom === "Sans devis")?.type).toBe("perte");
+    expect(mure.noeuds.find((n) => n.nom === "Annulations")?.type).toBe("perte");
+  });
+
   it("n'ajoute pas de branche vide", () => {
     const { noeuds, liens } = fluxSankey({ ...cohorte, signaturesNettes: 10, poses: 10, encaissements: 10 });
     expect(noeuds.some((n) => n.nom === "Annulations")).toBe(false);

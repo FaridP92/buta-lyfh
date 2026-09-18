@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { agregerDelais, agregerEncaissement, agregerEncaissementN1, calendrierCharge, carnetDerniereSemaine, lundiDe } from "@/lib/pose";
+import { agregerDelais, agregerEncaissement, agregerEncaissementN1, calendrierCharge, carnetDerniereSemaine, lundiDe, phraseTendanceCarnet } from "@/lib/pose";
+
+describe("phraseTendanceCarnet", () => {
+  it("compare les valeurs arrondies telles qu'affichées : 26,4 contre 25,8 est stable, pas en hausse", () => {
+    expect(phraseTendanceCarnet(26.4, 25.8)).toBe(", stable par rapport à la semaine précédente (26)");
+    expect(phraseTendanceCarnet(42.9, 35)).toBe(", en hausse sur la semaine précédente (35)");
+    expect(phraseTendanceCarnet(14.5, 16.2)).toBe(", en baisse sur la semaine précédente (16)");
+    expect(phraseTendanceCarnet(26, null)).toBe("");
+  });
+});
 
 describe("agregerDelais", () => {
   const lignes = [

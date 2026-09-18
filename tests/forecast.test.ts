@@ -86,6 +86,16 @@ describe("risquesEtOpportunites", () => {
     expect(s.some((x) => x.texte.includes("Bassin d'Arcachon : 4 poses"))).toBe(false);
   });
 
+  it("ne garde que les trois plus gros écarts d'atterrissage, le tableau du dessus les montre déjà tous", () => {
+    const sousObjectif: AgenceAtterrissage[] = ["A", "B", "C", "D", "E"].map((nom, i) => ({
+      code: nom, nom, realise: 1e6, objectif: 2e6, central: 1.5e6 - i * 50_000, bas: 1.4e6, haut: 1.6e6, probabilite: 0, ecartPct: -25 - i, pipePondere: 200_000, montantDevis: 900_000, runRate3m: 150_000,
+    }));
+    const s = risquesEtOpportunites(sousObjectif, []);
+    const ecarts = s.filter((x) => x.texte.includes("atterrissage central") && x.type === "risque");
+    expect(ecarts).toHaveLength(3);
+    expect(ecarts.map((x) => x.agence)).toEqual(["E", "D", "C"]);
+  });
+
   it("classe les risques avant les opportunités, par montant décroissant", () => {
     const s = risquesEtOpportunites(agences, poses);
     const types = s.map((x) => x.type);

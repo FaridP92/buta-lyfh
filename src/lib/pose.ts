@@ -3,6 +3,7 @@
  * période, calendrier de charge semaine × agence, carnet de la dernière semaine. Les médianes ne s'additionnent pas :
  * sur plusieurs mois, on pondère les médianes mensuelles par les poses (approximation dite dans la fiche D_SIGN_POSE).
  */
+import { formatNombre } from "@/lib/format";
 import { ajouterMois, moisDe, moisEntre, ratio } from "@/lib/periode";
 
 export interface LigneDelais {
@@ -97,6 +98,17 @@ export function calendrierCharge(lignes: readonly LignePose[], journee: string, 
     }
   }
   return { semaines, cellules };
+}
+
+/**
+ * Phrase de tendance du carnet contre la semaine précédente, sur les valeurs arrondies telles qu'affichées :
+ * « en baisse (26) » à côté de 26 n'est pas acceptable ; en dessous d'un demi-jour d'écart, le carnet est stable.
+ */
+export function phraseTendanceCarnet(carnet: number | null, precedent: number | null): string {
+  if (carnet === null || precedent === null) return "";
+  const a = Math.round(carnet), b = Math.round(precedent);
+  const sens = a === b ? "stable par rapport à" : a > b ? "en hausse sur" : "en baisse sur";
+  return `, ${sens} la semaine précédente (${formatNombre(b)})`;
 }
 
 export interface CarnetSemaine {

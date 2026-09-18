@@ -27,7 +27,7 @@ Sources affichées : Insee Logement 2022 (Licence Ouverte 2.0), ADEME liste RGE 
 ## 3. Funnel et leads (`/funnel`)
 Objectif : où se perd la conversion, quel canal vaut son coût, quels leads attendent.
 - KPI : Leads, Taux de RDV, Taux de devis, Taux de signature, Coût par lead, Coût par vente.
-- Sankey lead vers RDV vers devis vers signature vers pose vers encaissement, avec les pertes (sans suite, refus, annulation) en branches sortantes ; filtre canal et agence ; animation de redessin.
+- Sankey lead vers RDV vers devis vers signature vers pose vers encaissement, avec les branches sortantes (sans RDV, sans devis, devis non signés, annulations ; en gris « à date » tant que la cohorte n'a pas 90 jours, la donnée ne distinguant pas un refus d'un devis pas encore signé) ; filtre canal et agence ; animation de redessin.
 - Matrice canal × agence : taux de conversion global avec couleur, volume en taille de cellule ; tri par colonne.
 - Courbe 20 mois : leads et ventes par canal (empilé), avec l'objectif de leads.
 - Tableau « Qualité des leads par canal » : leads, taux RDV, taux signature, coût, coût par vente, délai lead vers RDV, avec une pastille « à revoir » quand coût par vente supérieur à 1,3 fois la médiane.

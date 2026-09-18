@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import type { EChartsOption } from "echarts";
 import { AGENCES, nomAgence, useFiltres } from "@/app/filtres";
 import { useDeclarerExport } from "@/app/exportEcran";
@@ -114,8 +114,9 @@ export function EcranVueEnsemble() {
 
   const colonnesAgences: Colonne<(typeof lignesAgences)[number]>[] = [
     { cle: "agence", libelle: "Agence", valeur: (l) => l.nom, rendu: (l) => <span className="whitespace-nowrap text-texte">{l.nom}</span> },
-    { cle: "ventes", libelle: "Ventes", numerique: true, largeur: "64px", valeur: (l) => l.kpi?.ventes ?? null, rendu: (l) => formatNombre(l.kpi?.ventes ?? null) },
+    // L'écart à l'objectif en deuxième colonne : c'est la première chose lue, et la seule visible sans défiler sur téléphone.
     { cle: "ecart", libelle: "Écart obj.", numerique: true, largeur: "88px", valeur: (l) => l.kpi?.ecart_objectif_pct ?? null, rendu: (l) => (l.kpi?.ecart_objectif_pct === null || l.kpi?.ecart_objectif_pct === undefined ? "n. d." : `${l.kpi.ecart_objectif_pct > 0 ? "+" : ""}${formatTaux(l.kpi.ecart_objectif_pct)}`) },
+    { cle: "ventes", libelle: "Ventes", numerique: true, largeur: "64px", valeur: (l) => l.kpi?.ventes ?? null, rendu: (l) => formatNombre(l.kpi?.ventes ?? null) },
     { cle: "marge", libelle: "Marge", numerique: true, largeur: "76px", valeur: (l) => l.kpi?.taux_marge ?? null, rendu: (l) => formatTaux(l.kpi?.taux_marge ?? null) },
     { cle: "resultat", libelle: "Résultat", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "84px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => formatMontant(l.kpi?.resultat ?? null) },
     { cle: "delai", libelle: "Délai", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "64px", valeur: (l) => l.kpi?.delai_pose_median ?? null, rendu: (l) => formatDelaiJours(l.kpi?.delai_pose_median ?? null) },
@@ -133,6 +134,11 @@ export function EcranVueEnsemble() {
           </h1>
           <p className="mt-1 text-[13px] text-texte-2">
             {periode.libelle} · {comparaison === "objectif" ? "vs objectif" : "vs N-1"}{mentionProrata} · {kpi.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">simulé</Badge>}
+          </p>
+          {/* Sur téléphone, le pied de page est neuf écrans plus bas : l'objet du site tient en une ligne sous le titre. */}
+          <p className="mt-2 text-[12px] leading-[1.45] text-texte-3 md:hidden">
+            Démonstrateur personnel de Frédéric Poissonnier, candidature Responsable Performance : marché réel, activité d'un réseau d'installateurs simulée.{" "}
+            <Link to="/methode" className="underline underline-offset-2 hover:text-texte">Méthode</Link>
           </p>
         </div>
         <p className="text-[12px] text-texte-3">Journée publiée : {filtres.journeePubliee ? formatDateCourte(filtres.journeePubliee) : "n. d."}</p>
@@ -254,7 +260,7 @@ function construireOptionFunnel(c: CohorteAgregee, t: ReturnType<typeof useToken
       label: { show: true, position: "right", color: t.texte2, fontFamily: t.mono, fontSize: 12, formatter: (p: unknown) => {
         const { value, dataIndex } = p as { value: number; dataIndex: number };
         const taux = etapes[dataIndex]?.taux;
-        return taux === null || taux === undefined ? formatNombre(value) : `${formatNombre(value)}  ${formatTaux(taux, 0)}`;
+        return taux === null || taux === undefined ? formatNombre(value) : `${formatNombre(value)}  ${formatTaux(taux)}`;
       } },
       animationDuration: 800, animationDelay: (i: number) => i * 60,
     }],

@@ -44,10 +44,10 @@ export function EcranPlansAction() {
     { cle: "levier", libelle: "Levier", triable: false, rendu: (l) => <span className="block max-w-[420px] text-[14px] leading-[1.35] text-texte">{l.levier}</span> },
     { cle: "nom_bassin", libelle: "Agence", largeur: "130px", valeur: (l) => l.nom_bassin ?? "Réseau", rendu: (l) => <span className="whitespace-nowrap text-texte-2">{l.nom_bassin ?? "Réseau"}</span> },
     { cle: "proprietaire_code", libelle: "Propriétaire", largeur: "100px", secondaire: true, rendu: (l) => <span className="chiffre text-[12px] text-texte-3">{l.proprietaire_code}</span> },
-    { cle: "gain_attendu", libelle: "Gain attendu", numerique: true, largeur: "104px", rendu: (l) => (l.gain_attendu > 0 ? formatMontant(l.gain_attendu) : "qualité") },
+    { cle: "gain_attendu", libelle: "Gain de marge attendu", numerique: true, largeur: "128px", rendu: (l) => (l.gain_attendu > 0 ? formatMontant(l.gain_attendu) : "qualité") },
     { cle: "statut", libelle: "Statut", largeur: "96px", valeur: (l) => statutPlan(l.statut).texte, rendu: (l) => { const s = statutPlan(l.statut); return <Pastille statut={s.statut} texte={s.texte} />; } },
     { cle: "echeance", libelle: "Échéance", largeur: "88px", rendu: (l) => <span className="chiffre text-[13px]">{formatDateCourte(l.echeance)}</span> },
-    { cle: "avancement", libelle: "Avancement", numerique: true, largeur: "128px", rendu: (l) => (
+    { cle: "avancement", libelle: "Avancement déclaré", numerique: true, largeur: "136px", rendu: (l) => (
       <span className="inline-flex items-center gap-[6px]">
         <span className="h-[4px] w-[56px] overflow-hidden rounded-full bg-surface-2" aria-hidden="true"><span className="block h-full rounded-full bg-ambre" style={{ width: `${Math.max(0, Math.min(100, l.avancement))}%` }} /></span>
         <span className="chiffre text-[12px]">{formatTaux(l.avancement, 0)}</span>
@@ -57,7 +57,7 @@ export function EcranPlansAction() {
   ];
   useDeclarerExport("plans-action", lignes.length ? {
     nom: "Plans d'action",
-    colonnes: [{ cle: "levier", libelle: "Levier" }, { cle: "agence", libelle: "Agence" }, { cle: "proprietaire", libelle: "Propriétaire" }, { cle: "gain_attendu", libelle: "Gain attendu (€)" }, { cle: "statut", libelle: "Statut" }, { cle: "echeance", libelle: "Échéance" }, { cle: "avancement", libelle: "Avancement (%)" }, { cle: "indicateur", libelle: "Indicateur suivi" }],
+    colonnes: [{ cle: "levier", libelle: "Levier" }, { cle: "agence", libelle: "Agence" }, { cle: "proprietaire", libelle: "Propriétaire" }, { cle: "gain_attendu", libelle: "Gain de marge attendu (€)" }, { cle: "statut", libelle: "Statut" }, { cle: "echeance", libelle: "Échéance" }, { cle: "avancement", libelle: "Avancement déclaré (%)" }, { cle: "indicateur", libelle: "Indicateur suivi" }],
     lignes: lignes.map((l) => ({ levier: l.levier, agence: l.nom_bassin ?? "Réseau", proprietaire: l.proprietaire_code, gain_attendu: l.gain_attendu, statut: l.statut, echeance: l.echeance, avancement: l.avancement, indicateur: l.indicateur_code })),
   } : null);
 
@@ -71,11 +71,11 @@ export function EcranPlansAction() {
           <p className="mt-1 text-[13px] text-texte-2">Leviers en cours, gains attendus, rituels, revue hebdomadaire · {plans.source === "instantane" ? <Badge variante="instantane">instantané</Badge> : <Badge variante="simule">simulé</Badge>}</p>
         </div>
         <p className="text-[12px] text-texte-3">
-          {resume.total === 0 ? "Aucun plan pour ce périmètre" : `${formatNombre(resume.en_cours)} en cours, ${formatNombre(resume.planifies)} planifié${resume.planifies > 1 ? "s" : ""}, ${formatNombre(resume.termines)} terminé${resume.termines > 1 ? "s" : ""} · ${formatMontant(resume.gain_attendu_ouvert)} de gain attendu sur les plans ouverts`}
+          {resume.total === 0 ? "Aucun plan pour ce périmètre" : `${formatNombre(resume.en_cours)} en cours, ${formatNombre(resume.planifies)} planifié${resume.planifies > 1 ? "s" : ""}, ${formatNombre(resume.termines)} terminé${resume.termines > 1 ? "s" : ""} · ${formatMontant(resume.gain_attendu_ouvert)} de gain de marge attendu sur les plans ouverts (les plans sans montant comptent pour zéro)`}
         </p>
       </header>
 
-      <Carte titre="Plans d'action" sousTitre="Un levier, une agence ou le réseau, un propriétaire (code), un gain attendu chiffré, une échéance et l'indicateur qui dira si ça marche" nu>
+      <Carte titre="Plans d'action" sousTitre="Un levier, une agence ou le réseau, un propriétaire (code), un gain de marge attendu et un avancement déclarés par le propriétaire, une échéance et l'indicateur qui dira si ça marche" nu>
         {plans.donnees === undefined ? <Squelette hauteur={420} /> : (
           <Tableau colonnes={colonnes} lignes={lignes} cleLigne={(l) => String(l.id)} triInitial={{ cle: "echeance", sens: "asc" }} nomExport="plans-action" vide="Aucun plan d'action pour ce périmètre." />
         )}

@@ -43,7 +43,7 @@ Critères : WF1, WF2, WF5 ont une ligne de journal réussie ; palier A irréproc
 
 ## Lot 4b · Palier B (lundi, seulement si le palier A est irréprochable)
 - US-042 Edge Functions `analyste` et `expliquer-ecart`, secrets, quotas, journal, jeu d'évaluation à 90 %.
-- US-043 WF3 et WF4 ; écrans Automatisations (§9), Analyste (§10), bouton Expliquer sur Ventes et Vue d'ensemble.
+- US-043 WF3 et WF4 ; écrans Automatisations (§9), Analyste (§10), bouton Expliquer sur Ventes et Vue d'ensemble. Décision du 18 septembre : WF4 (marché mensuel) n'est pas construit avant l'entretien, le rejeu mensuel des sources de marché reste un script (`npm run ingerer:marche`) ; l'écran Automatisations ne le montre pas.
 - US-044 Pose et encaissement (§6), Plans d'action et rituels (§7) avec la revue générée ; `mesures.dax` et `LISEZMOI.md` dans l'export Power BI (skill powerbi-dax-expert).
 Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond aux 24 questions selon l'attendu ; budget visible. Tout écran non fini est retiré de la navigation.
 

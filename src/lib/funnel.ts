@@ -19,11 +19,16 @@ export interface LienSankey {
 }
 
 /**
- * Lead → RDV tenu → Devis → Signature → Pose → Encaissement, avec les pertes en branches sortantes :
- * sans suite (pas de RDV tenu), sans devis, refus, annulation ; et les dossiers en attente (signés non
- * posés, posés non encaissés), qui existent surtout sur les cohortes récentes.
+ * Lead → RDV tenu → Devis → Signature → Pose → Encaissement, avec les branches sortantes :
+ * sur une cohorte mûre (90 jours), les leads sans suite, les RDV sans devis et les devis non signés sont des pertes ;
+ * sur une cohorte en cours, ce sont des dossiers « à date », encore en attente (gris), car la donnée ne distingue pas
+ * un refus d'un devis simplement pas encore signé. Annulations toujours en perte ; signés non posés et posés non
+ * encaissés toujours en attente.
  */
 export function fluxSankey(c: CohorteAgregee): { noeuds: NoeudSankey[]; liens: LienSankey[] } {
+  const enCours = !c.mature;
+  const sortie: NoeudSankey["type"] = enCours ? "attente" : "perte";
+  const aDate = enCours ? " à date" : "";
   const etapes: NoeudSankey[] = [
     { nom: "Leads", type: "etape" }, { nom: "RDV tenus", type: "etape" }, { nom: "Devis", type: "etape" },
     { nom: "Signatures", type: "etape" }, { nom: "Poses", type: "etape" }, { nom: "Encaissements", type: "etape" },
@@ -36,11 +41,11 @@ export function fluxSankey(c: CohorteAgregee): { noeuds: NoeudSankey[]; liens: L
     liens.push({ source, cible, valeur });
   };
   ajouter("Leads", "RDV tenus", c.rdv, "etape");
-  ajouter("Leads", "Sans suite", c.leads - c.rdv, "perte");
+  ajouter("Leads", `Sans RDV${aDate}`, c.leads - c.rdv, sortie);
   ajouter("RDV tenus", "Devis", c.devis, "etape");
-  ajouter("RDV tenus", "Sans devis", c.rdv - c.devis, "perte");
+  ajouter("RDV tenus", `Sans devis${aDate}`, c.rdv - c.devis, sortie);
   ajouter("Devis", "Signatures", c.signatures, "etape");
-  ajouter("Devis", "Refus", c.devis - c.signatures, "perte");
+  ajouter("Devis", `Devis non signés${aDate}`, c.devis - c.signatures, sortie);
   ajouter("Signatures", "Annulations", c.signatures - c.signaturesNettes, "perte");
   ajouter("Signatures", "Poses", c.poses, "etape");
   ajouter("Signatures", "À poser", c.signaturesNettes - c.poses, "attente");

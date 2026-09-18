@@ -28,19 +28,28 @@ function cle(nom: string, filtres: FiltresVue | undefined): unknown[] {
   return [nom, filtres ?? {}];
 }
 
+/** PostgREST tronque silencieusement à 1 000 lignes (HTTP 200, en-tête content-range) : on lit page par page. */
+const PAGE = 1000;
+
 async function lireSupabase<N extends NomVue>(nom: N, filtres: FiltresVue | undefined): Promise<Ligne<N>[]> {
   if (!supabase) throw new Error("Supabase non configuré");
-  let requete = supabase.from(nom).select("*");
-  for (const [colonne, valeur] of Object.entries(filtres?.egal ?? {})) requete = requete.eq(colonne, valeur);
-  if (filtres?.entre) requete = requete.gte(filtres.entre.colonne, filtres.entre.de).lte(filtres.entre.colonne, filtres.entre.a);
-  if (filtres?.ordre) {
-    const descendant = filtres.ordre.startsWith("-");
-    requete = requete.order(descendant ? filtres.ordre.slice(1) : filtres.ordre, { ascending: !descendant });
+  const lignes: unknown[] = [];
+  for (let debut = 0; ; debut += PAGE) {
+    let requete = supabase.from(nom).select("*");
+    for (const [colonne, valeur] of Object.entries(filtres?.egal ?? {})) requete = requete.eq(colonne, valeur);
+    if (filtres?.entre) requete = requete.gte(filtres.entre.colonne, filtres.entre.de).lte(filtres.entre.colonne, filtres.entre.a);
+    if (filtres?.ordre) {
+      const descendant = filtres.ordre.startsWith("-");
+      requete = requete.order(descendant ? filtres.ordre.slice(1) : filtres.ordre, { ascending: !descendant });
+    }
+    const fin = filtres?.limite ? Math.min(debut + PAGE, filtres.limite) - 1 : debut + PAGE - 1;
+    const { data, error } = await requete.range(debut, fin);
+    if (error) throw error;
+    lignes.push(...(data ?? []));
+    const pageEntiere = (data ?? []).length === fin - debut + 1;
+    if (!pageEntiere || (filtres?.limite !== undefined && lignes.length >= filtres.limite)) break;
   }
-  if (filtres?.limite) requete = requete.limit(filtres.limite);
-  const { data, error } = await requete;
-  if (error) throw error;
-  return z.array(VUES[nom]).parse(data) as Ligne<N>[];
+  return z.array(VUES[nom]).parse(lignes) as Ligne<N>[];
 }
 
 function filtrerLocalement<N extends NomVue>(lignes: Ligne<N>[], filtres: FiltresVue | undefined): Ligne<N>[] {

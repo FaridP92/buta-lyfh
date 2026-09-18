@@ -4,6 +4,7 @@ import { Badge } from "@/composants/Badge";
 import { telecharger, type LigneExport } from "@/lib/export";
 import { construireZipPowerBi, type VueExportee } from "@/lib/powerbi";
 import { formatDateCourte } from "@/lib/format";
+import { NOMBRE_VUES_MART } from "@/donnees/vues";
 import { HISTOIRES, OUTILS, SOURCES_REELLES } from "./donnees";
 
 /** Vues exportées, dans l'ordre du modèle ; mart_marche_commune est partitionnée par département dans l'instantané. */
@@ -223,7 +224,7 @@ export function EcranMethode() {
       <section className="flex flex-col gap-[var(--esp-3)]">
         <h2 className={TITRE_SECTION}>Export pour Power BI</h2>
         <p className={PARAGRAPHE}>
-          Un fichier zip avec un CSV par vue mart_ (vingt et une tables, séparateur point-virgule, décimale à la
+          Un fichier zip avec un CSV par vue mart_ ({NOMBRE_VUES_MART} tables, séparateur point-virgule, décimale à la
           virgule, UTF-8) et <code className="chiffre text-[13px]">modele_etoile.md</code>, qui décrit le modèle en
           étoile, le grain et les clés de chaque table. Le contenu est celui des vues à la journée publiée de la
           dernière mise en ligne. <code className="chiffre text-[13px]">mesures.dax</code> porte les mesures du modèle

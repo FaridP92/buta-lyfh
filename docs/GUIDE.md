@@ -118,7 +118,7 @@ Ce qu'on dit : « le cockpit vit sans moi le matin ; si quelque chose casse, je 
 Question en langage naturel ; le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base répond, le modèle rédige sans calculer, chaque nombre de la réponse est vérifié dans les lignes. Refus explicites (conseil, hors périmètre, non couvert), quotas, budget visible. Tant que la clé du modèle n'est pas posée, l'écran est retiré de la navigation.
 
 ### 3.11 Méthode et auteur
-Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture, l'export Power BI (zip de vingt tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).
+Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture, l'export Power BI (zip de vingt et une tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).
 
 ## 4. D'où viennent les données
 
@@ -154,7 +154,7 @@ Elles décrivent des situations classiques d'un réseau, jamais des faits réels
 Une suite de vingt tests SQL (un par histoire, plus des contrôles de cohérence des vues) vérifie que les sept histoires se retrouvent bien dans les vues (`npm run test:sql`).
 
 ### 4.4 Comment la vérité des chiffres est garantie
-- Calculs en SQL dans des vues `mart_` (vingt vues), chaque vue et chaque colonne commentée ; les calculs qui doivent vivre dans l'interface (agrégation d'une période, recalcul du forecast au curseur, pondération de l'indice) sont dans une bibliothèque testée (87 tests unitaires).
+- Calculs en SQL dans des vues `mart_` (vingt et une vues), chaque vue et chaque colonne commentée ; les calculs qui doivent vivre dans l'interface (agrégation d'une période, recalcul du forecast au curseur, pondération de l'indice) sont dans une bibliothèque testée (87 tests unitaires).
 - Chaque indicateur a une fiche : définition, formule, grain, unité, sens de lecture, source (bouton « i »).
 - Mois en cours comparé au prorata des jours publiés ; les taux de cohorte ne sont affichés que pour les cohortes mûres (90 jours) ; les axes tronqués sont annoncés ; les seconds axes sont expliqués.
 - Douze contrôles de cohérence exécutés chaque matin ; score et anomalies visibles.
@@ -214,7 +214,7 @@ Territoires : le marché réel, l'indice de potentiel avec les poids discutés e
 Les chiffres sont simulés ; les gestes sont ceux du poste.
 
 ## 7. Sous le capot, en langage simple
-- **Base** : Supabase (Postgres) avec un schéma dédié, vingt vues `mart_`, sécurité par rôle et par ligne : l'interface ne lit que des agrégats, jamais une ligne de dossier. Les clés secrètes ne quittent jamais le serveur.
+- **Base** : Supabase (Postgres) avec un schéma dédié, vingt et une vues `mart_`, sécurité par rôle et par ligne : l'interface ne lit que des agrégats, jamais une ligne de dossier. Les clés secrètes ne quittent jamais le serveur.
 - **Interface** : application React statique, déployée sur un VPS, graphiques ECharts, tests de bout en bout Playwright sur chaque route en 1280 et 375 px, audit Lighthouse (performance, accessibilité, bonnes pratiques, SEO à 99 ou 100 sur l'écran Ventes).
 - **Automatisation** : n8n (journée simulée, contrôles qualité, santé, gestion des erreurs), chaque exécution journalisée en base ; email au troisième échec consécutif.
 - **IA** (palier B) : un analyste qui répond aux questions en langage naturel en écrivant une requête SQL en lecture seule sur les vues autorisées, avec quotas et budget affiché ; une explication d'écart rédigée à partir des faits. Repli par règles si l'IA est indisponible.

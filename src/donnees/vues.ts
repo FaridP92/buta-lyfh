@@ -174,5 +174,8 @@ export const VUES = {
     .passthrough(),
 } as const;
 
+/** Nombre de vues mart_ connues de l'application : une seule source pour les textes qui le citent (Méthode, Automatisations). */
+export const NOMBRE_VUES_MART = Object.keys(VUES).filter((nom) => nom.startsWith("mart_")).length;
+
 export type NomVue = keyof typeof VUES;
 export type Ligne<N extends NomVue> = z.infer<(typeof VUES)[N]>;

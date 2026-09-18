@@ -37,9 +37,22 @@ export function phi(z: number): number {
 }
 
 /** Part du run-rate retenue au-delà des 45 jours couverts par le pipe : max(R - 1,5 ; 0) / R. */
-function partRunRate(moisRestants: number): number {
+export function partRunRate(moisRestants: number): number {
   return moisRestants > 0 ? Math.max(moisRestants - 1.5, 0) / moisRestants : 0;
 }
+
+/**
+ * Projection de run-rate effectivement retenue dans l'atterrissage central, en euros : la projection
+ * saisonnalisée des mois restants, réduite à la part au-delà des 45 jours que le pipe pondéré couvre déjà.
+ * Réalisé + pipe pondéré + cette part = atterrissage central (panneau Hypothèses).
+ */
+export function projectionRetenue(h: Pick<HypothesesAtterrissage, "projectionRunRate" | "moisRestants">): number {
+  return Math.round(h.projectionRunRate * partRunRate(h.moisRestants));
+}
+
+/** Nombre maximal de lignes « atterrissage sous l'objectif » dans les risques : au-delà, elles recopient le tableau. */
+const RISQUES_ECART_MAX = 3;
+const LIBELLE_ECART = "écart entre l'objectif et l'atterrissage central";
 
 /**
  * Recalcule l'atterrissage. Sans `tauxSignaturePipe`, le pipe SQL est repris tel quel ; avec, le pipe
@@ -162,7 +175,7 @@ export function risquesEtOpportunites(agences: readonly AgenceAtterrissage[], po
       signaux.push({ type: "risque", agence: a.nom, montant, montantLibelle: "CA posé à risque (estimation : poses en retard × panier moyen)", texte: `${a.nom} : ${formatNombre(pose.posesEnRetard)} poses en retard, CA posé à risque ${formatMontant(montant)}` });
     }
     if (a.central !== null && a.ecartPct !== null && a.ecartPct <= -10 && a.objectif > 0) {
-      signaux.push({ type: "risque", agence: a.nom, montant: a.objectif - a.central, montantLibelle: "écart entre l'objectif et l'atterrissage central", texte: `${a.nom} : atterrissage central ${formatMontant(a.central)}, ${formatTaux(Math.abs(a.ecartPct))} sous l'objectif (${formatMontant(a.objectif)})${a.probabilite !== null ? `, probabilité d'atteinte ${formatProbabilite(a.probabilite)}` : ""}` });
+      signaux.push({ type: "risque", agence: a.nom, montant: a.objectif - a.central, montantLibelle: LIBELLE_ECART, texte: `${a.nom} : atterrissage central ${formatMontant(a.central)}, ${formatTaux(Math.abs(a.ecartPct))} sous l'objectif (${formatMontant(a.objectif)})${a.probabilite !== null ? `, probabilité d'atteinte ${formatProbabilite(a.probabilite)}` : ""}` });
     }
     if (a.runRate3m > 0 && a.montantDevis < a.runRate3m) {
       signaux.push({ type: "risque", agence: a.nom, montant: a.runRate3m - a.montantDevis, montantLibelle: "devis en cours manquants pour couvrir un mois de run-rate", texte: `${a.nom} : ${formatMontant(a.montantDevis)} de devis en cours, moins d'un mois de run-rate (${formatMontant(a.runRate3m)})` });
@@ -176,5 +189,8 @@ export function risquesEtOpportunites(agences: readonly AgenceAtterrissage[], po
       signaux.push({ type: "opportunite", agence: a.nom, montant: a.pipePondere - 1.5 * a.runRate3m, montantLibelle: "pipe pondéré au-delà de 45 jours de run-rate", texte: `${a.nom} : pipe pondéré ${formatMontant(a.pipePondere)}, au-dessus de 45 jours de run-rate (${formatMontant(1.5 * a.runRate3m)})` });
     }
   }
-  return signaux.sort((x, y) => (x.type === y.type ? y.montant - x.montant : x.type === "risque" ? -1 : 1));
+  const tries = signaux.sort((x, y) => (x.type === y.type ? y.montant - x.montant : x.type === "risque" ? -1 : 1));
+  // Les écarts d'atterrissage sont déjà dans le tableau du dessus : on n'en garde que les trois plus lourds.
+  let ecarts = 0;
+  return tries.filter((s) => s.montantLibelle !== LIBELLE_ECART || ++ecarts <= RISQUES_ECART_MAX);
 }

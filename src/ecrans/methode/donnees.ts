@@ -10,7 +10,7 @@ export const SOURCES_REELLES = [
     nom: "ADEME, liste des entreprises RGE",
     contenu: "Qualifications pompe à chaleur, photovoltaïque, chauffe-eau thermodynamique en cours de validité",
     licence: "Licence Ouverte 2.0",
-    reference: "Ingestion quotidienne",
+    reference: "Vérifié le 17 septembre 2026, rejeu mensuel par script",
     lien: "https://data.ademe.fr/datasets/liste-des-entreprises-rge-2",
   },
   {
@@ -24,7 +24,7 @@ export const SOURCES_REELLES = [
     nom: "ADEME, DPE logements existants",
     contenu: "Maisons étiquette F ou G, énergie de chauffage (fioul, GPL, propane, butane)",
     licence: "Licence Ouverte 2.0",
-    reference: "Ingestion hebdomadaire",
+    reference: "Vérifié le 17 septembre 2026, rejeu mensuel par script",
     lien: "https://data.ademe.fr/datasets/dpe03existant",
   },
   {
@@ -58,7 +58,7 @@ export const HISTOIRES = [
     code: "H4",
     titre: "Nord",
     texte:
-      "Agence intégrée en juin 2026 : écarts de référentiels typiques d'une intégration, réconciliés et décroissants semaine après semaine.",
+      "Agence intégrée en juin 2026 : écarts de référentiels typiques d'une intégration, réconciliés et décroissants semaine après semaine. Cas d'école simulé, sans lien avec une opération ou une entité réelle.",
   },
   {
     code: "H5",
@@ -82,6 +82,6 @@ export const OUTILS = [
   { nom: "React, Vite, TypeScript", role: "Application statique, déployée sur le VPS" },
   { nom: "Supabase (Postgres, RLS, Edge Functions)", role: "Schéma buta, vues mart_, fonctions IA" },
   { nom: "n8n", role: "Automatisations quotidiennes et hebdomadaires, journalisées" },
-  { nom: "Claude (repli Mistral)", role: "Rédige à partir de faits calculés en SQL, ne calcule jamais un chiffre" },
+  { nom: "Claude (repli Mistral)", role: "Rédige à partir de faits calculés en SQL, ne calcule jamais un chiffre ; n'intervient que si une clé est posée côté serveur, sinon les phrases sont produites par règles et l'écran le dit" },
   { nom: "ECharts", role: "Graphiques (Sankey, cascade, éventail, cartes)" },
 ] as const;

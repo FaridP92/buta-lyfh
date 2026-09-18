@@ -14,7 +14,7 @@ import { useTokensGraphique } from "@/graphiques/theme";
 import { useEstMobile } from "@/lib/useEstMobile";
 import { agregerKpi, moisDe, type LigneKpi } from "@/lib/periode";
 import { formatDateCourte, formatMontant, formatNombre, formatProbabilite, formatTaux } from "@/lib/format";
-import { recalculerAtterrissage, risquesEtOpportunites, trajectoire, type AgenceAtterrissage, type HypothesesAtterrissage } from "@/lib/forecast";
+import { projectionRetenue, recalculerAtterrissage, risquesEtOpportunites, trajectoire, type AgenceAtterrissage, type HypothesesAtterrissage } from "@/lib/forecast";
 import { optionEventail } from "./options";
 
 function joursAvant(date: string, jours: number): string {
@@ -150,9 +150,11 @@ export function EcranForecast() {
                 <dt className="text-texte-2">Annulation à six mois</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_annulation_6m)}</dd>
                 <dt className="text-texte-2">Pipe pondéré</dt><dd className="chiffre text-right text-texte">{formatMontant(atterrissage.pipe)}</dd>
                 <dt className="text-texte-2">Run-rate trois mois</dt><dd className="chiffre text-right text-texte">{formatMontant(ligne.run_rate_3m)} / mois</dd>
-                <dt className="text-texte-2">Projection saisonnalisée ({formatNombre(ligne.mois_restants)} mois restants)</dt><dd className="chiffre text-right text-texte">{formatMontant(ligne.projection_run_rate)}</dd>
+                <dt className="text-texte-2">Run-rate saisonnalisé sur {formatNombre(ligne.mois_restants)} mois restants</dt><dd className="chiffre text-right text-texte">{formatMontant(ligne.projection_run_rate)}</dd>
+                <dt className="text-texte-2">Part retenue au-delà des 45 jours couverts par le pipe</dt><dd className="chiffre text-right text-texte">{hypotheses ? formatMontant(projectionRetenue(hypotheses)) : "n. d."}</dd>
                 <dt className="text-texte-2">Écart-type mensuel</dt><dd className="chiffre text-right text-texte">{formatMontant(ligne.sigma_mensuel)}</dd>
               </dl>
+              <p className="text-[12px] leading-[1.5] text-texte-3">Atterrissage central = réalisé à date + pipe pondéré + part retenue du run-rate ; les 45 premiers jours sont couverts par le pipe, le run-rate ne compte qu'au-delà.</p>
               <div className="flex flex-col gap-[6px] rounded-[10px] bg-surface-2 p-[var(--esp-3)]">
                 <label htmlFor={idCurseur} className="flex items-baseline justify-between gap-[var(--esp-2)]">
                   <span className="text-texte">Taux de signature du pipe</span>

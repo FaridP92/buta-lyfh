@@ -466,9 +466,11 @@ function genererCharges(): { mois: string; agence: string; sc: number; st: numbe
   for (const agence of AGENCES) {
     for (let annee = 2025; annee <= 2026; annee++) {
       for (let mois = 1; mois <= 12; mois++) {
+        // La masse salariale technique est portée par le coût de pose de chaque dossier (taux_pose × prix catalogue,
+        // déduit de la marge brute) : la compter aussi en charge fixe la comptait deux fois (relecture du 18 septembre).
         lignes.push({
           mois: formatDate(dateUTC(annee, mois, 1)), agence: agence.code,
-          sc: 3200 * agence.commerciaux, st: 3600 * agence.techniciens, structure: 6000, vehicules: 450 * agence.techniciens,
+          sc: 3200 * agence.commerciaux, st: 0, structure: 6000, vehicules: 450 * agence.techniciens,
         });
       }
     }

@@ -76,14 +76,16 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
 
   const nd = valeur === null || valeur === undefined;
   const tendance = variation?.valeur === null || variation?.valeur === undefined ? null : variation.valeur;
-  const favorable = tendance === null ? null : variation?.plusBasMieux ? tendance <= 0 : tendance >= 0;
+  // Une variation qui s'affiche 0,0 n'a pas de sens : ni flèche, ni couleur.
+  const nulle = tendance !== null && Math.abs(tendance) < 0.05;
+  const favorable = tendance === null || nulle ? null : variation?.plusBasMieux ? tendance <= 0 : tendance >= 0;
 
   return (
     <article className={cn("relative flex min-h-[132px] flex-col justify-between gap-[var(--esp-2)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)] shadow-[var(--ombre-carte)]", grise && "opacity-70")}>
       <div className="flex items-start justify-between gap-[var(--esp-2)]">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">{libelle}</p>
-          {sousLibelle && <p className="truncate text-[11px] text-texte-3">{sousLibelle}</p>}
+          {sousLibelle && <p className="line-clamp-2 text-[11px] leading-[1.4] text-texte-3">{sousLibelle}</p>}
         </div>
         <BoutonFiche code={code} className="-mr-1 -mt-1" />
       </div>
@@ -94,7 +96,7 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
           </p>
           {variation && (
             <p className={cn("mt-[6px] flex items-center gap-1 text-[12px]", favorable === null ? "text-texte-3" : favorable ? "text-succes" : "text-alerte")}>
-              {tendance === null ? <Minus size={12} strokeWidth={1.5} aria-hidden="true" /> : tendance >= 0 ? <ArrowUpRight size={12} strokeWidth={1.5} aria-hidden="true" /> : <ArrowDownRight size={12} strokeWidth={1.5} aria-hidden="true" />}
+              {tendance === null || nulle ? <Minus size={12} strokeWidth={1.5} aria-hidden="true" /> : tendance > 0 ? <ArrowUpRight size={12} strokeWidth={1.5} aria-hidden="true" /> : <ArrowDownRight size={12} strokeWidth={1.5} aria-hidden="true" />}
               <span className="chiffre">
                 {tendance === null ? "n. d." : variation.unite === "pts" ? formatVariationPoints(tendance) : `${tendance > 0 ? "+" : ""}${formatTaux(tendance)}`}
               </span>

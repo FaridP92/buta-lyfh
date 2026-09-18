@@ -80,9 +80,10 @@ select 'journée publiée plafonnée à la veille (Paris)' as test,
 select 'aucun lead futur dans dossier_a_date' as test, count(*) = 0 as ok, count(*) as lignes
 from buta.dossier_a_date where date_lead > journee;
 
--- mart_fraicheur : la journée simulée affichée est la journée publiée, la disponibilité est au moins égale.
+-- mart_fraicheur : la journée simulée affichée est la journée publiée, la disponibilité est au moins égale,
+-- la prochaine intégration est le lendemain de la dernière (WF1 tourne chaque jour à 06:00).
 select 'mart_fraicheur : journée simulée = journée publiée' as test,
-  date_reference = buta.journee_publiee() and disponible_jusqu_au >= date_reference and prochaine = date_reference + 1 as ok,
+  date_reference = buta.journee_publiee() and disponible_jusqu_au >= date_reference and prochaine = (ingere_le at time zone 'Europe/Paris')::date + 1 as ok,
   date_reference, disponible_jusqu_au, prochaine
 from buta.mart_fraicheur where source = 'journee_simulee';
 

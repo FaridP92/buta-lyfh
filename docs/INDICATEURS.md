@@ -19,7 +19,7 @@ Chaque indicateur a une fiche : définition, formule, grain, vue SQL, source, un
 | TX_RDV | Taux de RDV | dossiers avec RDV tenu / leads de la cohorte | plus haut = mieux |
 | TX_DEVIS | Taux de devis | devis émis / RDV tenus | plus haut = mieux |
 | TX_SIGN | Taux de signature | signatures / devis | plus haut = mieux |
-| TX_CONV | Conversion lead vers vente | signatures nettes d'annulation à 90 jours / leads ; sur la Vue d'ensemble, la valeur affichée est celle de la dernière cohorte mature (M-3), libellée « cohorte de juin, à 90 jours » | plus haut = mieux |
+| TX_CONV | Conversion lead vers vente | signatures nettes d'annulation à 90 jours / leads ; sur la Vue d'ensemble, la valeur affichée est celle de la dernière cohorte close à 90 jours, libellée par son mois de création (« cohorte de mai, à 90 jours » pour une journée publiée au 17 septembre) | plus haut = mieux |
 | ATTENTE48 | Leads sans RDV planifié | leads créés depuis plus de 48 h sans `date_rdv_planifie`, à date | plus bas = mieux |
 | D_LEAD_RDV | Délai lead vers RDV | médiane (date RDV tenu - date lead) | plus bas = mieux |
 | CPL | Coût par lead | coût du canal / leads du canal (`mart_couts_acquisition`) | plus bas = mieux |
@@ -59,7 +59,7 @@ Sur les couples agence × mois de devis clos (`periode_complete`, au moins 20 de
 |---|---|---|---|
 | D_SIGN_POSE | Délai signature vers pose | médiane (date pose - date signature), par agence et par département | plus bas = mieux |
 | POSE_DELAI | Poses dans les délais | poses à moins de 60 jours de la signature / poses | plus haut = mieux |
-| CARNET | Carnet de pose | charge restante en jours-technicien (ventes signées non posées × durée de pose du produit, `dim_produit.duree_pose_jt`) / (techniciens actifs × 0,8), en jours ouvrés | plus bas = mieux ; la durée de pose retenue par produit est affichée sous l'indicateur ; alerte quand le carnet dépasse 1,3 fois la médiane des douze semaines précédentes de l'agence |
+| CARNET | Carnet de pose | charge restante en jours-technicien (ventes signées non posées × durée de pose du produit, `dim_produit.duree_pose_jt`) / (techniciens actifs × 0,8), en jours ouvrés | plus bas = mieux ; la durée de pose retenue par produit (`dim_produit.duree_pose_jt`) se lit dans le référentiel produits de l'écran Qualité ; alerte quand le carnet dépasse 1,3 fois la médiane des douze semaines précédentes de l'agence |
 | PROD_TECH | Productivité pose | jours-technicien posés / (techniciens actifs × 5) par semaine | plus haut = mieux |
 | ENCAISSE | Encaissé | somme des encaissements du mois | montant |
 | D_ENCAISSE | Délai pose vers encaissement | médiane (date encaissement - date pose) | plus bas = mieux |
@@ -69,7 +69,7 @@ Sur les couples agence × mois de devis clos (`periode_complete`, au moins 20 de
 | Code | Indicateur | Formule | Lecture |
 |---|---|---|---|
 | PIPE_POND | Pipe pondéré | Σ devis en cours de moins de 90 jours : montant réel du devis × taux de signature observé pour sa tranche d'âge (0 à 30, 31 à 60, 61 à 90 jours, sur 12 mois) × (1 - taux d'annulation 6 mois) | montant |
-| ATTERR | Atterrissage | réalisé à date + pipe pondéré (qui couvre les 45 prochains jours) + Σ sur les mois restants au-delà de ces 45 jours de (run-rate 3 mois × coefficient de saisonnalité du mois) ; bornes bas et haut = central ± σ_mensuel × racine du nombre de mois restants (intervalle à 68 %), σ estimé sur 12 mois | prévision, hypothèses affichées |
+| ATTERR | Atterrissage | réalisé à date + pipe pondéré (qui couvre les 45 prochains jours) + projection × (mois restants - 1,5) / mois restants, où projection = Σ sur les mois restants de (run-rate 3 mois × coefficient de saisonnalité du mois) ; le panneau Hypothèses affiche la projection entière et la part retenue, et leur somme avec le réalisé et le pipe redonne le central ; bornes bas et haut = central ± σ_mensuel × racine du nombre de mois restants (intervalle à 68 %), σ estimé sur 12 mois | prévision, hypothèses affichées |
 | P_ATTEINTE | Probabilité d'atteinte | part des 500 tirages (run-rate bruité par σ, graine fixe) dont l'atterrissage dépasse l'objectif, arrondie à 5 points | pourcentage |
 
 ## Qualité et marché (`mart_qualite`, `mart_marche_departement`, `mart_marche_commune`)

@@ -58,6 +58,12 @@ export function formatNombre(valeur: number | null | undefined): string {
   return formatNombreFr(valeur, 0);
 }
 
+/** Nombre à décimales fixes (virgule décimale, espace fine entre milliers) : 2,35 pour deux décimales. */
+export function formatNombreDecimal(valeur: number | null | undefined, decimales = 1): string {
+  if (estVide(valeur)) return "n. d.";
+  return formatNombreFr(valeur, decimales);
+}
+
 const REGEX_DATE_SEULE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
@@ -100,6 +106,12 @@ export function formatDateCourte(date: string | Date): string {
   const jour = d.getDate().toString().padStart(2, "0");
   const mois = (d.getMonth() + 1).toString().padStart(2, "0");
   return `${jour}/${mois}`;
+}
+
+/** Date avec l'année (JJ/MM/AAAA) : pour les millésimes et les échéances qui ne sont pas de l'année en cours. */
+export function formatDateAnnee(date: string | Date): string {
+  const d = versDate(date);
+  return `${formatDateCourte(d)}/${d.getFullYear()}`;
 }
 
 export function formatDateHeure(date: string | Date): string {

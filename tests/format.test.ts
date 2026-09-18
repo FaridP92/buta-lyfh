@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   formatDateCourte,
+  formatDateAnnee,
+  formatNombreDecimal,
   formatDelaiJours,
   formatMoisAbrege,
   formatMontant,
@@ -84,5 +86,20 @@ describe("formatMoisAbrege", () => {
 describe("formatDateCourte", () => {
   it("formate en JJ/MM", () => {
     expect(formatDateCourte("2026-09-21")).toBe("21/09");
+  });
+});
+
+describe("formatDateAnnee", () => {
+  it("garde l'année pour les millésimes et les échéances lointaines", () => {
+    expect(formatDateAnnee("2022-01-01")).toBe("01/01/2022");
+    expect(formatDateAnnee("2027-06-30")).toBe("30/06/2027");
+  });
+});
+
+describe("formatNombreDecimal", () => {
+  it("écrit des décimales fixes à la française", () => {
+    expect(formatNombreDecimal(2.345, 1)).toBe("2,3");
+    expect(formatNombreDecimal(1234.5, 2)).toBe("1 234,50");
+    expect(formatNombreDecimal(null)).toBe("n. d.");
   });
 });

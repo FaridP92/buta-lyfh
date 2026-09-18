@@ -15,7 +15,7 @@ import { useTokensGraphique } from "@/graphiques/theme";
 import { useEstMobile } from "@/lib/useEstMobile";
 import { formatDateCourte, formatDelaiJours, formatMontant, formatNombre, formatTaux } from "@/lib/format";
 import { ajouterMois, ecartPct, ecartPoints, moisDe, moisEntre, periodeN1 } from "@/lib/periode";
-import { agregerDelais, agregerEncaissement, agregerEncaissementN1, calendrierCharge, carnetDerniereSemaine, lundiDe, type LigneDelais, type LigneEncaissement, type LignePose } from "@/lib/pose";
+import { agregerDelais, agregerEncaissement, agregerEncaissementN1, calendrierCharge, carnetDerniereSemaine, lundiDe, phraseTendanceCarnet, type LigneDelais, type LigneEncaissement, type LignePose } from "@/lib/pose";
 import { optionCalendrierCharge, optionDelaiCouverture } from "./options";
 
 export function EcranPose() {
@@ -131,7 +131,7 @@ export function EcranPose() {
         <Carte titre="Calendrier de charge des équipes de pose" sousTitre="Chargement des semaines"><Squelette hauteur={agencesCalendrier.length > 1 ? 380 : 180} /></Carte>
       )}
       {optionCalendrier ? (
-        <CarteGraphique titre="Calendrier de charge des équipes de pose" sousTitre={`${perimetreLibelle} : charge en part de la capacité (techniciens actifs × 5 jours), quatre semaines réalisées (cadre plein) puis la semaine en cours et onze semaines planifiées (cadre pointillé)`}
+        <CarteGraphique titre="Calendrier de charge des équipes de pose" sousTitre={`${perimetreLibelle} : charge en part de la capacité (techniciens actifs × 5 jours), quatre semaines réalisées (cadre plein) puis la semaine en cours et onze semaines planifiées (cadre pointillé) ; au-delà de 100 %, surcharge en rouge ; case vide : aucune pose cette semaine-là`}
           option={optionCalendrier} hauteur={agencesCalendrier.length > 1 ? 380 : 180} hauteurMobile={agencesCalendrier.length > 1 ? 420 : 200} codeIndicateur="PROD_TECH"
           description={`Calendrier de charge semaine × agence pour ${perimetreLibelle} : ${calendrier.semaines.length} semaines, charge réalisée puis planifiée en pourcentage de la capacité`}
           requete={`select semaine, agence, capacite_jt_semaine, jt_poses, poses_planifiees, charge_planifiee_pct from buta.mart_pose where semaine between '${ajouterMois(moisPublie, -3)}-01' and '${ajouterMois(moisPublie, 4)}-01'`}
@@ -157,7 +157,7 @@ export function EcranPose() {
         <Carte className="lg:col-span-5" titre="Ce que dit le carnet" sousTitre="Lecture par règles, à la dernière semaine renseignée" actions={<BoutonFiche code="CARNET" />}>
           {carnet ? (
             <ul className="flex flex-col gap-[var(--esp-2)] text-[13px] leading-[1.5] text-texte-2">
-              <li><span className="chiffre text-texte">{carnet.carnet === null ? "n. d." : formatNombre(Math.round(carnet.carnet))}</span> jours ouvrés de carnet pour {perimetreLibelle} la semaine du {formatDateCourte(carnet.semaine)}{carnet.carnetPrecedent !== null && carnet.carnet !== null ? `, ${carnet.carnet >= carnet.carnetPrecedent ? "en hausse" : "en baisse"} sur la semaine précédente (${formatNombre(Math.round(carnet.carnetPrecedent))})` : ""}.</li>
+              <li><span className="chiffre text-texte">{carnet.carnet === null ? "n. d." : formatNombre(Math.round(carnet.carnet))}</span> jours ouvrés de carnet pour {perimetreLibelle} la semaine du {formatDateCourte(carnet.semaine)}{phraseTendanceCarnet(carnet.carnet, carnet.carnetPrecedent)}.</li>
               <li><span className="chiffre text-texte">{carnet.dossiersAPoser === null ? "n. d." : formatNombre(carnet.dossiersAPoser)}</span> dossiers signés à poser, dont <span className="chiffre text-texte">{carnet.posesEnRetard === null ? "n. d." : formatNombre(carnet.posesEnRetard)}</span> en retard (signés depuis plus de 60 jours sur place, 90 à distance).</li>
               <li>Un carnet qui dépasse 1,3 fois la médiane des douze semaines précédentes déclenche l'alerte « carnet de pose » de la Vue d'ensemble ; la capacité se lit sur le calendrier ci-dessus.</li>
             </ul>
