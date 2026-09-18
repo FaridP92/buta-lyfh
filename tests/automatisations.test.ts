@@ -45,7 +45,7 @@ describe("libellés et durées", () => {
     expect(libelleStatut("inconnu")).toEqual({ texte: "inconnu", statut: "neutre" });
   });
   it("le catalogue porte un fichier d'export par workflow", () => {
-    expect(WORKFLOWS.map((w) => w.code)).toEqual(["WF1", "WF2", "WF5", "WF0"]);
+    expect(WORKFLOWS.map((w) => w.code)).toEqual(["WF1", "WF2", "WF3", "WF5", "WF0"]);
     for (const w of WORKFLOWS) expect(w.fichier).toMatch(/^\/n8n\/wf\d-[a-z-]+\.json$/);
   });
 });

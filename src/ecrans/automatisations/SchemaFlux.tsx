@@ -4,10 +4,10 @@
  * tracent de gauche à droite (buta-trace), désactivé avec prefers-reduced-motion.
  */
 const BOITES: { x: number; titre: string; lignes: string[] }[] = [
-  { x: 20, titre: "n8n", lignes: ["WF1 journée simulée, 06:00", "WF2 contrôles qualité, 06:20", "WF5 santé, toutes les 6 h", "WF0 sur erreur"] },
-  { x: 250, titre: "Supabase (RPC, clé service)", lignes: ["publier_journee", "rafraichir_marts", "executer_controles", "journal_run, echecs_consecutifs"] },
-  { x: 480, titre: "Vues mart_", lignes: ["vingt vues, trois matérialisées", "mart_fraicheur", "mart_qualite", "mart_automatisation"] },
-  { x: 710, titre: "Application", lignes: ["badge de fraîcheur", "écran Qualité", "écran Automatisations", "instantané statique de secours"] },
+  { x: 20, titre: "n8n", lignes: ["WF1 journée simulée, 06:00", "WF2 contrôles qualité, 06:20", "WF3 revue, lundi 07:00", "WF5 santé, toutes les 6 h", "WF0 sur erreur"] },
+  { x: 250, titre: "Supabase (RPC, clé service)", lignes: ["publier_journee, rafraichir_marts", "executer_controles", "faits_revue_hebdo, publier_revue", "journal_run, echecs_consecutifs"] },
+  { x: 480, titre: "Vues mart_", lignes: ["vingt vues, trois matérialisées", "mart_fraicheur, mart_qualite", "mart_revue_hebdo", "mart_automatisation"] },
+  { x: 710, titre: "Application", lignes: ["badge de fraîcheur, Qualité", "Plans d'action (revue)", "Automatisations", "instantané statique de secours"] },
 ];
 const LARGEUR_BOITE = 200;
 const HAUTEUR_BOITE = 118;

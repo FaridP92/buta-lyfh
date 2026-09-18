@@ -7,6 +7,9 @@ Un fichier JSON par workflow (nom, nœuds, connexions, réglages, étiquettes), 
 | `wf0-erreurs.json` | Buta - Erreurs (journal et alerte) | Error Trigger (réglage « Error workflow » de WF1, WF2, WF5) |
 | `wf1-journee-simulee.json` | Buta - Journée simulée (quotidien 06:00) | chaque jour à 06:00 Europe/Paris |
 | `wf2-controles-qualite.json` | Buta - Contrôles qualité (quotidien 06:20) | chaque jour à 06:20 |
+| `wf3-revue-hebdomadaire.json` | Buta - Revue hebdomadaire (lundi 07:00) | chaque lundi à 07:00 |
 | `wf5-sante.json` | Buta - Santé (toutes les 6 h) | toutes les 6 heures, minute 10 |
+
+`wf3-code-regles.js` est le code du nœud « Rédiger par règles » de WF3, généré depuis `src/lib/revue.ts` par `npm run n8n:wf3` (à régénérer et recoller dans le nœud après toute modification de la bibliothèque).
 
 Pour réimporter : n8n, « Import from file », puis rattacher les credentials par leur nom et publier.

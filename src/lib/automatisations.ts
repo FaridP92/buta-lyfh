@@ -23,6 +23,7 @@ export interface WorkflowCatalogue {
 export const WORKFLOWS: readonly WorkflowCatalogue[] = [
   { code: "WF1", nom: "Journée simulée", declencheur: { type: "quotidien", heure: 6, minute: 0 }, description: "Publie la journée de la veille (idempotent), rafraîchit les vues matérialisées, met à jour le badge de fraîcheur.", fichier: "/n8n/wf1-journee-simulee.json" },
   { code: "WF2", nom: "Contrôles qualité", declencheur: { type: "quotidien", heure: 6, minute: 20 }, description: "Exécute les douze contrôles de cohérence à la journée publiée et envoie la synthèse par email si un contrôle bloquant échoue ou si le score passe sous 90.", fichier: "/n8n/wf2-controles-qualite.json" },
+  { code: "WF3", nom: "Revue hebdomadaire", declencheur: { type: "hebdomadaire", jourSemaine: 1, heure: 7, minute: 0 }, description: "Calcule les faits de la semaine en SQL, rédige la revue (règles, puis lecture par Mistral contrôlée : aucun nombre hors des faits), la publie et l'envoie par email.", fichier: "/n8n/wf3-revue-hebdomadaire.json" },
   { code: "WF5", nom: "Santé", declencheur: { type: "toutes_les_heures", toutesLes: 6, minute: 10 }, description: "Vérifie que le site répond 200 avec « Buta.Lyfh » et que l'API renvoie mart_kpi_mensuel ; email au troisième échec consécutif.", fichier: "/n8n/wf5-sante.json" },
   { code: "WF0", nom: "Erreurs", declencheur: { type: "sur_erreur" }, description: "Journalise en erreur tout workflow planté et envoie un email à partir du troisième échec consécutif.", fichier: "/n8n/wf0-erreurs.json" },
 ];

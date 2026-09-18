@@ -8,6 +8,7 @@
 - **Données** : projet Supabase `renovscope` (`iuremijuoxkzvfqyrmcc`), schéma `buta` exposé à l'API. Migrations 0001 à 0016 appliquées (0011 : prorata ; 0012 : remises ; 0013 : hypothèses du forecast ; 0014 : objectif mensuel ; 0015 : médianes lead vers RDV ; 0016 : réconciliation des libellés). 72 261 dossiers simulés (59 838 publiés au 17/09) après recalibrage à 80 leads par commercial, marché réel 96 départements et 4 691 communes. Dix-neuf vues `mart_` rapides. Tests SQL `npm run test:sql` : 16/16 (sept histoires retrouvées).
 - **Lots 2 et 3 terminés** : écrans de pilotage, palette, Territoires, Qualité, export Power BI livrés, vérifiés, en ligne (captures `docs/captures/lot2/` et `lot3/`). Prochain : lot 4a (automatisation n8n du palier A : WF1 journée, WF2 contrôles, WF3 revue hebdo, écran Automatisations) puis 4b (analyste, Edge Functions), voir BACKLOG.md.
 - **Dépôt** : GitHub `FaridP92/buta-lyfh`, remote HTTPS, `main` à jour. Commits et push à chaque étape vérifiée.
+- **Plan Supabase gratuit : deux projets actifs au plus.** Le 18 septembre à 12 h 15, la réactivation du projet « Perso » a mis `renovscope` (la base de Buta.Lyfh) en pause ; le site a tenu sur l'instantané statique. Décision : `dvf-insights` en pause, `renovscope` réactivé. Ne réactiver aucun autre projet avant mardi 22 septembre sans mettre un projet en pause d'abord (`renovscope` doit rester actif : n8n, badge de fraîcheur, analyste).
 
 ## Ce qu'il faut savoir (décisions non évidentes)
 
