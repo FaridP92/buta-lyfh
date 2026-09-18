@@ -1,0 +1,72 @@
+accueil.png : page entière
+accueil-01-atterrissage-2026.png : Atterrissage 2026
+accueil-02-funnel-de-la-cohorte-du-mois.png : Funnel de la cohorte du mois
+accueil-03-alertes-du-matin.png : Alertes du matin
+accueil-04-agences.png : Agences
+accueil-05-agences-simulees.png : Agences simulées
+accueil-06-ce-que-dit-le-mois.png : Ce que dit le mois
+territoires.png : page entière
+territoires-01-indice-de-potentiel-par-departement.png : Indice de potentiel par département
+territoires-02-composantes-de-l-indice.png : Composantes de l'indice
+territoires-03-departements-les-26-premiers.png : Départements, les 26 premiers
+territoires-04-le-parc-gaz-en-citerne.png : Le parc gaz en citerne
+territoires-05-un-parc-a-convertir.png : Un parc à convertir
+funnel.png : page entière
+funnel-01-du-lead-a-l-encaissement.png : Du lead à l'encaissement
+funnel-02-conversion-par-canal-et-agence.png : Conversion par canal et agence
+funnel-03-leads-par-canal-et-ventes.png : Leads par canal et ventes
+funnel-04-leads-sans-rdv-planifie.png : Leads sans RDV planifié
+funnel-05-qualite-des-leads-par-canal.png : Qualité des leads par canal
+ventes.png : page entière
+ventes-01-cascade-de-l-ecart-de-ca.png : Cascade de l'écart de CA
+ventes-02-ca-signe-par-produit.png : CA signé par produit
+ventes-03-quelle-agence-gagne-de-l-argent.png : Quelle agence gagne de l'argent
+ventes-04-matrice-agence-produit.png : Matrice agence × produit
+ventes-05-annulations-a-60-jours-a-distance-ou-sur-place.png : Annulations à 60 jours : à distance ou sur place
+ventes-06-remises.png : Remises
+forecast.png : page entière
+forecast-01-eventail-d-atterrissage-2026.png : Éventail d'atterrissage 2026
+forecast-02-hypotheses.png : Hypothèses
+forecast-03-atterrissage-par-agence.png : Atterrissage par agence
+forecast-04-risques.png : Risques
+forecast-05-opportunites.png : Opportunités
+pose.png : page entière
+pose-01-calendrier-de-charge-des-equipes-de-pose.png : Calendrier de charge des équipes de pose
+pose-02-delai-de-pose-sur-place-contre-a-distance.png : Délai de pose : sur place contre à distance
+pose-03-ce-que-dit-le-carnet.png : Ce que dit le carnet
+pose-04-encaissement-et-carnet-par-agence.png : Encaissement et carnet par agence
+plans-action.png : page entière
+plans-action-01-plans-d-action.png : Plans d'action
+plans-action-02-revue-hebdomadaire.png : Revue hebdomadaire
+plans-action-03-rituels.png : Rituels
+qualite.png : page entière
+qualite-01-score-des-journees-publiees.png : Score des journées publiées
+qualite-02-les-douze-controles.png : Les douze contrôles
+qualite-03-fraicheur-des-sources.png : Fraîcheur des sources
+qualite-04-lignage.png : Lignage
+qualite-05-referentiels.png : Référentiels
+qualite-06-reconciliation-des-libelles-produits.png : Réconciliation des libellés produits
+automatisations.png : page entière
+automatisations-01-journee-simulee.png : Journée simulée
+automatisations-02-controles-qualite.png : Contrôles qualité
+automatisations-03-revue-hebdomadaire.png : Revue hebdomadaire
+automatisations-04-sante.png : Santé
+automatisations-05-erreurs.png : Erreurs
+automatisations-06-journal-des-executions.png : Journal des exécutions
+automatisations-07-le-flux.png : Le flux
+methode.png : page entière
+methode-01-ce-que-c-est-ce-que-ce-n-est-pas.png : Ce que c'est, ce que ce n'est pas
+methode-02-sources-reelles.png : Sources réelles
+methode-03-le-modele-de-simulation.png : Le modèle de simulation
+methode-04-le-contexte-public.png : Le contexte public
+methode-05-architecture.png : Architecture
+methode-06-export-pour-power-bi.png : Export pour Power BI
+methode-07-l-auteur.png : L'auteur
+commun-barre-haute.png : barre haute, rail et première rangée
+commun-fiche-indicateur.png : fiche de l'indicateur CA signé
+commun-palette.png : palette de commandes (Cmd K)
+commun-export.png : menu Exporter d'un tableau
+commun-theme-clair.png : accueil en thème clair
+mobile-accueil.png : accueil sur téléphone, premier écran
+mobile-ventes.png : ventes sur téléphone, premier écran
+mobile-tiroir.png : tiroir de navigation sur téléphone
