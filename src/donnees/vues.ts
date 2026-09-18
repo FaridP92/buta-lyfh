@@ -166,6 +166,9 @@ export const VUES = {
   source_fraicheur: z
     .object({ source: z.string(), date_reference: date.nullable(), ingere_le: z.string(), prochaine: date.nullable() })
     .passthrough(),
+  mart_fraicheur: z
+    .object({ source: z.string(), date_reference: date.nullable(), disponible_jusqu_au: date.nullable(), ingere_le: z.string(), prochaine: date.nullable() })
+    .passthrough(),
 } as const;
 
 export type NomVue = keyof typeof VUES;

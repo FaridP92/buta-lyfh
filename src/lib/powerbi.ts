@@ -31,6 +31,7 @@ const ROLES: Record<string, { role: "fait" | "dimension" | "service"; grain: str
   mart_plans_action: { role: "service", grain: "plan d'action", cles: "id" },
   mart_revue_hebdo: { role: "service", grain: "semaine", cles: "semaine" },
   mart_reconciliation_libelles: { role: "service", grain: "agence × libellé source", cles: "agence, libelle_source" },
+  mart_fraicheur: { role: "service", grain: "source de données", cles: "source" },
 };
 
 function colonnesDe(lignes: readonly LigneExport[]): string[] {

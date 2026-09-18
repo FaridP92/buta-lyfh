@@ -223,3 +223,17 @@ Audit RLS (skill supabase-rls-guard, exécuté sur la base après les migrations
 | tout le monde | `journee_publiee()`, `phi()` (lecture seule, `search_path` figé par 0005) | EXECUTE | advisors : plus d'alerte `function_search_path_mutable` |
 
 RLS activée sur les 26 tables (`relrowsecurity = true` partout). `analyste_ro` : `rolcanlogin = true`, `rolconfig = statement_timeout=5s ; work_mem=16MB ; search_path=buta` (appliqués à la connexion du rôle par le pooler, pas sous `SET ROLE`), mot de passe à poser au lot 4b hors dépôt. Migration 0006 : `grant analyste_ro to postgres` pour permettre les tests par `SET ROLE` (postgres n'est pas superutilisateur sur Supabase). Advisors après 0005 : sur `buta`, seulement `rls_enabled_no_policy` (INFO) sur les cinq tables volontairement fermées.
+
+### Session 3, 18 septembre 2026 : lot 4a
+
+Plan lot 4a (dix lignes) :
+1. Migration 0017 : `journee_publiee()` plafonnée à la veille (Europe/Paris) pour publier d'avance sans jamais montrer le futur ; `dossier_a_date` exclut les leads postérieurs à la journée ; vue `mart_fraicheur` (journée publiée, données disponibles jusqu'au) ; fonction `echecs_consecutifs(workflow)` pour l'alerte après trois échecs. Advisors, `npm run test:sql`.
+2. Front : badge de fraîcheur, filtres, Qualité et instantané lisent `mart_fraicheur` ; fiche dans INDICATEURS.md.
+3. Credential n8n « Supabase Buta (service role) » créé par Frédéric dans n8n (jamais par Claude, la clé service ne transite pas) ; vérification par un appel RPC.
+4. WF0 « Buta - Erreurs » (Error Trigger) : ligne de journal en erreur, email Gmail après trois échecs consécutifs ; rattaché aux autres workflows par le réglage errorWorkflow.
+5. WF1 journée simulée (06:00) : `publier_journee(veille)` idempotent, `rafraichir_marts`, journal ; test manuel, ligne de journal vérifiée en base, publication, export `n8n/`.
+6. WF2 contrôles qualité (06:20) : `executer_controles`, email si un contrôle bloquant est KO ou si le score est sous 90, journal ; même cycle.
+7. WF5 santé (toutes les 6 h) : site (200 et « Buta.Lyfh »), API (`mart_kpi_mensuel`), journal, email après trois échecs ; même cycle.
+8. Publication d'avance jusqu'au 25 septembre (`npm run publier -- --jusqua 2026-09-25`), contrôle que l'application montre la veille et que C11 reste vert.
+9. Relecture du palier A (sept écrans, 1280 et 375, DESIGN.md §9 et §11), corrections, `npm run check`, e2e.
+10. Déploiement, e2e contre la production, journal, commit, push.

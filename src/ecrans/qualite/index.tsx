@@ -38,7 +38,7 @@ export function EcranQualite() {
   const tokens = useTokensGraphique();
   const [ouvert, setOuvert] = useState<string | null>(null);
   const qualite = useVue("mart_qualite", { ordre: "-jour" });
-  const fraicheur = useVue("source_fraicheur");
+  const fraicheur = useVue("mart_fraicheur");
   const agences = useVue("dim_agence");
   const canaux = useVue("dim_canal");
   const produits = useVue("dim_produit");
@@ -135,7 +135,10 @@ export function EcranQualite() {
                 {(fraicheur.donnees ?? []).map((f) => (
                   <tr key={f.source} className="border-b border-bordure/60">
                     <td className="py-[6px] text-texte">{LIBELLES_SOURCES[f.source] ?? f.source}</td>
-                    <td className="chiffre py-[6px] text-right text-texte-2">{f.date_reference ? formatDateCourte(f.date_reference) : "n. d."}</td>
+                    <td className="chiffre py-[6px] text-right text-texte-2">
+                      {f.date_reference ? formatDateCourte(f.date_reference) : "n. d."}
+                      {f.disponible_jusqu_au && f.date_reference && f.disponible_jusqu_au > f.date_reference ? <span className="block text-[11px] text-texte-3">publiée d'avance jusqu'au {formatDateCourte(f.disponible_jusqu_au)}</span> : null}
+                    </td>
                     <td className="chiffre py-[6px] text-right text-texte-2">{formatDateHeure(f.ingere_le)}</td>
                     <td className="chiffre py-[6px] text-right text-texte-2">{f.prochaine ? formatDateCourte(f.prochaine) : "à la demande"}</td>
                   </tr>
@@ -178,7 +181,7 @@ export function EcranQualite() {
         </div>
       </Carte>
 
-      <LigneSources simule sources={[{ nom: "Vues mart_qualite, mart_reconciliation_libelles, table source_fraicheur, dimensions", ...(dernierJour ? { reference: `contrôles du ${formatDateCourte(dernierJour)}` } : {}) }]}
+      <LigneSources simule sources={[{ nom: "Vues mart_qualite, mart_reconciliation_libelles, mart_fraicheur, dimensions", ...(dernierJour ? { reference: `contrôles du ${formatDateCourte(dernierJour)}` } : {}) }]}
         hypotheses="Score = 100 × somme des poids des contrôles OK / somme des poids (3 pour un contrôle bloquant, 1 sinon) ; tendance = lignes concernées en plus ou en moins par rapport à la veille ; l'historique des contrôles commence à la mise en service." />
     </div>
   );

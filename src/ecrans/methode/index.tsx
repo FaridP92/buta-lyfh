@@ -10,7 +10,7 @@ import { HISTOIRES, OUTILS, SOURCES_REELLES } from "./donnees";
 const VUES_EXPORT = [
   "mart_kpi_mensuel", "mart_funnel", "mart_ventes_produit", "mart_ecarts", "mart_couts_acquisition", "mart_delais", "mart_pose",
   "mart_encaissement", "mart_forecast", "mart_remises", "mart_objectif_mensuel", "mart_qualite", "mart_marche_departement",
-  "mart_marche_commune", "mart_automatisation", "mart_alertes", "mart_plans_action", "mart_revue_hebdo", "mart_reconciliation_libelles",
+  "mart_marche_commune", "mart_automatisation", "mart_alertes", "mart_plans_action", "mart_revue_hebdo", "mart_reconciliation_libelles", "mart_fraicheur",
 ];
 const DEPARTEMENTS_PERIMETRE = ["16", "17", "24", "32", "33", "40", "47", "59", "64", "79", "85"];
 
@@ -223,7 +223,7 @@ export function EcranMethode() {
       <section className="flex flex-col gap-[var(--esp-3)]">
         <h2 className={TITRE_SECTION}>Export pour Power BI</h2>
         <p className={PARAGRAPHE}>
-          Un fichier zip avec un CSV par vue mart_ (dix-neuf tables, séparateur point-virgule, décimale à la
+          Un fichier zip avec un CSV par vue mart_ (vingt tables, séparateur point-virgule, décimale à la
           virgule, UTF-8) et <code className="chiffre text-[13px]">modele_etoile.md</code>, qui décrit le modèle en
           étoile, le grain et les clés de chaque table. Le contenu est celui des vues à la journée publiée de la
           dernière mise en ligne. Au palier B s'ajoutent <code className="chiffre text-[13px]">mesures.dax</code> et un

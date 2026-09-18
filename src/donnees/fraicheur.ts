@@ -14,7 +14,7 @@ export interface Fraicheur {
 async function lireFraicheur(): Promise<Fraicheur> {
   if (supabase) {
     const { data, error } = await supabase
-      .from("source_fraicheur")
+      .from("mart_fraicheur")
       .select("date_reference, ingere_le")
       .eq("source", "journee_simulee")
       .maybeSingle();

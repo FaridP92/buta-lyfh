@@ -70,3 +70,21 @@ from (
   select agence from buta.fait_dossier where publie and produit_libelle_source is not null and produit_libelle_source not in (select libelle from buta.dim_produit)
   union all
   select a.agence from buta.fait_dossier a join buta.fait_dossier b on b.empreinte_contact = a.empreinte_contact and b.produit = a.produit and b.id > a.id and abs(b.date_lead - a.date_lead) <= 30 where a.publie and b.publie) t;
+
+-- Publication d'avance (0017) : la journée publiée ne dépasse jamais la veille en heure de Paris,
+-- et aucun lead postérieur à la journée n'entre dans dossier_a_date même si des dossiers sont publiés d'avance.
+select 'journée publiée plafonnée à la veille (Paris)' as test,
+  buta.journee_publiee() <= (now() at time zone 'Europe/Paris')::date - 1 as ok,
+  buta.journee_publiee() as journee, (select date_reference from buta.source_fraicheur where source = 'journee_simulee') as publie_jusqu_au;
+
+select 'aucun lead futur dans dossier_a_date' as test, count(*) = 0 as ok, count(*) as lignes
+from buta.dossier_a_date where date_lead > journee;
+
+-- mart_fraicheur : la journée simulée affichée est la journée publiée, la disponibilité est au moins égale.
+select 'mart_fraicheur : journée simulée = journée publiée' as test,
+  date_reference = buta.journee_publiee() and disponible_jusqu_au >= date_reference and prochaine = date_reference + 1 as ok,
+  date_reference, disponible_jusqu_au, prochaine
+from buta.mart_fraicheur where source = 'journee_simulee';
+
+-- echecs_consecutifs : zéro pour un workflow inconnu (journal vide) ; le scénario à trois échecs est vérifié en transaction annulée dans le journal.
+select 'echecs_consecutifs : 0 sans exécution' as test, buta.echecs_consecutifs('WF_INCONNU') = 0 as ok, buta.echecs_consecutifs('WF_INCONNU') as valeur;

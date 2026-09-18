@@ -4,9 +4,10 @@ import { formatDateCourte, formatDateHeure } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
 /**
- * Badge de fraicheur (ECRANS.md conventions) : « journee du JJ/MM integree a HH:MM » depuis
- * source_fraicheur ; « instantane du JJ/MM » si seul le secours statique repond ; etat neutre sinon.
- * Le point ambre pulse pendant les dix secondes qui suivent un changement de valeur (DESIGN.md §10).
+ * Badge de fraîcheur (ECRANS.md conventions) : « journée du JJ/MM intégrée à HH:MM » depuis
+ * mart_fraicheur (journée publiée plafonnée à la veille) ; « instantané du JJ/MM » si seul le secours
+ * statique répond ; état neutre sinon. Le point ambre pulse pendant les dix secondes qui suivent un
+ * changement de valeur (DESIGN.md §10).
  */
 export function BadgeFraicheur() {
   const { data, isError } = useFraicheur();
