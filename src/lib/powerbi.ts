@@ -1,9 +1,10 @@
 import { versCSV, versZip, type LigneExport } from "@/lib/export";
+import { genererLisezMoi, genererMesuresDax } from "@/lib/dax";
 
 /**
- * Export Power BI, palier A (ECRANS.md §11) : un zip avec un CSV par vue mart_ (séparateur point-virgule,
- * décimale à la virgule, UTF-8 avec BOM, ce qu'Excel et Power Query français lisent sans réglage) et
- * modele_etoile.md, qui décrit le modèle en étoile et les colonnes réellement présentes.
+ * Export Power BI (ECRANS.md §11) : un zip avec un CSV par vue mart_ (séparateur point-virgule, décimale à la
+ * virgule, UTF-8 avec BOM, ce qu'Excel et Power Query français lisent sans réglage), modele_etoile.md qui décrit
+ * le modèle en étoile et les colonnes réellement présentes, mesures.dax et LISEZMOI.md (palier B, src/lib/dax.ts).
  */
 export interface VueExportee {
   nom: string;
@@ -65,11 +66,11 @@ export function modeleEtoile(vues: readonly VueExportee[], journeePubliee: strin
     const r = ROLES[v.nom];
     lignes.push(`| ${v.nom}.csv | ${r?.role ?? "service"} | ${r?.grain ?? "voir INDICATEURS.md"} | ${r?.cles ?? ""} | ${v.lignes.length} | ${colonnesDe(v.lignes).join(", ")} |${r?.note ? ` ${r.note}` : ""}`);
   }
-  lignes.push("", "## Mesures et fiches", "", "Les définitions, formules et sens de lecture de chaque indicateur sont dans `docs/INDICATEURS.md` du dépôt et dans la fiche « i » de chaque écran. `mesures.dax` et `LISEZMOI.md` arrivent au palier B.", "");
+  lignes.push("", "## Mesures et fiches", "", "Les définitions, formules et sens de lecture de chaque indicateur sont dans `docs/INDICATEURS.md` du dépôt et dans la fiche « i » de chaque écran. Les mesures du modèle sont dans `mesures.dax`, la marche à suivre dans `LISEZMOI.md`.", "");
   return lignes.join("\n");
 }
 
-/** Construit le zip : un CSV par vue, plus modele_etoile.md. */
+/** Construit le zip : un CSV par vue, plus modele_etoile.md, mesures.dax et LISEZMOI.md. */
 export function construireZipPowerBi(vues: readonly VueExportee[], journeePubliee: string | null, genereLe: string): Uint8Array {
   const fichiers: Record<string, string> = {};
   for (const v of vues) {
@@ -77,5 +78,7 @@ export function construireZipPowerBi(vues: readonly VueExportee[], journeePublie
     fichiers[`${v.nom}.csv`] = versCSV(v.lignes, colonnes);
   }
   fichiers["modele_etoile.md"] = modeleEtoile(vues, journeePubliee, genereLe);
+  fichiers["mesures.dax"] = genererMesuresDax(genereLe);
+  fichiers["LISEZMOI.md"] = genererLisezMoi(journeePubliee, genereLe, vues.length);
   return versZip(fichiers);
 }

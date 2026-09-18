@@ -226,8 +226,9 @@ export function EcranMethode() {
           Un fichier zip avec un CSV par vue mart_ (vingt et une tables, séparateur point-virgule, décimale à la
           virgule, UTF-8) et <code className="chiffre text-[13px]">modele_etoile.md</code>, qui décrit le modèle en
           étoile, le grain et les clés de chaque table. Le contenu est celui des vues à la journée publiée de la
-          dernière mise en ligne. Au palier B s'ajoutent <code className="chiffre text-[13px]">mesures.dax</code> et un
-          LISEZMOI.
+          dernière mise en ligne. <code className="chiffre text-[13px]">mesures.dax</code> porte les mesures du modèle
+          (ratios recalculés depuis les sommes, lignes de total exclues) et <code className="chiffre text-[13px]">LISEZMOI.md</code> la
+          marche à suivre dans Power BI (import, table de dates, relations, pièges).
         </p>
         <div className="flex flex-wrap items-center gap-[var(--esp-3)]">
           <button

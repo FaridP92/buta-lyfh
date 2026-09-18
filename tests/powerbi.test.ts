@@ -18,9 +18,11 @@ describe("modeleEtoile", () => {
 });
 
 describe("construireZipPowerBi", () => {
-  it("produit un zip avec un CSV par vue et le modèle en étoile", () => {
+  it("produit un zip avec un CSV par vue, le modèle en étoile, les mesures DAX et le LISEZMOI", () => {
     const zip = unzipSync(construireZipPowerBi(VUES, null, "18/09/2026"));
-    expect(Object.keys(zip).sort()).toEqual(["mart_alertes.csv", "mart_kpi_mensuel.csv", "modele_etoile.md"]);
+    expect(Object.keys(zip).sort()).toEqual(["LISEZMOI.md", "mart_alertes.csv", "mart_kpi_mensuel.csv", "mesures.dax", "modele_etoile.md"]);
+    expect(strFromU8(zip["mesures.dax"] as Uint8Array)).toContain("Taux de marge brute =");
+    expect(strFromU8(zip["LISEZMOI.md"] as Uint8Array)).toContain("2 fichiers CSV");
     const csv = strFromU8(zip["mart_kpi_mensuel.csv"] as Uint8Array);
     // BOM UTF-8 en tête du fichier (le décodeur l'absorbe), puis l'en-tête.
     expect(Array.from((zip["mart_kpi_mensuel.csv"] as Uint8Array).slice(0, 3))).toEqual([239, 187, 191]);
