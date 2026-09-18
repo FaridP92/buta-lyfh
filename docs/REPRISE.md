@@ -2,11 +2,11 @@
 
 À lire en premier en reprenant une session (avec `CLAUDE.md`). Ce fichier remplace la relecture intégrale de `docs/` : il donne l'état exact, les décisions prises et la feuille de route. Le détail des preuves est dans `docs/JOURNAL.md`.
 
-## État au 18 septembre 2026, 02:10
+## État au 18 septembre 2026, 02:35
 
 - **En ligne** : https://buta.lyfh.fr (lots 0 et 1, Vue d'ensemble du lot 2, déployés). Coquille complète, onze routes (Méthode et Vue d'ensemble finies, neuf « à venir »), badge de fraîcheur en direct (« Journée du 17/09 »), e2e 22/22 contre la production.
 - **Données** : projet Supabase `renovscope` (`iuremijuoxkzvfqyrmcc`), schéma `buta` exposé à l'API. Migrations 0001 à 0011 appliquées (0011 : prorata du mois en cours). 72 261 dossiers simulés (59 838 publiés au 17/09) après recalibrage à 80 leads par commercial, marché réel 96 départements et 4 691 communes. Seize vues `mart_` rapides. Tests SQL `npm run test:sql` : 16/16 (sept histoires retrouvées).
-- **Lot 2 en cours** : Vue d'ensemble livrée et vérifiée (commit `207913c`, captures `docs/captures/lot2/`). Restent Ventes et marge, Forecast, Funnel, puis la palette enrichie.
+- **Lot 2 en cours** : Vue d'ensemble (`207913c`) et Ventes et marge (`82f131e`) livrées, vérifiées, en ligne (captures `docs/captures/lot2/`). Restent Forecast, Funnel, puis la palette enrichie. Migrations 0001 à 0012 appliquées (0012 : `mart_remises`, colonnes `remises` et `prix_catalogue_total`).
 - **Dépôt** : GitHub `FaridP92/buta-lyfh`, remote HTTPS, `main` à jour. Commits et push à chaque étape vérifiée.
 
 ## Ce qu'il faut savoir (décisions non évidentes)
@@ -26,7 +26,7 @@
 ## Feuille de route (ordre de valeur, BACKLOG lots 2 et 3)
 
 1. **Vue d'ensemble** : livrée (`src/ecrans/vue-ensemble/`, modèle pour les écrans suivants : `useFiltres`, `useVue` avec bornes `${debut}-01`, `agregerKpi`, `useDeclarerExport`, `clePeriode` pour rejouer les animations, `LigneSources` en pied).
-2. **Ventes et marge** : KPI (CA signé, CA posé, TX_MARGE, PANIER, REMISE, TX_ANNUL) ; cascade `mart_ecarts` (barres empilées transparentes, tombent à 120 ms d'écart, résiduel en dernier) ; barres empilées CA par produit + courbe marge (`mart_ventes_produit`) ; matrice agence × produit ; tableau agences (`mart_kpi_mensuel` : CA, écart objectif, écart N-1, marge, marge après acquisition, résultat, remise, annulations) ; remises (boîtes à moustaches par agence) + `src/lib/remise.ts` (régression, seuil « 8 % ± 3 points ») testé. H3, H5 (`taux_annulation_a_distance` vs `sur_place`), H6.
+2. **Ventes et marge** : livrée (`src/ecrans/ventes/`, constructeurs ECharts dans `options.ts` avec indicateur `mobile` ; `src/lib/ventes.ts`, `src/lib/remise.ts`, `expliquerEcart` dans `phrases.ts`).
 3. **Forecast** : éventail (`mart_forecast` + mensuel réalisé de `mart_kpi_mensuel`), panneau hypothèses avec curseur taux de signature du pipe (`src/lib/forecast.ts` testé, recalcul local du central et des bornes), tableau agences (réalisé, objectif, central, écart, probabilité, pastille), risques et opportunités par règles (poses en retard `mart_pose`, pipe vs N-1). H7, H1, H3.
 4. **Funnel** : KPI (LEADS, TX_RDV, TX_DEVIS, TX_SIGN, CPL, CPV) ; Sankey (coule 800 ms) depuis `mart_funnel` ; matrice canal × agence ; courbe 20 mois leads et ventes par canal ; tableau qualité des leads (`mart_couts_acquisition`, pastille `a_revoir`) ; leads sans RDV 48 h (`sans_rdv_48h`, courbe 8 semaines à approximer par mois). H2, H1, H6.
 5. **Territoires** (lot 3) : carte départements (`/geo/departements-100m.geojson`, `mart_marche_departement`, indice ambre, périmètre détouré, contour qui se trace) ; composantes et curseurs (`src/lib/indice.ts` testé) ; tableau ; communes (`/geo/communes-{dep}.geojson`, `mart_marche_commune`, agences, RGE `rge_installateur`) ; bloc gaz citerne.
