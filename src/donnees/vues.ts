@@ -53,6 +53,9 @@ export const VUES = {
       prix_catalogue_moyen: nombreOuNul, periode_complete: z.boolean(),
     })
     .passthrough(),
+  mart_objectif_mensuel: z
+    .object({ mois: date, agence: z.string(), objectif_ventes: nombre, objectif_ca: nombre })
+    .passthrough(),
   mart_couts_acquisition: z
     .object({
       mois: date, agence: z.string(), canal: z.string(), leads: nombre, rdv_tenus: nombre, ventes: nombre, ca_signe: nombre,
@@ -86,6 +89,8 @@ export const VUES = {
       montant_devis_en_cours: nombre, run_rate_3m: nombre, sigma_mensuel: nombre, mois_restants: nombre,
       atterrissage_central: nombreOuNul, atterrissage_bas: nombreOuNul, atterrissage_haut: nombreOuNul,
       probabilite_atteinte: nombreOuNul, ecart_atterrissage_pct: nombreOuNul,
+      taux_signature_0_30: nombre, taux_signature_31_60: nombre, taux_signature_61_90: nombre, taux_annulation_6m: nombre,
+      taux_signature_pipe: nombreOuNul, projection_run_rate: nombre,
     })
     .passthrough(),
   mart_qualite: z

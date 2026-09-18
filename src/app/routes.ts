@@ -65,7 +65,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/forecast",
     libelle: "Forecast et atterrissage",
     icone: LineChart,
-    disponible: false,
+    disponible: true,
     palier: "A",
     lot: "2",
     objectif: "Où finit l'année, avec quelles hypothèses, quels risques et opportunités.",

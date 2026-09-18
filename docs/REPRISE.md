@@ -4,8 +4,8 @@
 
 ## État au 18 septembre 2026, 02:35
 
-- **En ligne** : https://buta.lyfh.fr (lots 0 et 1, Vue d'ensemble du lot 2, déployés). Coquille complète, onze routes (Méthode et Vue d'ensemble finies, neuf « à venir »), badge de fraîcheur en direct (« Journée du 17/09 »), e2e 22/22 contre la production.
-- **Données** : projet Supabase `renovscope` (`iuremijuoxkzvfqyrmcc`), schéma `buta` exposé à l'API. Migrations 0001 à 0011 appliquées (0011 : prorata du mois en cours). 72 261 dossiers simulés (59 838 publiés au 17/09) après recalibrage à 80 leads par commercial, marché réel 96 départements et 4 691 communes. Seize vues `mart_` rapides. Tests SQL `npm run test:sql` : 16/16 (sept histoires retrouvées).
+- **En ligne** : https://buta.lyfh.fr (lots 0 et 1, Vue d'ensemble et Ventes et marge du lot 2, déployés). Onze routes (Méthode, Vue d'ensemble, Ventes et marge finies, huit « à venir »), badge de fraîcheur en direct (« Journée du 17/09 »), e2e 26/26 contre la production.
+- **Données** : projet Supabase `renovscope` (`iuremijuoxkzvfqyrmcc`), schéma `buta` exposé à l'API. Migrations 0001 à 0012 appliquées (0011 : prorata du mois en cours ; 0012 : remises). 72 261 dossiers simulés (59 838 publiés au 17/09) après recalibrage à 80 leads par commercial, marché réel 96 départements et 4 691 communes. Dix-sept vues `mart_` rapides. Tests SQL `npm run test:sql` : 16/16 (sept histoires retrouvées).
 - **Lot 2 en cours** : Vue d'ensemble (`207913c`) et Ventes et marge (`82f131e`) livrées, vérifiées, en ligne (captures `docs/captures/lot2/`). Restent Forecast, Funnel, puis la palette enrichie. Migrations 0001 à 0012 appliquées (0012 : `mart_remises`, colonnes `remises` et `prix_catalogue_total`).
 - **Dépôt** : GitHub `FaridP92/buta-lyfh`, remote HTTPS, `main` à jour. Commits et push à chaque étape vérifiée.
 
