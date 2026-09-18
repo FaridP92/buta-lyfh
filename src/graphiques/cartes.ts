@@ -26,6 +26,11 @@ export function useCarte(nom: string, url: string): { prete: boolean; erreur: st
   const [etat, setEtat] = useState<{ prete: boolean; erreur: string | null }>({ prete: false, erreur: null });
   useEffect(() => {
     let annule = false;
+    // Sans adresse (carte pas encore choisie), rien à charger.
+    if (!url) {
+      setEtat({ prete: false, erreur: null });
+      return undefined;
+    }
     chargerCarte(nom, url)
       .then(() => !annule && setEtat({ prete: true, erreur: null }))
       .catch((e: unknown) => !annule && setEtat({ prete: false, erreur: e instanceof Error ? e.message : String(e) }));

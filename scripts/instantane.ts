@@ -5,9 +5,12 @@
  * Tolère l'absence de vues ou de schéma exposé : avertissement et code 0
  * (DEPLOIEMENT_VPS.md §2) tant que le lot 1 n'est pas en ligne.
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { chargerEnv } from "./lib/bd";
+
+/** Vues partitionnées en plusieurs fichiers par valeur d'une colonne (ARCHITECTURE.md §3). */
+const PARTITIONS: Record<string, string> = { mart_marche_commune: "departement" };
 
 const VUES = [
   "mart_kpi_mensuel", "mart_funnel", "mart_ventes_produit", "mart_ecarts", "mart_couts_acquisition",
@@ -56,9 +59,23 @@ async function principal(): Promise<void> {
   for (const vue of VUES) {
     try {
       const lignes = await lireVue(url, cle, vue);
-      writeFileSync(join(DOSSIER, `${vue}.json`), JSON.stringify(lignes));
+      const partition = PARTITIONS[vue];
+      if (partition) {
+        // Vue volumineuse : un fichier par valeur de la colonne de partition (le front ne charge que la sienne).
+        const groupes = new Map<string, unknown[]>();
+        for (const l of lignes) {
+          const valeur = String((l as Record<string, unknown>)[partition]);
+          const groupe = groupes.get(valeur) ?? [];
+          groupe.push(l);
+          groupes.set(valeur, groupe);
+        }
+        for (const [valeur, groupe] of groupes) writeFileSync(join(DOSSIER, `${vue}-${valeur}.json`), JSON.stringify(groupe));
+        rmSync(join(DOSSIER, `${vue}.json`), { force: true });
+      } else {
+        writeFileSync(join(DOSSIER, `${vue}.json`), JSON.stringify(lignes));
+      }
       meta[vue] = lignes.length;
-      console.log(`${vue} : ${lignes.length} ligne(s)`);
+      console.log(`${vue} : ${lignes.length} ligne(s)${partition ? `, partitionnée par ${partition}` : ""}`);
     } catch (erreur) {
       echecs += 1;
       console.warn(`${vue} : ${erreur instanceof Error ? erreur.message : String(erreur)}`);

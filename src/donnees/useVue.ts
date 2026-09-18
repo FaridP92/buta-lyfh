@@ -11,6 +11,8 @@ export interface FiltresVue {
   /** Colonne de tri, préfixée de - pour un ordre décroissant. */
   ordre?: string;
   limite?: number;
+  /** Vue partitionnée dans l'instantané (un fichier par valeur de cette colonne) : la valeur est lue dans `egal`. */
+  partition?: string;
 }
 
 export type SourceVue = "supabase" | "instantane" | "aucune";
@@ -64,10 +66,17 @@ function filtrerLocalement<N extends NomVue>(lignes: Ligne<N>[], filtres: Filtre
   return resultat as Ligne<N>[];
 }
 
-async function lireInstantane<N extends NomVue>(nom: N): Promise<Ligne<N>[]> {
-  const reponse = await fetch(`/data/instantane/${nom}.json`);
-  if (!reponse.ok) throw new Error(`instantane ${nom} absent`);
+async function lireInstantane<N extends NomVue>(nom: N, fichier: string): Promise<Ligne<N>[]> {
+  const reponse = await fetch(`/data/instantane/${fichier}.json`);
+  if (!reponse.ok) throw new Error(`instantane ${fichier} absent`);
   return z.array(VUES[nom]).parse(await reponse.json()) as Ligne<N>[];
+}
+
+/** Nom du fichier d'instantané : la vue, ou la vue suivie de la valeur de partition. */
+function fichierInstantane(nom: string, filtres: FiltresVue | undefined): string | null {
+  if (!filtres?.partition) return nom;
+  const valeur = filtres.egal?.[filtres.partition];
+  return valeur === undefined ? null : `${nom}-${String(valeur)}`;
 }
 
 /**
@@ -83,9 +92,11 @@ export function useVue<N extends NomVue>(nom: N, filtres?: FiltresVue): Resultat
     staleTime: 60_000,
     retry: 1,
   });
+  const fichier = fichierInstantane(nom, filtres);
   const local = useQuery({
-    queryKey: ["instantane", nom],
-    queryFn: () => lireInstantane(nom),
+    queryKey: ["instantane", fichier],
+    queryFn: () => lireInstantane(nom, fichier as string),
+    enabled: fichier !== null,
     staleTime: Number.POSITIVE_INFINITY,
     retry: false,
   });

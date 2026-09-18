@@ -38,7 +38,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/territoires",
     libelle: "Territoires",
     icone: MapIcon,
-    disponible: false,
+    disponible: true,
     palier: "A",
     lot: "3",
     objectif: "Lire le marché réel des territoires couverts et alentour, département par département.",
