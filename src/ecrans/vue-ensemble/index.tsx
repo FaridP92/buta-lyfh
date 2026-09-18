@@ -116,8 +116,8 @@ export function EcranVueEnsemble() {
     { cle: "ventes", libelle: "Ventes", numerique: true, largeur: "64px", valeur: (l) => l.kpi?.ventes ?? null, rendu: (l) => formatNombre(l.kpi?.ventes ?? null) },
     { cle: "ecart", libelle: "Écart obj.", numerique: true, largeur: "88px", valeur: (l) => l.kpi?.ecart_objectif_pct ?? null, rendu: (l) => (l.kpi?.ecart_objectif_pct === null || l.kpi?.ecart_objectif_pct === undefined ? "n. d." : `${l.kpi.ecart_objectif_pct > 0 ? "+" : ""}${formatTaux(l.kpi.ecart_objectif_pct)}`) },
     { cle: "marge", libelle: "Marge", numerique: true, largeur: "76px", valeur: (l) => l.kpi?.taux_marge ?? null, rendu: (l) => formatTaux(l.kpi?.taux_marge ?? null) },
-    { cle: "resultat", libelle: "Résultat", numerique: true, secondaire: true, largeur: "84px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => formatMontant(l.kpi?.resultat ?? null) },
-    { cle: "delai", libelle: "Délai", numerique: true, secondaire: true, largeur: "64px", valeur: (l) => l.kpi?.delai_pose_median ?? null, rendu: (l) => formatDelaiJours(l.kpi?.delai_pose_median ?? null) },
+    { cle: "resultat", libelle: "Résultat", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "84px", valeur: (l) => l.kpi?.resultat ?? null, rendu: (l) => formatMontant(l.kpi?.resultat ?? null) },
+    { cle: "delai", libelle: "Délai", numerique: true, secondaire: true, masquerSous: "2xl", largeur: "64px", valeur: (l) => l.kpi?.delai_pose_median ?? null, rendu: (l) => formatDelaiJours(l.kpi?.delai_pose_median ?? null) },
     { cle: "statut", libelle: "Statut", triable: false, valeur: (l) => statutEcart(l.kpi?.ecart_objectif_pct), rendu: (l) => <Pastille statut={statutEcart(l.kpi?.ecart_objectif_pct)} texte={libelleStatut(l.kpi?.ecart_objectif_pct)} /> },
   ];
 

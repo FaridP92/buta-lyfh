@@ -16,6 +16,14 @@ export interface Colonne<L> {
   triable?: boolean;
   /** Masquée sur mobile. */
   secondaire?: boolean;
+  /** Masquée sous ce point de rupture (colonne de détail d'un tableau logé dans une carte étroite). */
+  masquerSous?: "xl" | "2xl";
+}
+
+const CLASSES_MASQUAGE = { xl: "max-xl:hidden", "2xl": "max-2xl:hidden" } as const;
+
+function classesVisibilite(c: { secondaire?: boolean; masquerSous?: "xl" | "2xl" }): string | undefined {
+  return cn(c.secondaire && "max-md:hidden", c.masquerSous && CLASSES_MASQUAGE[c.masquerSous]) || undefined;
 }
 
 interface TableauProps<L> {
@@ -87,7 +95,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
                     key={c.cle}
                     scope="col"
                     style={c.largeur ? { width: c.largeur } : undefined}
-                    className={cn("px-[var(--esp-2)] py-[var(--esp-2)] text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3", c.numerique ? "text-right" : "text-left", c.secondaire && "max-md:hidden")}
+                    className={cn("px-[var(--esp-2)] py-[var(--esp-2)] text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3", c.numerique ? "text-right" : "text-left", classesVisibilite(c))}
                   >
                     {triable ? (
                       <button type="button" onClick={() => basculerTri(c.cle)} className={cn("inline-flex items-center gap-1 hover:text-texte", c.numerique && "flex-row-reverse", actif && "text-texte")} aria-label={`Trier par ${c.libelle}`}>
@@ -113,7 +121,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
                   className={cn("relative border-b border-bordure/60 transition-colors hover:bg-surface-2", hauteurLigne, i % 2 === 1 && "bg-[color-mix(in_srgb,var(--texte)_3%,transparent)]", onLigneClic && "cursor-pointer", active && "bg-surface-2")}
                 >
                   {colonnes.map((c, j) => (
-                    <td key={c.cle} className={cn("px-[var(--esp-2)] align-middle", c.numerique ? "chiffre text-right text-[13px]" : "text-left", c.secondaire && "max-md:hidden", j === 0 && active && "pl-[14px]")}>
+                    <td key={c.cle} className={cn("px-[var(--esp-2)] align-middle", c.numerique ? "chiffre text-right text-[13px]" : "text-left", classesVisibilite(c), j === 0 && active && "pl-[14px]")}>
                       {j === 0 && active && <span aria-hidden="true" className="absolute left-[2px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-ambre" />}
                       {c.rendu ? c.rendu(l) : String(valeurBrute(c, l) ?? "n. d.")}
                     </td>
@@ -124,7 +132,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
             {ligneTotal && (
               <tr className={cn("border-t border-bordure font-semibold", hauteurLigne)}>
                 {colonnes.map((c) => (
-                  <td key={c.cle} className={cn("px-[var(--esp-2)] align-middle text-texte", c.numerique ? "chiffre text-right text-[13px]" : "text-left", c.secondaire && "max-md:hidden")}>
+                  <td key={c.cle} className={cn("px-[var(--esp-2)] align-middle text-texte", c.numerique ? "chiffre text-right text-[13px]" : "text-left", classesVisibilite(c))}>
                     {c.rendu ? c.rendu(ligneTotal) : String(valeurBrute(c, ligneTotal) ?? "")}
                   </td>
                 ))}

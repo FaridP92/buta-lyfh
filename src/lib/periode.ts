@@ -260,6 +260,35 @@ export function agregerFunnel(lignes: readonly LigneFunnel[], debut: string, fin
   };
 }
 
+/** Dernière cohorte mature (plus de 90 jours) au plus tard au mois `fin` : point de mesure stable quand la période contient des cohortes en cours. */
+export function derniereCohorteMature<L extends LigneFunnel>(lignes: readonly L[], fin: string): L | null {
+  const matures = lignes.filter((l) => l.cohorte_mature && moisDe(l.mois) <= fin).sort((a, b) => a.mois.localeCompare(b.mois));
+  return matures.at(-1) ?? null;
+}
+
+/**
+ * Cohortes N-1 de la période, chaque mois pondéré par le prorata du mois courant correspondant (jours publiés / jours du mois,
+ * 1 pour un mois complet) : les leads d'un mois en cours se comparent à la même part du mois N-1. Les taux ne changent pas.
+ */
+export function agregerFunnelN1(lignes: readonly LigneFunnel[], debut: string, fin: string, prorataParMois: ReadonlyMap<string, number>): CohorteAgregee | null {
+  const ponderees: LigneFunnel[] = [];
+  for (const mois of moisEntre(debut, fin)) {
+    const ligne = lignes.find((l) => moisDe(l.mois) === ajouterMois(mois, -12));
+    if (!ligne) continue;
+    const poids = prorataParMois.get(mois) ?? 1;
+    const pondere = (v: number | undefined) => (v === undefined ? undefined : Math.round(v * poids));
+    ponderees.push({
+      ...ligne, leads: Math.round(ligne.leads * poids), rdv_tenus: Math.round(ligne.rdv_tenus * poids), devis: Math.round(ligne.devis * poids),
+      signatures: Math.round(ligne.signatures * poids), poses: Math.round(ligne.poses * poids), encaissements: Math.round(ligne.encaissements * poids),
+      ...(ligne.rdv_planifies === undefined ? {} : { rdv_planifies: pondere(ligne.rdv_planifies) as number }),
+      ...(ligne.signatures_nettes === undefined ? {} : { signatures_nettes: pondere(ligne.signatures_nettes) as number }),
+      ...(ligne.sans_rdv_48h === undefined ? {} : { sans_rdv_48h: pondere(ligne.sans_rdv_48h) as number }),
+    });
+  }
+  if (ponderees.length === 0) return null;
+  return agregerFunnel(ponderees, ajouterMois(debut, -12), ajouterMois(fin, -12));
+}
+
 export interface EtapeFunnel {
   nom: string;
   valeur: number;

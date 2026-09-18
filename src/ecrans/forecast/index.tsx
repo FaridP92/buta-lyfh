@@ -144,9 +144,9 @@ export function EcranForecast() {
             <div className="flex flex-col gap-[var(--esp-3)] text-[13px]">
               <dl className="grid grid-cols-[1fr_auto] gap-x-[var(--esp-3)] gap-y-[6px]">
                 <dt className="text-texte-2">Devis en cours (moins de 90 jours)</dt><dd className="chiffre text-right text-texte">{formatNombre(ligne.devis_en_cours)} · {formatMontant(ligne.montant_devis_en_cours)}</dd>
-                <dt className="text-texte-2">Signature observée à 0 à 30 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_0_30)}</dd>
-                <dt className="text-texte-2">à 31 à 60 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_31_60)}</dd>
-                <dt className="text-texte-2">à 61 à 90 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_61_90)}</dd>
+                <dt className="text-texte-2">Signature observée, devis de 0 à 30 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_0_30)}</dd>
+                <dt className="text-texte-2">devis de 31 à 60 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_31_60)}</dd>
+                <dt className="text-texte-2">devis de 61 à 90 jours</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_signature_61_90)}</dd>
                 <dt className="text-texte-2">Annulation à six mois</dt><dd className="chiffre text-right text-texte">{formatTaux(ligne.taux_annulation_6m)}</dd>
                 <dt className="text-texte-2">Pipe pondéré</dt><dd className="chiffre text-right text-texte">{formatMontant(atterrissage.pipe)}</dd>
                 <dt className="text-texte-2">Run-rate trois mois</dt><dd className="chiffre text-right text-texte">{formatMontant(ligne.run_rate_3m)} / mois</dd>

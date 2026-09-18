@@ -15,7 +15,7 @@ import { SelecteurMenu } from "@/composants/SelecteurMenu";
 import { Squelette } from "@/composants/Squelette";
 import { useTokensGraphique } from "@/graphiques/theme";
 import { useEstMobile } from "@/lib/useEstMobile";
-import { agregerFunnel, ajouterMois, ecartPct, ecartPoints, etapesFunnel, moisDe, moisEntre, periodeN1, type LigneFunnel } from "@/lib/periode";
+import { agregerFunnel, agregerFunnelN1, ajouterMois, derniereCohorteMature, ecartPct, ecartPoints, etapesFunnel, libelleMois, moisDe, moisEntre, periodeN1, type LigneFunnel } from "@/lib/periode";
 import { agregerCoutsParCanal, fluxSankey, matriceCanalAgence, sommerCouts, type LigneCoutCanal } from "@/lib/funnel";
 import { formatDateCourte, formatDelaiJours, formatMontant, formatNombre, formatTaux } from "@/lib/format";
 import { optionCourbeCanaux, optionSankey, optionSansRdv } from "./options";
@@ -32,29 +32,47 @@ export function EcranFunnel() {
   const funnelPeriode = useVue("mart_funnel", { entre: { colonne: "mois", de: `${periode.debut}-01`, a: `${periode.fin}-01` } });
   const attente = useVue("mart_funnel", { egal: { canal: "TOUS" }, entre: { colonne: "mois", de: `${ajouterMois(moisPublie, -7)}-01`, a: `${moisPublie}-01` }, ordre: "mois" });
   const couts = useVue("mart_couts_acquisition", { egal: { agence: agenceVue }, ordre: "mois" });
+  const kpiPeriode = useVue("mart_kpi_mensuel", { egal: { agence: agenceVue }, entre: { colonne: "mois", de: `${periode.debut}-01`, a: `${periode.fin}-01` } });
   const canauxDim = useVue("dim_canal");
 
   const libelleCanal = (code: string) => (code === "TOUS" ? "Tous canaux" : canauxDim.donnees?.find((c) => c.code === code)?.libelle ?? code);
   const lignesTous = useMemo(() => ((funnel.donnees ?? []).filter((l) => l.canal === "TOUS") as unknown as LigneFunnel[]), [funnel.donnees]);
   const lignesCanal = useMemo(() => ((funnel.donnees ?? []).filter((l) => l.canal === canal) as unknown as LigneFunnel[]), [funnel.donnees, canal]);
 
-  // KPI sur les cohortes de la période, comparées aux cohortes N-1.
+  // KPI sur les cohortes de la période, comparées aux cohortes N-1 ramenées au prorata des jours publiés (mois en cours).
   const cohorte = useMemo(() => agregerFunnel(lignesTous, periode.debut, periode.fin), [lignesTous, periode.debut, periode.fin]);
-  const cohorteN1 = useMemo(() => (n1 ? agregerFunnel(lignesTous, n1.debut, n1.fin) : null), [lignesTous, n1]);
-  const etapes = cohorte ? etapesFunnel(cohorte) : null;
-  const etapesN1 = cohorteN1 ? etapesFunnel(cohorteN1) : null;
+  const prorataParMois = useMemo(() => new Map((kpiPeriode.donnees ?? []).map((l) => [moisDe(l.mois), l.prorata ?? 1] as const)), [kpiPeriode.donnees]);
+  const prorataApplique = [...prorataParMois.values()].some((v) => v < 1);
+  const cohorteN1 = useMemo(() => (n1 ? agregerFunnelN1(lignesTous, periode.debut, periode.fin, prorataParMois) : null), [lignesTous, periode.debut, periode.fin, prorataParMois, n1]);
+  const libelleN1 = n1 ? `vs cohortes N-1${prorataApplique ? " au prorata" : ""}` : "vs N-1 : pas d'historique 2024";
+  // Taux et coût par vente : sur les cohortes de la période si elles sont toutes mûres, sinon sur la dernière cohorte mûre
+  // (une cohorte de moins de 90 jours n'a pas encore ses signatures : ses taux ne se comparent à rien).
+  const cohorteMure = cohorte && !cohorte.mature ? derniereCohorteMature(lignesTous, periode.fin) : null;
+  const moisMur = cohorteMure ? moisDe(cohorteMure.mois) : null;
+  const cohorteTaux = cohorteMure ? agregerFunnel(lignesTous, moisDe(cohorteMure.mois), moisDe(cohorteMure.mois)) : cohorte;
+  const cohorteTauxN1 = moisMur ? agregerFunnel(lignesTous, ajouterMois(moisMur, -12), ajouterMois(moisMur, -12)) : cohorteN1;
+  const etapes = cohorteTaux ? etapesFunnel(cohorteTaux) : null;
+  const etapesN1 = cohorteTauxN1 ? etapesFunnel(cohorteTauxN1) : null;
   const taux = (e: ReturnType<typeof etapesFunnel> | null, i: number) => e?.[i]?.taux ?? null;
+  const sousLibelleTaux = (base: string) => (moisMur ? `${base} · cohorte de ${libelleMois(moisMur)}, à 90 jours` : base);
+  const libelleTauxN1 = moisMur ? "vs même cohorte N-1" : libelleN1;
   const coutsTous = (couts.donnees ?? []).filter((c) => c.canal === "TOUS");
   const coutsPeriode = sommerCouts(coutsTous.filter((c) => moisDe(c.mois) >= periode.debut && moisDe(c.mois) <= periode.fin));
   const coutsN1 = n1 ? sommerCouts(coutsTous.filter((c) => moisDe(c.mois) >= n1.debut && moisDe(c.mois) <= n1.fin)) : null;
-  const libelleN1 = n1 ? "vs cohortes N-1" : "vs N-1 : pas d'historique 2024";
+  const coutsVente = moisMur ? sommerCouts(coutsTous.filter((c) => moisDe(c.mois) === moisMur)) : coutsPeriode;
+  const coutsVenteN1 = moisMur ? sommerCouts(coutsTous.filter((c) => moisDe(c.mois) === ajouterMois(moisMur, -12))) : coutsN1;
 
   const douzeMois = useMemo(() => moisEntre(ajouterMois(periode.fin, -11), periode.fin), [periode.fin]);
+  // Mini courbes : les taux et le coût par vente ne sont tracés que pour les cohortes mûres (les autres n'ont pas fini de convertir).
+  const ligneMois = (m: string) => (funnel.donnees ?? []).find((x) => x.canal === "TOUS" && moisDe(x.mois) === m);
   const serieFunnel = (cle: "leads" | "taux_rdv" | "taux_devis" | "taux_signature") => douzeMois.map((m) => {
-    const l = (funnel.donnees ?? []).find((x) => x.canal === "TOUS" && moisDe(x.mois) === m);
-    return l ? l[cle] : null;
+    const l = ligneMois(m);
+    return l && (cle === "leads" || l.cohorte_mature) ? l[cle] : null;
   });
-  const serieCouts = (cle: "cout_par_lead" | "cout_par_vente") => douzeMois.map((m) => coutsTous.find((x) => moisDe(x.mois) === m)?.[cle] ?? null);
+  const serieCouts = (cle: "cout_par_lead" | "cout_par_vente") => douzeMois.map((m) => {
+    if (cle === "cout_par_vente" && !ligneMois(m)?.cohorte_mature) return null;
+    return coutsTous.find((x) => moisDe(x.mois) === m)?.[cle] ?? null;
+  });
 
   // Sankey sur le canal choisi.
   const cohorteCanal = useMemo(() => agregerFunnel(lignesCanal, periode.debut, periode.fin), [lignesCanal, periode.debut, periode.fin]);
@@ -99,7 +117,8 @@ export function EcranFunnel() {
   const ventesNettes = vingtMois.map((m) => lignesTous.find((l) => moisDe(l.mois) === m)?.signatures_nettes ?? null);
   const optionCourbe = vingtMois.length > 0 && canauxCourbe.length > 0 ? optionCourbeCanaux(vingtMois, canauxCourbe, ventesNettes, tokens, mobile) : null;
 
-  // Qualité des leads par canal.
+  // Qualité des leads par canal : le verdict « à revoir » attend que les cohortes de la période aient 90 jours.
+  const cohorteEnCours = cohorte ? !cohorte.mature : false;
   const canauxQualite = useMemo(() => agregerCoutsParCanal(((couts.donnees ?? []) as unknown as LigneCoutCanal[]), periode.debut, periode.fin), [couts.donnees, periode.debut, periode.fin]);
   const colonnesQualite: Colonne<(typeof canauxQualite)[number]>[] = [
     { cle: "canal", libelle: "Canal", valeur: (l) => libelleCanal(l.canal), rendu: (l) => <span className="whitespace-nowrap text-texte">{libelleCanal(l.canal)}</span> },
@@ -110,7 +129,7 @@ export function EcranFunnel() {
     { cle: "cout_par_lead", libelle: "Coût / lead", numerique: true, largeur: "92px", secondaire: true, rendu: (l) => (l.cout === 0 ? "sans coût" : formatMontant(l.cout_par_lead)) },
     { cle: "cout_par_vente", libelle: "Coût / vente", numerique: true, largeur: "96px", rendu: (l) => (l.cout === 0 ? "sans coût" : formatMontant(l.cout_par_vente)) },
     { cle: "delai", libelle: "Lead vers RDV", numerique: true, largeur: "104px", secondaire: true, valeur: (l) => l.delai_lead_rdv_median, rendu: (l) => formatDelaiJours(l.delai_lead_rdv_median) },
-    { cle: "a_revoir", libelle: "Statut", triable: false, valeur: (l) => (l.a_revoir === null ? "" : l.a_revoir ? "à revoir" : "dans la norme"), rendu: (l) => (l.a_revoir === null ? <Pastille statut="neutre" texte="sans coût" /> : l.a_revoir ? <Pastille statut="alerte" texte="à revoir" /> : <Pastille statut="succes" texte="dans la norme" />) },
+    { cle: "a_revoir", libelle: "Statut", triable: false, valeur: (l) => (l.a_revoir === null ? "" : cohorteEnCours ? "provisoire" : l.a_revoir ? "à revoir" : "dans la norme"), rendu: (l) => (l.a_revoir === null ? <Pastille statut="neutre" texte="sans coût" /> : cohorteEnCours ? <Pastille statut="neutre" texte="provisoire" /> : l.a_revoir ? <Pastille statut="alerte" texte="à revoir" /> : <Pastille statut="succes" texte="dans la norme" />) },
   ];
   useDeclarerExport("funnel-canaux", canauxQualite.length ? {
     nom: "Qualité des leads",
@@ -148,16 +167,16 @@ export function EcranFunnel() {
         <div className="grid gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">
           <CarteKPI libelle="Leads" valeur={cohorte?.leads ?? null} format="nombre" code="LEADS" clePeriode={clePeriode} decalageMs={0}
             serie={serieFunnel("leads")} variation={{ valeur: ecartPct(cohorte?.leads ?? null, cohorteN1?.leads ?? null), unite: "pct", libelle: libelleN1 }} />
-          <CarteKPI libelle="Taux de RDV" sousLibelle="RDV tenus / leads" valeur={taux(etapes, 1)} format="pct" code="TX_RDV" clePeriode={clePeriode} decalageMs={80} grise={cohorte ? !cohorte.mature : false}
-            serie={serieFunnel("taux_rdv")} variation={{ valeur: ecartPoints(taux(etapes, 1), taux(etapesN1, 1)), unite: "pts", libelle: libelleN1 }} />
-          <CarteKPI libelle="Taux de devis" sousLibelle="devis / RDV tenus" valeur={taux(etapes, 2)} format="pct" code="TX_DEVIS" clePeriode={clePeriode} decalageMs={160} grise={cohorte ? !cohorte.mature : false}
-            serie={serieFunnel("taux_devis")} variation={{ valeur: ecartPoints(taux(etapes, 2), taux(etapesN1, 2)), unite: "pts", libelle: libelleN1 }} />
-          <CarteKPI libelle="Taux de signature" sousLibelle="signatures / devis" valeur={taux(etapes, 3)} format="pct" code="TX_SIGN" clePeriode={clePeriode} decalageMs={240} grise={cohorte ? !cohorte.mature : false}
-            serie={serieFunnel("taux_signature")} variation={{ valeur: ecartPoints(taux(etapes, 3), taux(etapesN1, 3)), unite: "pts", libelle: libelleN1 }} />
+          <CarteKPI libelle="Taux de RDV" sousLibelle={sousLibelleTaux("RDV tenus / leads")} valeur={taux(etapes, 1)} format="pct" code="TX_RDV" clePeriode={clePeriode} decalageMs={80}
+            serie={serieFunnel("taux_rdv")} variation={{ valeur: ecartPoints(taux(etapes, 1), taux(etapesN1, 1)), unite: "pts", libelle: libelleTauxN1 }} />
+          <CarteKPI libelle="Taux de devis" sousLibelle={sousLibelleTaux("devis / RDV tenus")} valeur={taux(etapes, 2)} format="pct" code="TX_DEVIS" clePeriode={clePeriode} decalageMs={160}
+            serie={serieFunnel("taux_devis")} variation={{ valeur: ecartPoints(taux(etapes, 2), taux(etapesN1, 2)), unite: "pts", libelle: libelleTauxN1 }} />
+          <CarteKPI libelle="Taux de signature" sousLibelle={sousLibelleTaux("signatures / devis")} valeur={taux(etapes, 3)} format="pct" code="TX_SIGN" clePeriode={clePeriode} decalageMs={240}
+            serie={serieFunnel("taux_signature")} variation={{ valeur: ecartPoints(taux(etapes, 3), taux(etapesN1, 3)), unite: "pts", libelle: libelleTauxN1 }} />
           <CarteKPI libelle="Coût par lead" valeur={coutsPeriode.cpl} format="eur" code="CPL" clePeriode={clePeriode} decalageMs={320}
-            serie={serieCouts("cout_par_lead")} variation={{ valeur: ecartPct(coutsPeriode.cpl, coutsN1?.cpl ?? null), unite: "pct", libelle: libelleN1, plusBasMieux: true }} />
-          <CarteKPI libelle="Coût par vente" sousLibelle="hors commissions" valeur={coutsPeriode.cpv} format="eur" code="CPV" clePeriode={clePeriode} decalageMs={400} grise={cohorte ? !cohorte.mature : false}
-            serie={serieCouts("cout_par_vente")} variation={{ valeur: ecartPct(coutsPeriode.cpv, coutsN1?.cpv ?? null), unite: "pct", libelle: libelleN1, plusBasMieux: true }} />
+            serie={serieCouts("cout_par_lead")} variation={{ valeur: ecartPct(coutsPeriode.cpl, coutsN1?.cpl ?? null), unite: "pct", libelle: n1 ? "vs cohortes N-1" : libelleN1, plusBasMieux: true }} />
+          <CarteKPI libelle="Coût par vente" sousLibelle={sousLibelleTaux("hors commissions")} valeur={coutsVente.cpv} format="eur" code="CPV" clePeriode={clePeriode} decalageMs={400}
+            serie={serieCouts("cout_par_vente")} variation={{ valeur: ecartPct(coutsVente.cpv, coutsVenteN1?.cpv ?? null), unite: "pct", libelle: libelleTauxN1, plusBasMieux: true }} />
         </div>
       )}
 
@@ -200,7 +219,7 @@ export function EcranFunnel() {
         ) : <Carte className="lg:col-span-5" titre="Leads sans RDV planifié"><Squelette hauteur={360} /></Carte>}
       </div>
 
-      <Carte titre="Qualité des leads par canal" sousTitre={`${periode.libelle} : coûts d'acquisition hors commissions, cohortes de création ; « à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux à coût`} nu actions={<BoutonFiche code="CPV" />}>
+      <Carte titre="Qualité des leads par canal" sousTitre={`${periode.libelle} : coûts d'acquisition hors commissions, cohortes de création ; « à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux à coût${cohorteEnCours ? " ; cohorte de moins de 90 jours, verdict provisoire" : ""}`} nu actions={<BoutonFiche code="CPV" />}>
         <div className="px-[var(--esp-2)] pb-[var(--esp-3)]">
           {couts.donnees === undefined ? <Squelette hauteur={300} /> : (
             <Tableau colonnes={colonnesQualite} lignes={canauxQualite} cleLigne={(l) => l.canal} triInitial={{ cle: "leads", sens: "desc" }} compact nomExport="funnel-canaux" />

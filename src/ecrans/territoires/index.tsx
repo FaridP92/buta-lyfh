@@ -81,7 +81,7 @@ export function EcranTerritoires() {
     { cle: "gaz_citerne", libelle: "Citerne", numerique: true, largeur: "84px", secondaire: true, rendu: (l) => formatNombre(l.gaz_citerne) },
     { cle: "solaire_pour_1000_maisons", libelle: "Solaire / 1 000", numerique: true, largeur: "104px", secondaire: true, rendu: (l) => (l.solaire_pour_1000_maisons === null ? "n. d." : formatNombre(Math.round(l.solaire_pour_1000_maisons))) },
     { cle: "rge_pour_10000_maisons", libelle: "RGE / 10 000", numerique: true, largeur: "96px", secondaire: true, rendu: (l) => (l.rge_pour_10000_maisons === null ? "n. d." : formatNombre(Math.round(l.rge_pour_10000_maisons))) },
-    { cle: "agences_simulees", libelle: "Agence simulée", triable: false, valeur: (l) => l.agences_simulees ?? "", rendu: (l) => <span className="whitespace-nowrap text-[12px] text-texte-2">{l.agences_simulees ? l.agences_simulees.split(",").map((c) => nomAgence(c.trim())).join(", ") : ""}</span> },
+    { cle: "agences_simulees", libelle: "Agence simulée", triable: false, valeur: (l) => l.agences_simulees ?? "", rendu: (l) => <span className="block max-w-[220px] text-[12px] leading-[1.3] text-texte-2">{l.agences_simulees ? l.agences_simulees.split(",").map((c) => nomAgence(c.trim())).join(", ") : ""}</span> },
   ];
   const lignesTableau = useMemo(() => [...lignes].sort((a, b) => Number(b.perimetre) - Number(a.perimetre) || (b.indiceAffiche ?? -1) - (a.indiceAffiche ?? -1)), [lignes]);
   // Par défaut : les onze du périmètre et les quinze départements suivants ; le bouton déplie les 96 (l'export porte toujours les 96).

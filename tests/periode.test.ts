@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agregerFunnel, agregerKpi, ajouterMois, analyserPeriode, ecartPct, ecartPoints, etapesFunnel, moisEntre, optionsPeriode, periodeN1, type LigneKpi } from "@/lib/periode";
+import { agregerFunnel, agregerFunnelN1, agregerKpi, ajouterMois, analyserPeriode, derniereCohorteMature, ecartPct, ecartPoints, etapesFunnel, moisEntre, optionsPeriode, periodeN1, type LigneKpi } from "@/lib/periode";
 
 const PUBLIE = "2026-09";
 
@@ -132,5 +132,26 @@ describe("agregerFunnel et etapesFunnel", () => {
     const c = agregerFunnel([{ mois: "2026-07-01", leads: 100, rdv_planifies: 50, rdv_tenus: 45, devis: 30, signatures: 10, signatures_nettes: 9, poses: 8, encaissements: 8, sans_rdv_48h: 40, cohorte_mature: true }], "2026-07", "2026-07");
     expect(c).toMatchObject({ rdvPlanifies: 50, signaturesNettes: 9, sansRdv48h: 40 });
     expect(agregerFunnel(cohortes, "2026-07", "2026-07")?.signaturesNettes).toBe(agregerFunnel(cohortes, "2026-07", "2026-07")?.signatures);
+  });
+});
+
+describe("derniereCohorteMature et agregerFunnelN1", () => {
+  const lignes = [
+    { mois: "2025-09-01", leads: 3000, rdv_tenus: 900, devis: 500, signatures: 100, poses: 80, encaissements: 70, cohorte_mature: true, signatures_nettes: 90 },
+    { mois: "2026-05-01", leads: 2800, rdv_tenus: 840, devis: 470, signatures: 96, poses: 60, encaissements: 40, cohorte_mature: true },
+    { mois: "2026-06-01", leads: 2900, rdv_tenus: 700, devis: 300, signatures: 40, poses: 10, encaissements: 5, cohorte_mature: false },
+    { mois: "2026-09-01", leads: 2284, rdv_tenus: 562, devis: 212, signatures: 9, poses: 0, encaissements: 0, cohorte_mature: false },
+  ];
+  it("retient la dernière cohorte de plus de 90 jours au plus tard au mois demandé", () => {
+    expect(derniereCohorteMature(lignes, "2026-09")?.mois).toBe("2026-05-01");
+    expect(derniereCohorteMature(lignes, "2025-09")?.mois).toBe("2025-09-01");
+    expect(derniereCohorteMature(lignes, "2025-08")).toBeNull();
+  });
+  it("ramène les cohortes N-1 au prorata du mois en cours sans changer les taux", () => {
+    const n1 = agregerFunnelN1(lignes, "2026-09", "2026-09", new Map([["2026-09", 17 / 30]]));
+    expect(n1).toEqual({ leads: 1700, rdvPlanifies: 0, rdv: 510, devis: 283, signatures: 57, signaturesNettes: 51, poses: 45, encaissements: 40, sansRdv48h: 0, mature: true });
+    expect(etapesFunnel(n1!)[1]?.taux).toBe(30);
+    expect(agregerFunnelN1(lignes, "2026-09", "2026-09", new Map())?.leads).toBe(3000);
+    expect(agregerFunnelN1(lignes, "2026-10", "2026-10", new Map())).toBeNull();
   });
 });
