@@ -127,6 +127,9 @@ export function EcranPose() {
         </div>
       )}
 
+      {!optionCalendrier && (
+        <Carte titre="Calendrier de charge des équipes de pose" sousTitre="Chargement des semaines"><Squelette hauteur={agencesCalendrier.length > 1 ? 380 : 180} /></Carte>
+      )}
       {optionCalendrier ? (
         <CarteGraphique titre="Calendrier de charge des équipes de pose" sousTitre={`${perimetreLibelle} : charge en part de la capacité (techniciens actifs × 5 jours), quatre semaines réalisées (cadre plein) puis la semaine en cours et onze semaines planifiées (cadre pointillé)`}
           option={optionCalendrier} hauteur={agencesCalendrier.length > 1 ? 380 : 180} hauteurMobile={agencesCalendrier.length > 1 ? 420 : 200} codeIndicateur="PROD_TECH"
@@ -136,6 +139,9 @@ export function EcranPose() {
       ) : null}
 
       <div className="grid gap-[var(--esp-3)] lg:grid-cols-12">
+        {!optionCouverture && (
+          <Carte className="lg:col-span-7" titre="Délai de pose : sur place contre à distance" sousTitre="Chargement des douze mois"><Squelette hauteur={300} /></Carte>
+        )}
         {optionCouverture ? (
           <CarteGraphique className="lg:col-span-7" titre="Délai de pose : sur place contre à distance" sousTitre={`${perimetreLibelle}, douze mois : médiane signature vers pose selon que le département a une agence ou est couvert à distance (H5)`}
             option={optionCouverture} hauteur={300} codeIndicateur="D_SIGN_POSE"
