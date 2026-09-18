@@ -166,6 +166,9 @@ export const VUES = {
   source_fraicheur: z
     .object({ source: z.string(), date_reference: date.nullable(), ingere_le: z.string(), prochaine: date.nullable() })
     .passthrough(),
+  mart_ia_usage: z
+    .object({ jour: date, fonction: z.string(), appels: nombre, tokens_entree: nombre, tokens_sortie: nombre, cout_eur: nombre })
+    .passthrough(),
   mart_fraicheur: z
     .object({ source: z.string(), date_reference: date.nullable(), disponible_jusqu_au: date.nullable(), ingere_le: z.string(), prochaine: date.nullable() })
     .passthrough(),

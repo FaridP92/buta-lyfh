@@ -28,7 +28,7 @@ export function Rail() {
       </InfoBulle>
 
       <ul className="flex flex-1 flex-col items-center gap-[var(--esp-2)]">
-        {ROUTES.map((route) => {
+        {ROUTES.filter((route) => route.disponible).map((route) => {
           const estActif = pathname === route.chemin;
           return (
             <li key={route.chemin}>

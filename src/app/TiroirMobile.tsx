@@ -35,7 +35,7 @@ export function TiroirMobile({ ouvert, onOuvertureChange }: TiroirMobileProps) {
             </Dialog.Close>
           </div>
           <ul className="flex flex-col gap-[2px] overflow-y-auto">
-            {ROUTES.map((route) => (
+            {ROUTES.filter((route) => route.disponible).map((route) => (
               <li key={route.chemin}>
                 <NavLink
                   to={route.chemin}

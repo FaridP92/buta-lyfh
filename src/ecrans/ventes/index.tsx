@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AGENCES, nomAgence, useFiltres } from "@/app/filtres";
 import { useDeclarerExport } from "@/app/exportEcran";
 import { useVue } from "@/donnees/useVue";
@@ -16,6 +16,7 @@ import { useEstMobile } from "@/lib/useEstMobile";
 import { agregerKpi, ajouterMois, ecartPct, ecartPoints, moisDe, moisEntre, periodeN1, type LigneKpi } from "@/lib/periode";
 import { formatDateCourte, formatMontant, formatTaux } from "@/lib/format";
 import { expliquerEcart, sommerEffets } from "@/lib/phrases";
+import { ExplicationEcart } from "@/composants/ExplicationEcart";
 import { estimerElasticite, phraseRemise } from "@/lib/remise";
 import { agregerVentes, agregerVentesPar, serieMensuelleParProduit, type LigneVenteProduit } from "@/lib/ventes";
 import { optionAnnulations, optionCascade, optionMatrice, optionProduitsMensuels, optionRemises } from "./options";
@@ -30,7 +31,6 @@ export function EcranVentes() {
   const { periode, comparaison, agenceVue, agence, perimetreLibelle } = filtres;
   const tokens = useTokensGraphique();
   const mobile = useEstMobile();
-  const [expliquer, setExpliquer] = useState(false);
 
   const n1 = periodeN1(periode);
   const debutSerie = ajouterMois(periode.fin, -11);
@@ -224,22 +224,8 @@ export function EcranVentes() {
             ] }}
             enfantsSous={(
               <div className="flex flex-col gap-[var(--esp-2)]">
-                <div className="flex items-center justify-between gap-[var(--esp-2)]">
-                  <p className="text-[12px] text-texte-3">Résiduel : {formatMontant(effets.residuel)} (termes croisés, nul par construction avec un taux de remise pondéré).</p>
-                  <button type="button" onClick={() => setExpliquer((v) => !v)} aria-expanded={expliquer}
-                    className="inline-flex h-8 shrink-0 items-center rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">
-                    {expliquer ? "Masquer" : "Expliquer"}
-                  </button>
-                </div>
-                {expliquer && explication && (
-                  <dl className="grid gap-x-[var(--esp-4)] gap-y-[var(--esp-2)] rounded-[10px] bg-surface-2 p-[var(--esp-3)] text-[13px] leading-relaxed sm:grid-cols-[96px_1fr]">
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Constat</dt><dd className="text-texte">{explication.constat}</dd>
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Causes</dt>
-                    <dd><ol className="flex flex-col gap-1 text-texte-2">{explication.causes.map((c, i) => <li key={i} className="flex gap-[var(--esp-2)]"><span className="chiffre text-[11px] text-ambre-texte">{i + 1}</span><span>{c}</span></li>)}</ol></dd>
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Action</dt><dd className="text-texte-2">{explication.action}</dd>
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Sources</dt><dd className="text-[12px] text-texte-3">{explication.sources}</dd>
-                  </dl>
-                )}
+                <p className="text-[12px] text-texte-3">Résiduel : {formatMontant(effets.residuel)} (termes croisés, nul par construction avec un taux de remise pondéré).</p>
+                <ExplicationEcart perimetre={agence === "toutes" ? "reseau" : agence} mois={periode.fin} indicateur="CA" repli={explication} />
               </div>
             )} />
         ) : (

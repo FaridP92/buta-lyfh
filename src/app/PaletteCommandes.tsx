@@ -42,7 +42,7 @@ export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommande
 
   const commandes = useMemo<Commande[]>(() => {
     const fermer = () => onOuvertureChange(false);
-    const ecrans: Commande[] = ROUTES.map((r) => ({
+    const ecrans: Commande[] = ROUTES.filter((r) => r.disponible).map((r) => ({
       cle: `ecran:${r.chemin}`, groupe: "Écrans", libelle: r.libelle, cible: normaliser(r.libelle), cibleSecondaire: normaliser(r.objectif),
       ...(r.disponible ? {} : { detail: `palier ${r.palier}` }),
       executer: () => { navigate(r.chemin); fermer(); },

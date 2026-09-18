@@ -22,6 +22,7 @@ export const SchemaReponseIa = z.object({
   modele: z.string().nullable().optional(),
   cache: z.boolean().optional(),
   redaction_rejetee: z.boolean().optional(),
+  budget_jour: z.number().optional(),
 });
 export type ReponseIa = z.infer<typeof SchemaReponseIa>;
 

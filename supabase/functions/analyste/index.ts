@@ -73,7 +73,7 @@ Deno.serve(async (req: Request) => {
     const quota = await verifierQuota(emp);
     if (!quota.autorise) {
       await journaliser("analyste", emp, question, null, "quota", 0, duree(), 0, 0);
-      return reponseJson({ statut: "refus", motif_refus: quota.motif ?? "quota atteint", cout_eur: 0, duree_ms: duree() });
+      return reponseJson({ statut: "refus", motif_refus: quota.motif ?? "quota atteint", cout_eur: 0, duree_ms: duree(), budget_jour: quota.budget_jour });
     }
 
     const [cat, refs] = await Promise.all([catalogue(), referentiels()]);
@@ -136,7 +136,7 @@ Deno.serve(async (req: Request) => {
       reponse = `Je ne peux pas répondre de façon fiable à cette question : la rédaction contenait ${nonTraces.length ? `un nombre absent des lignes (${nonTraces.slice(0, 3).join(", ")})` : "aucune phrase exploitable"}. Les lignes ci-dessus sont exactes et restent la réponse.`;
     }
     await journaliser("analyste", emp, question, sql, statut, cout, duree(), tokensEntree, tokensSortie);
-    return reponseJson({ statut: "ok", sql, colonnes: lecture.colonnes, lignes: lecture.lignes, reponse, sources, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, redaction_rejetee: statut !== "ok" });
+    return reponseJson({ statut: "ok", sql, colonnes: lecture.colonnes, lignes: lecture.lignes, reponse, sources, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, redaction_rejetee: statut !== "ok", budget_jour: quota.budget_jour });
   } catch (erreur) {
     console.error("analyste", erreur instanceof Error ? erreur.stack ?? erreur.message : erreur);
     await journaliser("analyste", emp, question, null, "erreur", cout, duree(), tokensEntree, tokensSortie);

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import { routeDisponible } from "@/app/routes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Layout } from "@/app/Layout";
 import { OuvertureAnimation } from "@/app/OuvertureAnimation";
@@ -46,7 +47,7 @@ export function App() {
                 <Route path="/plans-action" element={<EcranPlansAction />} />
                 <Route path="/qualite" element={<EcranQualite />} />
                 <Route path="/automatisations" element={<EcranAutomatisations />} />
-                <Route path="/analyste" element={<EcranAnalyste />} />
+                <Route path="/analyste" element={routeDisponible("/analyste") ? <EcranAnalyste /> : <Navigate to="/" replace />} />
                 <Route path="/methode" element={<EcranMethode />} />
               </Route>
             </Routes>

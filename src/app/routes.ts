@@ -24,6 +24,11 @@ export interface DefinitionRoute {
   objectif: string;
 }
 
+/** Vrai si l'écran est fini : les autres n'apparaissent nulle part dans la navigation et redirigent vers l'accueil. */
+export function routeDisponible(chemin: string): boolean {
+  return ROUTES.some((r) => r.chemin === chemin && r.disponible);
+}
+
 export const ROUTES: DefinitionRoute[] = [
   {
     chemin: "/",

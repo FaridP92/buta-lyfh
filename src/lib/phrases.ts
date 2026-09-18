@@ -122,7 +122,7 @@ export function expliquerEcart(f: FaitsEcart): Explication {
         ? ACTIONS[dominantNegatif.cle]
         : "Aucun effet défavorable isolé : surveiller le mois prochain avant d'agir.";
 
-  const sources = `Vue mart_ecarts (formule ECART_CA, INDICATEURS.md), journée publiée du ${f.journeePubliee} ; explication assemblée par règles, sans modèle de langage (l'analyste arrive au palier B).`;
+  const sources = `Vue mart_ecarts (formule ECART_CA, INDICATEURS.md), journée publiée du ${f.journeePubliee} ; explication assemblée par règles, sans modèle de langage.`;
   return { constat, causes, action, sources };
 }
 

@@ -19,6 +19,7 @@ import { useCarte } from "@/graphiques/cartes";
 import { agregerFunnel, agregerKpi, ecartPct, ecartPoints, etapesFunnel, moisDe, moisEntre, periodeN1, type CohorteAgregee, type LigneKpi } from "@/lib/periode";
 import { formatDateCourte, formatDelaiJours, formatMontant, formatNombre, formatTaux } from "@/lib/format";
 import { phrasesDuMois, sommerEffets } from "@/lib/phrases";
+import { ExplicationEcart } from "@/composants/ExplicationEcart";
 import { JaugeAtterrissage } from "./JaugeAtterrissage";
 
 const MOIS_LONGS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
@@ -206,11 +207,14 @@ export function EcranVueEnsemble() {
         </Carte>
       </div>
 
-      <Carte titre="Ce que dit le mois" sousTitre="Trois phrases assemblées par règles à partir des faits SQL (l'explication par le modèle arrive au palier B)">
+      <Carte titre="Ce que dit le mois" sousTitre="Trois phrases assemblées par règles à partir des faits SQL ; le bouton demande au modèle une explication rédigée sur les mêmes faits">
         {phrases ? (
-          <ol className="flex flex-col gap-[var(--esp-2)] text-[15px] leading-relaxed text-texte-2">
-            {phrases.map((p, i) => <li key={i} className="flex gap-[var(--esp-3)]"><span className="chiffre text-[12px] text-ambre-texte">{i + 1}</span><span>{p}</span></li>)}
-          </ol>
+          <div className="flex flex-col gap-[var(--esp-3)]">
+            <ol className="flex flex-col gap-[var(--esp-2)] text-[15px] leading-relaxed text-texte-2">
+              {phrases.map((p, i) => <li key={i} className="flex gap-[var(--esp-3)]"><span className="chiffre text-[12px] text-ambre-texte">{i + 1}</span><span>{p}</span></li>)}
+            </ol>
+            <ExplicationEcart perimetre={agence === "toutes" ? "reseau" : agence} mois={periode.fin} indicateur="CA" repli={null} libelleBouton="Expliquer avec le modèle" />
+          </div>
         ) : <Squelette hauteur={80} />}
       </Carte>
 
