@@ -162,9 +162,9 @@ export function EcranFunnel() {
       </header>
 
       {chargement ? (
-        <div className="grid gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">{[0, 1, 2, 3, 4, 5].map((i) => <Squelette key={i} hauteur={132} />)}</div>
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">{[0, 1, 2, 3, 4, 5].map((i) => <Squelette key={i} hauteur={132} />)}</div>
       ) : (
-        <div className="grid gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">
           <CarteKPI libelle="Leads" valeur={cohorte?.leads ?? null} format="nombre" code="LEADS" clePeriode={clePeriode} decalageMs={0}
             serie={serieFunnel("leads")} variation={{ valeur: ecartPct(cohorte?.leads ?? null, cohorteN1?.leads ?? null), unite: "pct", libelle: libelleN1 }} />
           <CarteKPI libelle="Taux de RDV" sousLibelle={sousLibelleTaux("RDV tenus / leads")} valeur={taux(etapes, 1)} format="pct" code="TX_RDV" clePeriode={clePeriode} decalageMs={80}

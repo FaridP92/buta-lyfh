@@ -193,9 +193,9 @@ export function EcranVentes() {
       </header>
 
       {chargement ? (
-        <div className="grid gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">{[0, 1, 2, 3, 4, 5].map((i) => <Squelette key={i} hauteur={132} />)}</div>
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">{[0, 1, 2, 3, 4, 5].map((i) => <Squelette key={i} hauteur={132} />)}</div>
       ) : (
-        <div className="grid gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">
           <CarteKPI libelle="CA signé HT" valeur={actuel?.ca_signe ?? null} format="eur" code="CA_SIGNE" clePeriode={clePeriode} decalageMs={0}
             serie={serie("ca_signe")} variation={{ valeur: ecartPct(actuel?.ca_signe ?? null, caComparaison), unite: "pct", libelle: comparaisonLibelle }} />
           <CarteKPI libelle="CA posé HT" valeur={actuel?.ca_pose ?? null} format="eur" code="CA_POSE" clePeriode={clePeriode} decalageMs={80}

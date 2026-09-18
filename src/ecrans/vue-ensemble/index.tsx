@@ -140,7 +140,7 @@ export function EcranVueEnsemble() {
       {chargement ? (
         <div className="grid gap-[var(--esp-3)] md:grid-cols-4">{[0, 1, 2, 3].map((i) => <Squelette key={i} hauteur={132} />)}</div>
       ) : (
-        <div className="grid gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] sm:grid-cols-2 md:grid-cols-4">
           <CarteKPI libelle="Ventes signées" valeur={actuel?.ventes ?? null} format="nombre" code="VENTES" clePeriode={clePeriode} decalageMs={0}
             serie={serie("ventes")} variation={{ valeur: ecartPct(actuel?.ventes ?? null, ventesComparaison), unite: "pct", libelle: comparaisonLibelle }} />
           <CarteKPI libelle="CA signé HT" valeur={actuel?.ca_signe ?? null} format="eur" code="CA_SIGNE" clePeriode={clePeriode} decalageMs={80}

@@ -158,7 +158,8 @@ export interface KpiAgrege {
   productivite_commerciale: number | null;
 }
 
-function ratio(numerateur: number, denominateur: number, facteur = 1, decimales = 1): number | null {
+/** Ratio arrondi (facteur 100 pour un pourcentage) ; null si le dénominateur est nul. */
+export function ratio(numerateur: number, denominateur: number, facteur = 1, decimales = 1): number | null {
   if (!denominateur) return null;
   const f = Math.pow(10, decimales);
   return Math.round((facteur * numerateur / denominateur) * f) / f;

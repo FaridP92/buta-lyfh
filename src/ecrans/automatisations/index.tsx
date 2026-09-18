@@ -52,9 +52,9 @@ export function EcranAutomatisations() {
       </header>
 
       {journal.donnees === undefined ? (
-        <div className="grid gap-[var(--esp-3)] md:grid-cols-2 2xl:grid-cols-4">{[0, 1, 2, 3].map((i) => <Squelette key={i} hauteur={200} />)}</div>
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] md:grid-cols-2 2xl:grid-cols-4">{[0, 1, 2, 3].map((i) => <Squelette key={i} hauteur={200} />)}</div>
       ) : (
-        <div className="grid gap-[var(--esp-3)] md:grid-cols-2 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-[var(--esp-3)] md:grid-cols-2 2xl:grid-cols-4">
           {WORKFLOWS.map((w, i) => {
             const derniere = derniereDe(w.code);
             const prochaine = prochaineExecution(w.declencheur, maintenant);

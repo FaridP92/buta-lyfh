@@ -74,7 +74,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/pose",
     libelle: "Pose et encaissement",
     icone: Truck,
-    disponible: false,
+    disponible: true,
     palier: "B",
     lot: "4b",
     objectif: "Délai de pose, carnet de charge par agence, encaissement et aides en attente.",
