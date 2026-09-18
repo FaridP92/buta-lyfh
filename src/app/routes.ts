@@ -101,9 +101,9 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/automatisations",
     libelle: "Automatisations",
     icone: Workflow,
-    disponible: false,
+    disponible: true,
     palier: "B",
-    lot: "4b",
+    lot: "4a",
     objectif: "Les workflows n8n, leur dernière exécution, le journal des automatisations.",
   },
   {
