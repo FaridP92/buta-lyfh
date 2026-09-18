@@ -1,11 +1,68 @@
+import { useState } from "react";
 import { ArrowRight, Download, ExternalLink } from "lucide-react";
 import { Badge } from "@/composants/Badge";
+import { telecharger, type LigneExport } from "@/lib/export";
+import { construireZipPowerBi, type VueExportee } from "@/lib/powerbi";
+import { formatDateCourte } from "@/lib/format";
 import { HISTOIRES, OUTILS, SOURCES_REELLES } from "./donnees";
+
+/** Vues exportées, dans l'ordre du modèle ; mart_marche_commune est partitionnée par département dans l'instantané. */
+const VUES_EXPORT = [
+  "mart_kpi_mensuel", "mart_funnel", "mart_ventes_produit", "mart_ecarts", "mart_couts_acquisition", "mart_delais", "mart_pose",
+  "mart_encaissement", "mart_forecast", "mart_remises", "mart_objectif_mensuel", "mart_qualite", "mart_marche_departement",
+  "mart_marche_commune", "mart_automatisation", "mart_alertes", "mart_plans_action", "mart_revue_hebdo", "mart_reconciliation_libelles",
+];
+const DEPARTEMENTS_PERIMETRE = ["16", "17", "24", "32", "33", "40", "47", "59", "64", "79", "85"];
+
+async function lireJson(chemin: string): Promise<LigneExport[]> {
+  const reponse = await fetch(chemin);
+  if (!reponse.ok) throw new Error(`${chemin} : ${reponse.status}`);
+  return (await reponse.json()) as LigneExport[];
+}
+
+/** Lit les instantanés publiés avec le site (même contenu que les vues à la journée publiée du déploiement). */
+async function exporterPowerBi(surAvancement: (texte: string) => void): Promise<void> {
+  const meta = (await (await fetch("/data/instantane/_meta.json")).json()) as { journee_publiee?: string | null };
+  const vues: VueExportee[] = [];
+  for (const [i, nom] of VUES_EXPORT.entries()) {
+    surAvancement(`Lecture ${i + 1} / ${VUES_EXPORT.length} : ${nom}`);
+    try {
+      if (nom === "mart_marche_commune") {
+        const parties = await Promise.all(DEPARTEMENTS_PERIMETRE.map((d) => lireJson(`/data/instantane/${nom}-${d}.json`).catch(() => [])));
+        vues.push({ nom, lignes: parties.flat() });
+      } else {
+        vues.push({ nom, lignes: await lireJson(`/data/instantane/${nom}.json`) });
+      }
+    } catch {
+      vues.push({ nom, lignes: [] });
+    }
+  }
+  surAvancement("Compression du zip");
+  const aujourdHui = new Date();
+  const genereLe = `${String(aujourdHui.getDate()).padStart(2, "0")}/${String(aujourdHui.getMonth() + 1).padStart(2, "0")}/${aujourdHui.getFullYear()}`;
+  const zip = construireZipPowerBi(vues, meta.journee_publiee ? formatDateCourte(meta.journee_publiee) : null, genereLe);
+  telecharger(`buta-lyfh-power-bi-${aujourdHui.toISOString().slice(0, 10)}.zip`, zip, "application/zip");
+}
 
 const TITRE_SECTION = "font-sans text-[18px] font-semibold text-texte";
 const PARAGRAPHE = "max-w-[72ch] text-[15px] leading-relaxed text-texte-2";
 
 export function EcranMethode() {
+  const [avancement, setAvancement] = useState<string | null>(null);
+  const [erreurExport, setErreurExport] = useState<string | null>(null);
+
+  async function surExport() {
+    setErreurExport(null);
+    setAvancement("Préparation");
+    try {
+      await exporterPowerBi(setAvancement);
+      setAvancement(null);
+    } catch (e) {
+      setAvancement(null);
+      setErreurExport(e instanceof Error ? e.message : String(e));
+    }
+  }
+
   return (
     <div className="flex flex-col gap-[var(--esp-6)] pb-[var(--esp-6)]">
       <header className="flex flex-col gap-[var(--esp-3)]">
@@ -166,18 +223,24 @@ export function EcranMethode() {
       <section className="flex flex-col gap-[var(--esp-3)]">
         <h2 className={TITRE_SECTION}>Export pour Power BI</h2>
         <p className={PARAGRAPHE}>
-          Un fichier zip avec les tables au format CSV issues des vues mart_ et un modèle en étoile
-          documenté. Disponible dès que les vues sont en ligne.
+          Un fichier zip avec un CSV par vue mart_ (dix-neuf tables, séparateur point-virgule, décimale à la
+          virgule, UTF-8) et <code className="chiffre text-[13px]">modele_etoile.md</code>, qui décrit le modèle en
+          étoile, le grain et les clés de chaque table. Le contenu est celui des vues à la journée publiée de la
+          dernière mise en ligne. Au palier B s'ajoutent <code className="chiffre text-[13px]">mesures.dax</code> et un
+          LISEZMOI.
         </p>
-        <button
-          type="button"
-          disabled
-          title="Disponible avec les vues mart_ (lot 3)"
-          className="flex w-fit items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-3)] py-[8px] text-[13px] text-texte-2 opacity-40"
-        >
-          <Download size={14} strokeWidth={1.5} aria-hidden="true" />
-          Exporter pour Power BI
-        </button>
+        <div className="flex flex-wrap items-center gap-[var(--esp-3)]">
+          <button
+            type="button"
+            onClick={surExport}
+            disabled={avancement !== null}
+            className="flex w-fit items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-3)] py-[8px] text-[13px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte disabled:opacity-60"
+          >
+            <Download size={14} strokeWidth={1.5} aria-hidden="true" />
+            {avancement ? `${avancement}…` : "Exporter pour Power BI (zip)"}
+          </button>
+          {erreurExport && <p className="text-[12px] text-alerte">Export impossible : {erreurExport}</p>}
+        </div>
       </section>
 
       <section className="flex flex-col gap-[var(--esp-3)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)]">
