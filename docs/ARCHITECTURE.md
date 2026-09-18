@@ -47,7 +47,7 @@ buta-lyfh/
 
 ## 4. Environnements et secrets
 - Local : `.env` avec `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (scripts seulement, jamais dans `VITE_`), `SUPABASE_DB_URL` (migrations, scripts), `VPS_HOTE=root@51.77.150.125`, `VPS_RACINE=/var/www/vhosts/lyfh.fr/buta.lyfh.fr`.
-- Supabase : secrets `ANTHROPIC_API_KEY`, `IA_BUDGET_JOUR_EUR` (5 la semaine de l'entretien, 1.5 ensuite), `IA_MODELE=claude-sonnet-5`, `ANALYSTE_DB_URL` (URI du pooler Supavisor en mode transaction pour le rôle `analyste_ro` ; timeout et `work_mem` posés par `alter role`, pas par session).
+- Supabase : secrets `ANTHROPIC_API_KEY`, `IA_BUDGET_JOUR_EUR` (5 la semaine de l'entretien, 1.5 ensuite), `IA_MODELE=claude-sonnet-5`, facultatifs `MISTRAL_API_KEY` (repli) et `IA_SEL` (sel de l'empreinte). La lecture de l'analyste utilise `SUPABASE_DB_URL`, injectée par Supabase dans l'environnement des fonctions, avec `set local role analyste_ro` et `set local statement_timeout = '5s'` dans la transaction (lot 4b, migration 0024) : aucun mot de passe supplémentaire à distribuer.
 - n8n : credential Supabase (clé service, à créer pour ce projet, nommée « Supabase Buta (service role) »), credential Anthropic ou Mistral, Gmail existant pour les alertes.
 - Aucun secret dans le dépôt, `.env.example` complet et commenté.
 
