@@ -19,6 +19,7 @@
     "ingerer:marche": "tsx scripts/ingerer-marche.ts",
     "generer:activite": "tsx scripts/generer-activite.ts",
     "publier": "tsx scripts/generer-activite.ts --publier",
+    "revue": "tsx --tsconfig tsconfig.app.json scripts/publier-revue.ts",
     "export:powerbi": "tsx scripts/export-powerbi.ts",
     "deploiement": "bash scripts/deploiement.sh"
   },

@@ -83,7 +83,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/plans-action",
     libelle: "Plans d'action et rituels",
     icone: ListChecks,
-    disponible: false,
+    disponible: true,
     palier: "B",
     lot: "4b",
     objectif: "Les leviers en cours, leurs propriétaires, le gain attendu, et le calendrier des revues.",
