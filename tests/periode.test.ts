@@ -93,6 +93,12 @@ describe("agregerKpi", () => {
     expect(a?.ecart_objectif_pct).toBeNull();
     expect(a?.delai_pose_median).toBeNull();
     expect(a?.productivite_commerciale).toBeNull();
+    expect(a?.taux_remise).toBeNull();
+  });
+  it("recompose le taux de remise depuis les sommes, pas depuis les taux mensuels", () => {
+    // 4 % sur 100 k€ de catalogue puis 10 % sur 300 k€ : 34 k€ / 400 k€ = 8,5 % (la moyenne des taux dirait 7 %).
+    const a = agregerKpi([ligne("2026-07", { remises: 4_000, prix_catalogue_total: 100_000 }), ligne("2026-08", { remises: 30_000, prix_catalogue_total: 300_000 })], "2026-07", "2026-08");
+    expect(a?.taux_remise).toBe(8.5);
   });
 });
 

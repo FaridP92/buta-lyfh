@@ -13,7 +13,7 @@ const VUES = [
   "mart_kpi_mensuel", "mart_funnel", "mart_ventes_produit", "mart_ecarts", "mart_couts_acquisition",
   "mart_delais", "mart_pose", "mart_encaissement", "mart_forecast", "mart_qualite",
   "mart_marche_departement", "mart_marche_commune", "mart_automatisation", "mart_alertes",
-  "mart_plans_action", "mart_revue_hebdo",
+  "mart_plans_action", "mart_revue_hebdo", "mart_remises",
 ] as const;
 
 const DOSSIER = join(process.cwd(), "public", "data", "instantane");

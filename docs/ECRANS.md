@@ -41,7 +41,7 @@ Objectif : CA, marge, panier, remises, mix, et l'explication des écarts.
 - Barres empilées mensuelles par produit (CA) et courbe du taux de marge.
 - Matrice agence × produit : marge en couleur, CA en taille.
 - Tableau des agences : CA, écart objectif, écart N-1, marge brute, marge après acquisition, résultat d'agence, remise, annulations, avec tri et export. C'est le tableau qui répond à « quelle agence gagne de l'argent ».
-- Bloc « Remises » : distribution des remises par agence (boîtes à moustaches) et phrase de méthode : « dans ce jeu simulé, le seuil retrouvé par régression est de 8 % plus ou moins 3 points, ce qui vérifie l'hypothèse posée dans le générateur » (ELAST_REMISE, INDICATEURS.md). Jamais formulée comme une règle applicable à un réseau réel.
+- Bloc « Remises » : distribution des remises par agence (boîtes à moustaches sur les devis de la période, moustaches aux 10e et 90e centiles) et phrase de méthode assemblée depuis `src/lib/remise.ts` : pente retrouvée par régression à effets fixes agence avec son intervalle à 95 %, comparée à l'hypothèse posée dans le générateur (Saintonge : +4 points de signature pour +5 points de remise), puis la lecture économique (niveau de remise qui maximise la marge, ou pente qu'il faudrait pour qu'une remise de 8 % soit le bon niveau) (ELAST_REMISE, INDICATEURS.md). Jamais formulée comme une règle applicable à un réseau réel.
 Histoires : H3 (Saintonge, remises), H5 (annulations élevées dans les départements couverts à distance), H6.
 
 ## 5. Forecast et atterrissage (`/forecast`)

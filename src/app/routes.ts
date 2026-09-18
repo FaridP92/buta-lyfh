@@ -56,7 +56,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/ventes",
     libelle: "Ventes et marge",
     icone: TrendingUp,
-    disponible: false,
+    disponible: true,
     palier: "A",
     lot: "2",
     objectif: "Chiffre d'affaires, marge, panier, remises, mix produit, et l'explication des écarts.",

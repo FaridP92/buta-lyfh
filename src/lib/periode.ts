@@ -115,6 +115,9 @@ export interface LigneKpi {
   prorata: number;
   jours_publies: number;
   jours_mois: number;
+  /** Remises accordées et prix catalogue des ventes du mois, en euros (dénominateur du taux de remise). */
+  remises?: number;
+  prix_catalogue_total?: number;
 }
 
 export interface KpiAgrege {
@@ -128,6 +131,8 @@ export interface KpiAgrege {
   marge_brute: number;
   taux_marge: number | null;
   panier_moyen: number | null;
+  /** Remises / prix catalogue des ventes, en pourcentage ; null si les colonnes manquent. */
+  taux_remise: number | null;
   signatures_brutes: number;
   annulees_60j: number;
   taux_annulation: number | null;
@@ -176,6 +181,7 @@ export function agregerKpi(lignes: readonly LigneKpi[], debut: string, fin: stri
   const objectifCaProrata = retenues.reduce((s, l) => s + l.objectif_ca * (l.prorata ?? 1), 0);
   const objectifVentesProrata = retenues.reduce((s, l) => s + l.objectif_ventes * (l.prorata ?? 1), 0);
   const poses = somme("poses");
+  const remises = somme("remises"), catalogue = somme("prix_catalogue_total");
   const delaisPonderes = retenues.reduce((s, l) => s + (l.delai_pose_median ?? 0) * l.poses, 0);
   const posesAvecDelai = retenues.reduce((s, l) => s + (l.delai_pose_median === null ? 0 : l.poses), 0);
   const commerciauxMoyens = retenues.reduce((s, l) => s + l.commerciaux_actifs, 0) / retenues.length;
@@ -184,6 +190,7 @@ export function agregerKpi(lignes: readonly LigneKpi[], debut: string, fin: stri
     leads, ventes, ca_signe: ca, ca_pose: somme("ca_pose"), encaisse: somme("encaisse"), poses, marge_brute: marge,
     taux_marge: ratio(marge, ca, 100),
     panier_moyen: ratio(ca, ventes, 1, 0),
+    taux_remise: ratio(remises, catalogue, 100),
     signatures_brutes: sb, annulees_60j: an,
     taux_annulation: ratio(an, sb, 100),
     couts_acquisition: couts, commissions: com,

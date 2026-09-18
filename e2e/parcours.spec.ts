@@ -24,7 +24,7 @@ for (const route of ROUTES) {
 
     const reponse = await page.goto(route);
     expect(reponse?.status()).toBeLessThan(400);
-    await expect(page.locator("footer")).toContainText("Démonstrateur personnel");
+    await expect(page.getByRole("contentinfo")).toContainText("Démonstrateur personnel");
     expect(erreurs).toEqual([]);
   });
 }
@@ -38,6 +38,6 @@ test("la palette de commandes s'ouvre au raccourci clavier", async ({ page }) =>
 test("le pied de page porte la mention réglementaire sur toutes les pages", async ({ page }) => {
   for (const route of ROUTES) {
     await page.goto(route);
-    await expect(page.locator("footer")).toContainText("Sans lien avec Butagaz");
+    await expect(page.getByRole("contentinfo")).toContainText("Sans lien avec Butagaz");
   }
 });

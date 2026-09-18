@@ -18,7 +18,7 @@ export const VUES = {
       delai_pose_median: nombreOuNul, couts_acquisition: nombre, commissions: nombre, marge_apres_acquisition: nombre,
       charges: nombre, resultat: nombre, taux_cac: nombreOuNul, commerciaux_actifs: nombre, techniciens_actifs: nombre,
       productivite_commerciale: nombreOuNul, objectif_ventes: nombre, objectif_ca: nombre, ecart_objectif_pct: nombreOuNul,
-      prorata: nombre, jours_publies: nombre, jours_mois: nombre,
+      prorata: nombre, jours_publies: nombre, jours_mois: nombre, remises: nombre, prix_catalogue_total: nombre,
     })
     .passthrough(),
   mart_funnel: z
@@ -43,6 +43,14 @@ export const VUES = {
       motif: z.string().nullable(), ventes: nombre, ventes_comparaison: nombre, ca_realise: nombre, ca_comparaison: nombre,
       ecart_total: nombre, effet_volume: nombre, effet_mix: nombre, effet_prix: nombre, effet_remise: nombre, residuel: nombre,
       taux_remise: nombreOuNul, taux_remise_comparaison: nombreOuNul, prorata: nombre,
+    })
+    .passthrough(),
+  mart_remises: z
+    .object({
+      grain: z.enum(["mois", "trimestre", "annee"]), periode: date, agence: z.string(), devis: nombre, signatures: nombre,
+      taux_signature: nombreOuNul, remise_moyenne: nombreOuNul, remise_p10: nombreOuNul, remise_q1: nombreOuNul,
+      remise_mediane: nombreOuNul, remise_q3: nombreOuNul, remise_p90: nombreOuNul, marge_avant_remise: nombreOuNul,
+      prix_catalogue_moyen: nombreOuNul, periode_complete: z.boolean(),
     })
     .passthrough(),
   mart_couts_acquisition: z
