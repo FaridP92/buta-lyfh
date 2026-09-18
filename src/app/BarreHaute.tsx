@@ -75,12 +75,13 @@ export function BarreHaute() {
           <button
             type="button"
             onClick={() => setPaletteOuverte(true)}
-            aria-label="Rechercher un écran, une agence ou un indicateur (Cmd K)"
+            title="Rechercher un écran, une agence ou un indicateur (Cmd K)"
             className="flex h-9 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-3)] text-[13px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte"
           >
             <Search size={14} strokeWidth={1.5} aria-hidden="true" />
-            <span className="hidden sm:inline">Rechercher</span>
-            <kbd className="hidden rounded border border-bordure px-[5px] py-[1px] text-[10px] text-texte-3 sm:inline">⌘K</kbd>
+            {/* Le libellé reste dans le nom accessible sur mobile (sr-only) : pas d'aria-label qui contredise le texte visible. */}
+            <span className="max-sm:sr-only">Rechercher</span>
+            <kbd aria-hidden="true" className="hidden rounded border border-bordure px-[5px] py-[1px] text-[10px] text-texte-3 sm:inline">⌘K</kbd>
           </button>
           <button
             type="button"
