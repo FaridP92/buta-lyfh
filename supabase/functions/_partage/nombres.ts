@@ -4,11 +4,11 @@
  * 23,4 % écrit 23,4). Module pur, sans dépendance, partagé par les Edge Functions et testé par Vitest.
  */
 
-const MOTIF_NOMBRE = /\d[\d   ]*(?:[.,]\d+)?/g;
+const MOTIF_NOMBRE = /\d[\d \u202F\u00A0]*(?:[.,]\d+)?/g;
 
 /** Clé comparable d'un nombre écrit à la française ou en machine : « 284,5 » et « 284.5 » donnent « 284.5 », « 1 300 » donne « 1300 ». */
 export function normaliserNombre(brut: string): string {
-  const compact = brut.replace(/[\s  ]/g, "").replace(",", ".").replace(/[.,]$/, "");
+  const compact = brut.replace(/[\s\u202F\u00A0]/g, "").replace(",", ".").replace(/[.,]$/, "");
   if (compact === "") return "";
   const n = Number(compact);
   if (!Number.isFinite(n)) return compact;

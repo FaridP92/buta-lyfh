@@ -85,7 +85,12 @@ Deno.serve(async (req: Request) => {
     try {
       const r = await appelerModele(systemeSql, messageQuestion, 900);
       cumuler(r);
-      sortie = extraireJson(r.texte) as SortieSql;
+      try {
+        sortie = extraireJson(r.texte) as SortieSql;
+      } catch (erreur) {
+        console.error("analyste : requête non JSON", r.texte.slice(0, 300).replace(/\s+/g, " "));
+        throw erreur;
+      }
     } catch (erreur) {
       if (erreur instanceof ErreurRepli) {
         await journaliser("analyste", emp, question, null, "repli", 0, duree(), 0, 0);
@@ -123,9 +128,15 @@ Deno.serve(async (req: Request) => {
       return reponseJson({ statut: "erreur", message: "La requête n'a pas pu être exécutée (délai de 5 secondes, vue non autorisée ou erreur de syntaxe). Reformulez la question.", sql, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise });
     }
 
-    const r2 = await appelerModele(promptRedaction(refsTexte), messageRedaction(question, sql, lecture.lignes, lecture.lignes.length), 700);
+    const r2 = await appelerModele(promptRedaction(refsTexte), messageRedaction(question, sql, lecture.lignes, lecture.lignes.length), 1000);
     cumuler(r2);
-    const redaction = extraireJson(r2.texte) as { reponse?: unknown; sources?: unknown };
+    let redaction: { reponse?: unknown; sources?: unknown };
+    try {
+      redaction = extraireJson(r2.texte) as { reponse?: unknown; sources?: unknown };
+    } catch (erreur) {
+      console.error("analyste : rédaction non JSON", r2.texte.slice(0, 300).replace(/\s+/g, " "));
+      throw erreur;
+    }
     let reponse = typeof redaction.reponse === "string" ? redaction.reponse : "";
     const sources = Array.isArray(redaction.sources) ? redaction.sources.filter((s): s is string => typeof s === "string") : [];
     const autorises = nombresAutorises(lecture.lignes, question, lecture.lignes.length);

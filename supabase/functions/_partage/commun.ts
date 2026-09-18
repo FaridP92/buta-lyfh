@@ -105,12 +105,15 @@ export async function appelerModele(systeme: string, utilisateur: string, maxTok
     const r = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: { "x-api-key": cleAnthropic, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      body: JSON.stringify({ model: modele, max_tokens: maxTokens, temperature: 0.1, system: systeme, messages: [{ role: "user", content: utilisateur }] }),
+      // Pas de `temperature` : l'API la refuse pour cette génération de modèles (HTTP 400 « deprecated for this model »).
+      body: JSON.stringify({ model: modele, max_tokens: maxTokens, system: systeme, messages: [{ role: "user", content: utilisateur }] }),
       signal: AbortSignal.timeout(45_000),
     });
     if (!r.ok) throw new Error(`Anthropic : HTTP ${r.status} ${(await r.text()).slice(0, 200)}`);
-    const j = (await r.json()) as { content: { type: string; text?: string }[]; usage: { input_tokens: number; output_tokens: number } };
+    const j = (await r.json()) as { content: { type: string; text?: string }[]; stop_reason?: string; usage: { input_tokens: number; output_tokens: number } };
     const texte = j.content.filter((c) => c.type === "text").map((c) => c.text ?? "").join("\n");
+    // Réponse sans texte (arrêt sur max_tokens, refus, bloc d'un autre type) : on trace la forme brute pour comprendre.
+    if (!texte.trim()) console.error("modèle : réponse sans texte", JSON.stringify({ stop_reason: j.stop_reason, blocs: j.content.map((c) => c.type), usage: j.usage }).slice(0, 400));
     return { texte, tokensEntree: j.usage.input_tokens, tokensSortie: j.usage.output_tokens, coutEur: coutEur(modele, j.usage.input_tokens, j.usage.output_tokens), modele };
   }
   const cleMistral = env("MISTRAL_API_KEY");

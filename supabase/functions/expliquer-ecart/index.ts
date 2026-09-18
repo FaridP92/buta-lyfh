@@ -77,12 +77,19 @@ Deno.serve(async (req: Request) => {
     const perimetreLibelle = agence === "RESEAU" ? "le réseau" : refs.agences.find((a) => a.code === agence)?.nom_bassin ?? agence;
     let r;
     try {
-      r = await appelerModele(promptExplication(texteReferentiels(refs)), messageExplication(perimetreLibelle, mois, indicateur, faits), 900);
+      // 1 600 jetons : constat, trois causes avec leur fait et leur source, action et sources tiennent rarement en 900.
+      r = await appelerModele(promptExplication(texteReferentiels(refs)), messageExplication(perimetreLibelle, mois, indicateur, faits), 1600);
     } catch (erreur) {
       if (erreur instanceof ErreurRepli) return reponseJson({ statut: "repli", motif_refus: "aucun modèle configuré", cout_eur: 0, duree_ms: duree() });
       throw erreur;
     }
-    const sortie = extraireJson(r.texte) as Partial<Explication>;
+    let sortie: Partial<Explication>;
+    try {
+      sortie = extraireJson(r.texte) as Partial<Explication>;
+    } catch (erreur) {
+      console.error("expliquer-ecart : réponse non JSON", r.texte.slice(0, 300).replace(/\s+/g, " "));
+      throw erreur;
+    }
     const explication: Explication = {
       constat: typeof sortie.constat === "string" ? sortie.constat : "",
       causes: Array.isArray(sortie.causes) ? sortie.causes.filter((c): c is Cause => !!c && typeof c === "object" && typeof (c as Cause).texte === "string").slice(0, 3).map((c) => ({ texte: c.texte, fait: String(c.fait ?? ""), source: String(c.source ?? "") })) : [],
