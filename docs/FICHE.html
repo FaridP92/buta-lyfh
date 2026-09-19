@@ -144,10 +144,13 @@ td:first-child { font-weight: 600; white-space: nowrap; }
   .couverture h1 { font-size: 64pt; }
   .couverture .objet { font-size: 18pt; }
   .en-bref { margin-top: 10mm; break-after: page; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .sommaire { break-after: page; box-shadow: none; margin-top: 0; }
-  .sommaire .colonnes { gap: 0 10mm; }
-  .sommaire .colonnes > ol > li > a { font-size: 13pt; }
-  .sommaire ol ol li { font-size: 8.5pt; line-height: 1.4; }
+  .sommaire { box-shadow: none; margin-top: 0; }
+  .sommaire { padding: 6mm 7mm 4mm; }
+  .sommaire .colonnes { grid-template-columns: 1fr 1fr; gap: 0 8mm; }
+  .sommaire .colonnes > ol > li { margin-bottom: 5px; }
+  .sommaire .colonnes > ol > li > a { font-size: 12pt; }
+  .sommaire ol ol { margin-top: 2px; }
+  .sommaire ol ol li { font-size: 8pt; line-height: 1.35; }
   .lecture div { grid-template-columns: 120px minmax(0, 1fr); gap: 8px; }
   section { break-before: page; border-top: 0; margin-top: 0; padding-top: 0; }
   section > * { max-width: none; }
