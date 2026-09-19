@@ -106,7 +106,7 @@ export function EcranFunnel() {
         const intensite = Math.round((35 * (c.taux_conversion ?? 0)) / conversionMax);
         return (
           <span className="inline-flex flex-col items-end gap-[2px]" title={`${formatNombre(c.leads)} leads, ${formatNombre(c.signatures)} ventes nettes`}>
-            <span className="rounded-[6px] px-[6px] py-[1px] text-texte" style={{ backgroundColor: `color-mix(in srgb, var(--ambre) ${intensite}%, transparent)` }}>{formatTaux(c.taux_conversion)}</span>
+            <span className="rounded-[6px] px-[6px] py-[1px] text-texte" style={{ backgroundColor: `color-mix(in srgb, var(--accent) ${intensite}%, transparent)` }}>{formatTaux(c.taux_conversion)}</span>
             <span className="h-[3px] rounded-full bg-texte-3/60" style={{ width: `${Math.max(4, Math.round((40 * c.leads) / leadsMax))}px` }} aria-hidden="true" />
           </span>
         );
@@ -196,8 +196,8 @@ export function EcranFunnel() {
             <div className="flex flex-wrap items-center justify-between gap-[var(--esp-2)]">
               <SelecteurMenu libelle="Canal" options={optionsCanal} valeur={canal} onChange={setCanal} />
               <p className="text-[11px] text-texte-3">{cohorteCanal.mature
-                ? "Ambre : étapes tenues · rouge : pertes (sans RDV, sans devis, devis non signés, annulations) · gris : en attente de pose ou d'encaissement."
-                : "Ambre : étapes tenues · rouge : annulations · gris : dossiers encore en cours à date (sans RDV, sans devis, devis non signés, à poser, à encaisser) ; la donnée ne distingue pas un refus d'un devis pas encore signé."}</p>
+                ? "Menthe : étapes tenues · rouge : pertes (sans RDV, sans devis, devis non signés, annulations) · gris : en attente de pose ou d'encaissement."
+                : "Menthe : étapes tenues · rouge : annulations · gris : dossiers encore en cours à date (sans RDV, sans devis, devis non signés, à poser, à encaisser) ; la donnée ne distingue pas un refus d'un devis pas encore signé."}</p>
             </div>
           )} />
       ) : <Carte titre="Du lead à l'encaissement"><Squelette hauteur={380} /></Carte>}

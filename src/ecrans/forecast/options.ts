@@ -23,7 +23,7 @@ export function optionEventail(t: Trajectoire, moisCourant: number, objectifAnnu
     series: [
       {
         name: "Réalisé cumulé", type: "line", data: [...t.realiseCumule], symbol: "circle", symbolSize: 5, connectNulls: false,
-        lineStyle: { color: tokens.ambre, width: 2 }, itemStyle: { color: tokens.ambre }, animationDuration: 400, z: 4,
+        lineStyle: { color: tokens.accent, width: 2 }, itemStyle: { color: tokens.accent }, animationDuration: 400, z: 4,
         markLine: {
           silent: true, symbol: "none", animation: false,
           lineStyle: { color: tokens.texte3, type: "dashed", width: 1 },
@@ -37,10 +37,10 @@ export function optionEventail(t: Trajectoire, moisCourant: number, objectifAnnu
       { name: "Objectif cumulé", type: "line", data: [...t.objectifCumule], symbol: "none", lineStyle: { color: tokens.menthe, width: 1.5, type: "dashed" }, itemStyle: { color: tokens.menthe }, animationDuration: 400, z: 3 },
       // Bande : socle transparent puis épaisseur colorée, empilés.
       { name: "bas", type: "line", stack: "bande", data: [...t.bas], symbol: "none", lineStyle: { opacity: 0 }, itemStyle: { opacity: 0 }, tooltip: { show: false }, animationDuration: 800, animationDelay: 500, z: 1 },
-      { name: "Intervalle à 68 %", type: "line", stack: "bande", data: largeurBande, symbol: "none", lineStyle: { opacity: 0 }, itemStyle: { color: tokens.ambre }, areaStyle: { color: tokens.ambre, opacity: 0.14 }, tooltip: { show: false }, animationDuration: 800, animationDelay: 500, z: 1 },
-      { name: "Central", type: "line", data: [...t.central], symbol: "none", lineStyle: { color: tokens.ambre, width: 1.5, type: "dashed" }, itemStyle: { color: tokens.ambre }, animationDuration: 1000, animationEasing: "cubicOut", z: 3 },
-      { name: "Bas", type: "line", data: [...t.bas], symbol: "none", lineStyle: { color: tokens.ambre, width: 1, opacity: 0.5 }, itemStyle: { color: tokens.ambre }, animationDuration: 800, animationDelay: 500, z: 2 },
-      { name: "Haut", type: "line", data: [...t.haut], symbol: "none", lineStyle: { color: tokens.ambre, width: 1, opacity: 0.5 }, itemStyle: { color: tokens.ambre }, animationDuration: 800, animationDelay: 500, z: 2 },
+      { name: "Intervalle à 68 %", type: "line", stack: "bande", data: largeurBande, symbol: "none", lineStyle: { opacity: 0 }, itemStyle: { color: tokens.accent }, areaStyle: { color: tokens.accent, opacity: 0.14 }, tooltip: { show: false }, animationDuration: 800, animationDelay: 500, z: 1 },
+      { name: "Central", type: "line", data: [...t.central], symbol: "none", lineStyle: { color: tokens.accent, width: 1.5, type: "dashed" }, itemStyle: { color: tokens.accent }, animationDuration: 1000, animationEasing: "cubicOut", z: 3 },
+      { name: "Bas", type: "line", data: [...t.bas], symbol: "none", lineStyle: { color: tokens.accent, width: 1, opacity: 0.5 }, itemStyle: { color: tokens.accent }, animationDuration: 800, animationDelay: 500, z: 2 },
+      { name: "Haut", type: "line", data: [...t.haut], symbol: "none", lineStyle: { color: tokens.accent, width: 1, opacity: 0.5 }, itemStyle: { color: tokens.accent }, animationDuration: 800, animationDelay: 500, z: 2 },
     ],
   };
 }

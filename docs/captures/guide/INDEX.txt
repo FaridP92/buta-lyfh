@@ -74,6 +74,7 @@ analyste-00-avant-question.png : l'écran avant toute question (formulaire, sugg
 analyste.png : page entière après une réponse
 analyste-01-la-reponse.png : La réponse
 analyste-02-les-chiffres.png : Les chiffres
+analyste-03-la-requete-sql-executee.png : La requête SQL exécutée
 analyste-04-historique-de-la-session.png : Historique de la session
 analyste-05-garde-fous.png : Garde-fous
 analyste-06-la-requete-sql-executee.png : la requête SQL exécutée, dépliée

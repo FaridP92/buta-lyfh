@@ -55,7 +55,7 @@ export function SelecteurMenu({ libelle, options, valeur, onChange, className }:
                   onSelect={() => onChange(option.valeur)}
                   className={cn(
                     "cursor-pointer rounded-[8px] px-[var(--esp-2)] py-[6px] text-[13px] text-texte outline-none transition-colors hover:bg-surface data-[highlighted]:bg-surface",
-                    option.valeur === valeur && "text-ambre-texte",
+                    option.valeur === valeur && "text-accent-texte",
                   )}
                 >
                   {option.libelle}

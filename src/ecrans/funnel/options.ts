@@ -6,7 +6,7 @@ import type { LienSankey, NoeudSankey } from "@/lib/funnel";
 /** Sankey du parcours (DESIGN.md §11 : coule de gauche à droite en 800 ms, se réorganise sans disparaître au changement de filtre). */
 export function optionSankey(noeuds: readonly NoeudSankey[], liens: readonly LienSankey[], total: number, t: TokensGraphique, mobile = false): EChartsOption {
   const base = optionBase(t);
-  const couleur = (n: NoeudSankey) => (n.type === "etape" ? t.ambre : n.type === "perte" ? t.alerte : t.texte3);
+  const couleur = (n: NoeudSankey) => (n.type === "etape" ? t.accent : n.type === "perte" ? t.alerte : t.texte3);
   return {
     ...base,
     animationDuration: 800,
@@ -51,7 +51,7 @@ export function optionCourbeCanaux(mois: readonly string[], canaux: readonly { c
     series: [
       ...canaux.map((c, i) => ({
         name: c.libelle, type: "bar" as const, stack: "leads", data: [...c.valeurs], barMaxWidth: 22,
-        itemStyle: { color: t.serie[i % t.serie.length] ?? t.ambre, opacity: 0.9 },
+        itemStyle: { color: t.serie[i % t.serie.length] ?? t.accent, opacity: 0.9 },
       })),
       { name: "Ventes nettes", type: "line", yAxisIndex: 1, data: [...ventes], smooth: 0.3, symbol: "circle", symbolSize: 4, lineStyle: { color: t.texte, width: 1.5 }, itemStyle: { color: t.texte } },
     ],
@@ -82,8 +82,8 @@ export function optionSansRdv(agences: readonly { nom: string; valeur: number }[
     ],
     tooltip: { ...base.tooltip, trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: t.grille } }, valueFormatter: (v: unknown) => (typeof v === "number" ? formatNombre(v) : "n. d.") },
     series: [
-      { name: "Leads sans RDV à 48 h", type: "bar", xAxisIndex: 0, yAxisIndex: 0, data: agences.map((a) => a.valeur), barMaxWidth: 22, itemStyle: { color: t.ambre, borderRadius: [3, 3, 0, 0] } },
-      { name: "Leads sans RDV à 48 h", type: "line", xAxisIndex: 1, yAxisIndex: 1, data: serie.map((s) => s.valeur), smooth: 0.3, symbol: "circle", symbolSize: 4, lineStyle: { color: t.ambre, width: 1.5 }, itemStyle: { color: t.ambre }, areaStyle: { color: t.ambre, opacity: 0.1 } },
+      { name: "Leads sans RDV à 48 h", type: "bar", xAxisIndex: 0, yAxisIndex: 0, data: agences.map((a) => a.valeur), barMaxWidth: 22, itemStyle: { color: t.accent, borderRadius: [3, 3, 0, 0] } },
+      { name: "Leads sans RDV à 48 h", type: "line", xAxisIndex: 1, yAxisIndex: 1, data: serie.map((s) => s.valeur), smooth: 0.3, symbol: "circle", symbolSize: 4, lineStyle: { color: t.accent, width: 1.5 }, itemStyle: { color: t.accent }, areaStyle: { color: t.accent, opacity: 0.1 } },
     ],
   };
 }

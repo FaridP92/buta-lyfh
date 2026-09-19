@@ -127,7 +127,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
                 >
                   {colonnes.map((c, j) => (
                     <td key={c.cle} className={cn("px-[var(--esp-2)] align-middle", c.numerique ? "chiffre text-right text-[13px]" : "text-left", classesVisibilite(c), j === 0 && active && "pl-[14px]")}>
-                      {j === 0 && active && <span aria-hidden="true" className="absolute left-[2px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-ambre" />}
+                      {j === 0 && active && <span aria-hidden="true" className="absolute left-[2px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent" />}
                       {c.rendu ? c.rendu(l) : String(valeurBrute(c, l) ?? "n. d.")}
                     </td>
                   ))}

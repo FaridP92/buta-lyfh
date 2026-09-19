@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
  * Thème ECharts maison (DESIGN.md §5), lu dans les tokens CSS au moment du rendu
  * pour suivre la bascule sombre et clair : fond transparent, grilles à 6 % de blanc,
  * axes sans ligne, étiquettes 12 px en texte secondaire, palette de six séries
- * dans un ordre fixe (ambre, menthe, bleu, violet, alerte, gris).
+ * dans un ordre fixe (accent menthe, bleu, violet, ambre, rose, cyan, gris, alerte ; décision du 19 septembre).
  */
 export interface TokensGraphique {
   serie: string[];
@@ -16,6 +16,7 @@ export interface TokensGraphique {
   texte2: string;
   texte3: string;
   ambre: string;
+  accent: string;
   menthe: string;
   bleu: string;
   violet: string;
@@ -37,6 +38,7 @@ function lireVariable(nom: string, defaut: string): string {
 export function lireTokens(): TokensGraphique {
   const sombre = getComputedStyle(document.documentElement).colorScheme !== "light";
   const ambre = lireVariable("--ambre", "#f5b700");
+  const accent = lireVariable("--accent", "#2ee0c9");
   const menthe = lireVariable("--menthe", "#2dd4bf");
   const bleu = lireVariable("--bleu", "#60a5fa");
   const violet = lireVariable("--violet", "#a78bfa");
@@ -46,7 +48,7 @@ export function lireTokens(): TokensGraphique {
   const cyan = lireVariable("--cyan", "#22d3ee");
   return {
     // Huit couleurs : huit produits et huit canaux sans deux séries de la même couleur (DESIGN.md §1).
-    serie: [ambre, menthe, bleu, violet, alerte, gris, rose, cyan],
+    serie: [accent, bleu, violet, ambre, rose, cyan, gris, alerte],
     fond: lireVariable("--fond", "#0b0f17"),
     surface: lireVariable("--surface", "#111827"),
     surface2: lireVariable("--surface-2", "#161f2e"),
@@ -55,6 +57,7 @@ export function lireTokens(): TokensGraphique {
     texte2: lireVariable("--texte-2", "#9aa4b8"),
     texte3: lireVariable("--texte-3", "#808a9d"),
     ambre,
+    accent,
     menthe,
     bleu,
     violet,

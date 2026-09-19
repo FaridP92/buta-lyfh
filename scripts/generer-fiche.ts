@@ -307,8 +307,8 @@ strong { font-weight: 600; }
 .couverture { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 52px; align-items: end; padding-block: 20px 52px; border-bottom: 1px solid var(--bordure); }
 .couverture .logo { display: block; width: 132px; height: auto; margin: 0 0 20px; }
 .couverture .sur-titre { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); margin: 0 0 12px; }
-.couverture h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 9vw, 104px); line-height: 0.95; letter-spacing: -0.01em; margin: 0 0 20px; color: var(--titre); text-wrap: balance; }
-.couverture h1 .point { color: var(--marque-menthe); font-size: 1.12em; line-height: 0; }
+.couverture h1 { font-family: "Montserrat", var(--sans); font-weight: 800; text-transform: uppercase; font-size: clamp(34px, 5.6vw, 64px); line-height: 1; letter-spacing: 0.04em; margin: 0 0 20px; color: var(--titre); }
+.couverture h1 .point { color: var(--marque-menthe); }
 .couverture .objet { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; margin: 0 0 20px; color: var(--texte); text-wrap: balance; }
 .couverture .adresse { font-family: var(--mono); font-size: 15px; margin: 0; }
 .couverture .adresse a { text-decoration: none; border-bottom: 1px solid var(--marque-menthe); }
@@ -434,7 +434,7 @@ function assembler(blocs: Bloc[]): string {
 <meta name="description" content="Fiche de présentation illustrée de Buta.Lyfh : contexte, vocabulaire, données, lecture de chaque écran et notice d'utilisation, avec les captures du site.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@800&display=swap">
 <style>${STYLE}</style>
 <main class="page">
 <header class="couverture">
@@ -462,7 +462,7 @@ ${sommaire}
 ${corps}
 <footer class="pied">
   <p>Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées.</p>
-  <p>Fiche générée depuis le guide illustré du dépôt (docs/GUIDE_ILLUSTRE.md) ; captures du site en ligne, prises le 18 septembre 2026 au soir (journée publiée du 17 septembre), écran Analyste le 19 septembre.</p>
+  <p>Fiche générée depuis le guide illustré du dépôt (docs/GUIDE_ILLUSTRE.md) ; captures du site en ligne prises le 19 septembre 2026 (journée publiée du 18 septembre).</p>
 </footer>
 </main>
 `;
@@ -499,8 +499,8 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--fond-doux)
 .couverture::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 7mm; background: linear-gradient(180deg, var(--titre), var(--bleu) 55%, var(--menthe)); }
 .couverture .logo { width: 44mm; height: auto; margin: 0 0 12mm; }
 .couverture .sur-titre { font-family: var(--mono); font-size: 8.5pt; letter-spacing: 0.14em; text-transform: uppercase; color: var(--encre-3); margin: 0 0 5mm; }
-.couverture h1 { font-family: var(--serif); font-weight: 400; font-size: 64pt; line-height: 0.95; letter-spacing: -0.01em; color: var(--titre); margin: 0 0 8mm; }
-.couverture h1 .point { color: var(--menthe); font-size: 1.1em; }
+.couverture h1 { font-family: "Montserrat", var(--sans); font-weight: 800; text-transform: uppercase; font-size: 40pt; line-height: 1; letter-spacing: 0.04em; color: var(--titre); margin: 0 0 8mm; }
+.couverture h1 .point { color: var(--menthe); }
 .couverture .objet { font-family: var(--serif); font-size: 19pt; line-height: 1.25; color: var(--encre); margin: 0 0 6mm; max-width: 130mm; }
 .couverture .adresse { font-family: var(--mono); font-size: 10.5pt; color: var(--bleu); margin: 0 0 12mm; }
 .couverture .intro { max-width: 132mm; color: var(--encre-2); font-size: 9.5pt; }
@@ -569,7 +569,7 @@ td:first-child { font-weight: 600; }
 /* Dernière page */
 .fin { page: fin; break-before: page; display: flex; flex-direction: column; justify-content: flex-end; min-height: 230mm; }
 .fin .logo { width: 24mm; height: auto; margin-bottom: 8mm; }
-.fin h2 { border: 0; font-size: 22pt; margin-bottom: 5mm; padding: 0; }
+.fin h2 { border: 0; font-family: "Montserrat", var(--sans); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 18pt; margin-bottom: 5mm; padding: 0; }
 .fin p { max-width: 130mm; color: var(--encre-2); }
 .fin .adresse { font-family: var(--mono); color: var(--bleu); }
 `;
@@ -595,7 +595,7 @@ function assemblerImpression(blocs: Bloc[]): string {
 <head>
 <meta charset="utf-8">
 <title>Buta.Lyfh, fiche de présentation illustrée</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@800&display=swap">
 <style>${STYLE_IMPRESSION}</style>
 <script>window.PagedConfig = { auto: false };</script>
 <script src="${PAGEDJS}"></script>
@@ -625,7 +625,7 @@ ${corps}
   <h2>Buta<span style="color: var(--menthe)">.</span>Lyfh</h2>
   <p class="adresse">https://buta.lyfh.fr</p>
   <p>Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées.</p>
-  <p>Fiche générée depuis le guide illustré du dépôt ; captures du site en ligne prises le 18 septembre 2026 au soir (journée publiée du 17 septembre), écran Analyste le 19 septembre.</p>
+  <p>Fiche générée depuis le guide illustré du dépôt ; captures du site en ligne prises le 19 septembre 2026 (journée publiée du 18 septembre).</p>
 </footer>
 </body>
 </html>

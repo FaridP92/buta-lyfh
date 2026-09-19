@@ -64,7 +64,7 @@ export function JaugeAtterrissage({ realise, central, bas, haut, objectif, proba
           />
         )}
         <div
-          className="absolute left-0 top-[14px] h-3 rounded-full bg-ambre"
+          className="absolute left-0 top-[14px] h-3 rounded-full bg-accent"
           style={{ width: phase >= 1 ? pct(realise) : "0%", transition: "width 900ms cubic-bezier(0.22, 1, 0.36, 1)" }}
         />
         {central !== null && (

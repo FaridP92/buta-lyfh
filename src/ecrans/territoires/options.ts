@@ -43,7 +43,7 @@ export function optionFrance(departements: readonly DepartementCarte[], t: Token
     visualMap: {
       type: "continuous", min: 0, max, dimension: 0, orient: mobile ? "horizontal" : "vertical", left: mobile ? "center" : 8, bottom: mobile ? 0 : 12,
       itemWidth: 10, itemHeight: mobile ? 120 : 140, text: [`${max}`, "0"], textStyle: { color: t.texte3, fontSize: 11 },
-      inRange: { color: [t.surface2, t.ambre] }, calculable: false,
+      inRange: { color: [t.surface2, t.accent] }, calculable: false,
     },
     series: [{
       type: "map", map: "departements", nameProperty: "code", roam: false, boundingCoords: CADRE_METROPOLE, selectedMode: false, showLegendSymbol: false,
@@ -53,7 +53,7 @@ export function optionFrance(departements: readonly DepartementCarte[], t: Token
       label: { show: false },
       data: departements.map((d) => ({
         name: d.code, value: d.indice ?? 0,
-        ...(d.perimetre || d.code === selection ? { itemStyle: { borderColor: d.code === selection ? t.texte : t.ambre, borderWidth: d.code === selection ? 2 : 1.5 } } : {}),
+        ...(d.perimetre || d.code === selection ? { itemStyle: { borderColor: d.code === selection ? t.texte : t.accent, borderWidth: d.code === selection ? 2 : 1.5 } } : {}),
       })),
       animationDurationUpdate: 300,
     }],
@@ -136,7 +136,7 @@ export function optionCommunes(
     visualMap: {
       type: "continuous", min: 0, max, seriesIndex: 0, orient: mobile ? "horizontal" : "vertical", left: mobile ? "center" : 8, bottom: mobile ? 0 : 12,
       itemWidth: 10, itemHeight: mobile ? 120 : 140, text: [`${max}`, "0"], textStyle: { color: t.texte3, fontSize: 11 },
-      inRange: { color: [t.surface2, t.ambre] }, calculable: false,
+      inRange: { color: [t.surface2, t.accent] }, calculable: false,
     },
     geo: {
       map: carte, nameProperty: "code", roam: true, scaleLimit: { min: 1, max: 6 }, left: mobile ? 8 : 60, right: 8, top: 8, bottom: mobile ? 36 : 8,
@@ -152,7 +152,7 @@ export function optionCommunes(
       },
       {
         type: "effectScatter", coordinateSystem: "geo", z: 6, symbolSize: 12, rippleEffect: { scale: 2.2, brushType: "stroke" },
-        itemStyle: { color: t.ambre }, label: { show: true, position: "right", color: t.texte, fontFamily: t.police, fontSize: 11, formatter: "{b} · agence simulée" },
+        itemStyle: { color: t.accent }, label: { show: true, position: "right", color: t.texte, fontFamily: t.police, fontSize: 11, formatter: "{b} · agence simulée" },
         data: agences.map((a) => ({ name: a.nom, value: [a.longitude, a.latitude] })),
       },
     ],

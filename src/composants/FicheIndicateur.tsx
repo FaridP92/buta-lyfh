@@ -31,7 +31,7 @@ export function FournisseurFicheIndicateur({ children }: { children: ReactNode }
               <>
                 <div className="flex items-start justify-between gap-[var(--esp-3)]">
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ambre-texte">Fiche indicateur · {fiche.code}</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-accent-texte">Fiche indicateur · {fiche.code}</p>
                     <Dialog.Title className="mt-1 font-serif-titre text-[26px] leading-tight text-texte">{fiche.libelle}</Dialog.Title>
                   </div>
                   <Dialog.Close asChild>

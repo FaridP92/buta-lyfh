@@ -32,7 +32,7 @@ export function BadgeFraicheur() {
   if (data?.journee) {
     if (data.source === "supabase") {
       texte = `Journée du ${formatDateCourte(data.journee)} intégrée à ${formatDateHeure(data.integreeLe).slice(6)}`;
-      couleur = "bg-ambre";
+      couleur = "bg-accent";
     } else {
       texte = `Instantané du ${formatDateCourte(data.journee)}`;
       couleur = "bg-texte-3";

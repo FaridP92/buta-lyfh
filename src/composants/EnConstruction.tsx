@@ -14,8 +14,8 @@ export function EnConstruction() {
     <div className="mx-auto flex min-h-[60vh] max-w-[640px] flex-col justify-center gap-[var(--esp-4)] px-[var(--esp-4)] py-[var(--esp-6)]">
       <div className="flex items-center gap-[var(--esp-2)]">
         <span className="relative flex h-2 w-2" aria-hidden="true">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ambre opacity-50" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-ambre" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-50" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
         </span>
         <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">
           À venir · palier {route.palier} · lot {route.lot}

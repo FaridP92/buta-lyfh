@@ -151,7 +151,7 @@ function MiniCourbe({ serie }: { serie: readonly (number | null)[] }) {
     <svg width={largeur} height={hauteur} viewBox={`0 0 ${largeur} ${hauteur}`} aria-hidden="true" className="shrink-0 overflow-visible text-texte-3">
       <path d={`${ligne} L${largeur},${hauteur} L0,${hauteur} Z`} fill="currentColor" opacity={0.12} />
       <path d={ligne} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinejoin="round" strokeLinecap="round" />
-      {dernier && <circle cx={dernier[0]} cy={dernier[1]} r={2.5} className="fill-ambre" />}
+      {dernier && <circle cx={dernier[0]} cy={dernier[1]} r={2.5} className="fill-accent" />}
     </svg>
   );
 }

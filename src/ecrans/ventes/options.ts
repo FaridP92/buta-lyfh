@@ -47,7 +47,7 @@ export function optionCascade(m: MarcheCascade, t: TokensGraphique, mobile = fal
     if (e.type === "borne") {
       socle.push(0);
       hauteur.push(e.valeur);
-      couleurs.push(e.nom === "Réalisé" ? t.ambre : t.texte3);
+      couleurs.push(e.nom === "Réalisé" ? t.accent : t.texte3);
       cumul = e.valeur;
     } else {
       const suivant = cumul + e.valeur;
@@ -127,7 +127,7 @@ export function optionProduitsMensuels(
     series: [
       ...series.map((s, i) => ({
         name: s.libelle, type: "bar" as const, stack: "ca", data: s.valeurs.map((v) => v ?? 0), barMaxWidth: 28,
-        itemStyle: { color: t.serie[i % t.serie.length] ?? t.ambre, opacity: 0.9 },
+        itemStyle: { color: t.serie[i % t.serie.length] ?? t.accent, opacity: 0.9 },
         animationDelay: (idx: number) => idx * 30,
       })),
       {
@@ -195,7 +195,7 @@ export function optionAnnulations(lignes: readonly { nom: string; aDistance: num
     yAxis: { ...base.yAxis, type: "category", data: lignes.map((l) => l.nom), inverse: true, axisLabel: { ...base.yAxis.axisLabel, fontFamily: t.police }, splitLine: { show: false } },
     tooltip: { ...base.tooltip, trigger: "axis", axisPointer: { type: "shadow", shadowStyle: { color: t.grille } }, valueFormatter: (v: unknown) => (typeof v === "number" ? formatTaux(v) : "n. d.") },
     series: [
-      { name: "À distance", type: "bar", data: lignes.map((l) => l.aDistance), barGap: "10%", barMaxWidth: 10, itemStyle: { color: t.ambre, borderRadius: [0, 3, 3, 0] } },
+      { name: "À distance", type: "bar", data: lignes.map((l) => l.aDistance), barGap: "10%", barMaxWidth: 10, itemStyle: { color: t.accent, borderRadius: [0, 3, 3, 0] } },
       { name: "Sur place", type: "bar", data: lignes.map((l) => l.surPlace), barMaxWidth: 10, itemStyle: { color: t.texte3, borderRadius: [0, 3, 3, 0] } },
     ],
   };
@@ -221,7 +221,7 @@ export function optionRemises(
       return `${name} · ${formatNombre(l.devis)} devis<br/>médiane <b>${formatTaux(med)}</b> · quartiles ${formatTaux(q1)} à ${formatTaux(q3)}<br/>centiles 10 et 90 : ${formatTaux(p10)} à ${formatTaux(p90)}`;
     } },
     series: [{
-      type: "boxplot", data: lignes.map((l) => ({ value: l.boite, itemStyle: { color: l.active ? t.ambre : t.surface2, borderColor: l.active ? t.ambre : t.texte2, borderWidth: 1.5 } })),
+      type: "boxplot", data: lignes.map((l) => ({ value: l.boite, itemStyle: { color: l.active ? t.accent : t.surface2, borderColor: l.active ? t.accent : t.texte2, borderWidth: 1.5 } })),
       boxWidth: mobile ? [6, 14] : [10, 28],
       animationDelay: (i: number) => i * 40,
     }],

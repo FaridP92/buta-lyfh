@@ -218,7 +218,7 @@ export function EcranVueEnsemble() {
         {phrases ? (
           <div className="flex flex-col gap-[var(--esp-3)]">
             <ol className="flex flex-col gap-[var(--esp-2)] text-[15px] leading-relaxed text-texte-2">
-              {phrases.map((p, i) => <li key={i} className="flex gap-[var(--esp-3)]"><span className="chiffre text-[12px] text-ambre-texte">{i + 1}</span><span>{p}</span></li>)}
+              {phrases.map((p, i) => <li key={i} className="flex gap-[var(--esp-3)]"><span className="chiffre text-[12px] text-accent-texte">{i + 1}</span><span>{p}</span></li>)}
             </ol>
             <ExplicationEcart perimetre={agence === "toutes" ? "reseau" : agence} mois={periode.fin} indicateur="CA" repli={null} libelleBouton="Expliquer avec le modèle" />
           </div>
@@ -257,7 +257,7 @@ function construireOptionFunnel(c: CohorteAgregee, t: ReturnType<typeof useToken
     } },
     series: [{
       type: "bar", data: etapes.map((e) => e.valeur), barWidth: 18,
-      itemStyle: { color: c.mature ? t.ambre : t.texte3, borderRadius: [0, 4, 4, 0], opacity: c.mature ? 1 : 0.7 },
+      itemStyle: { color: c.mature ? t.accent : t.texte3, borderRadius: [0, 4, 4, 0], opacity: c.mature ? 1 : 0.7 },
       label: { show: true, position: "right", color: t.texte2, fontFamily: t.mono, fontSize: 12, formatter: (p: unknown) => {
         const { value, dataIndex } = p as { value: number; dataIndex: number };
         const taux = etapes[dataIndex]?.taux;
@@ -282,14 +282,14 @@ function construireOptionCarte(
     } },
     geo: {
       map: "perimetre", roam: false, silent: true, left: 4, right: 4, top: 4, bottom: 4,
-      itemStyle: { areaColor: t.surface2, borderColor: t.ambre, borderWidth: 1 },
+      itemStyle: { areaColor: t.surface2, borderColor: t.accent, borderWidth: 1 },
       emphasis: { disabled: true },
     },
     series: [{
       type: "scatter", coordinateSystem: "geo",
       data: agences.map((a) => ({ name: a.nom_bassin, value: [a.longitude, a.latitude, lignes.find((l) => l.code === a.code)?.kpi?.ventes ?? 0] })),
       symbolSize: (v: number[]) => 6 + 18 * Math.sqrt((v[2] ?? 0) / max),
-      itemStyle: { color: t.ambre, opacity: 0.9, shadowBlur: 12, shadowColor: t.ambre },
+      itemStyle: { color: t.accent, opacity: 0.9, shadowBlur: 12, shadowColor: t.accent },
       label: { show: false },
     }],
   };

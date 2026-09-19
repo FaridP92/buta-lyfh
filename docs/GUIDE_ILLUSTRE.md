@@ -1,6 +1,6 @@
 # Buta.Lyfh, guide illustré et notice d'utilisation
 
-Ce document s'adresse à quelqu'un qui découvre Buta.Lyfh sans rien en connaître : ni le projet, ni le métier, ni l'outil. Il explique le contexte, la finalité, ce que chaque écran et chaque visuel montrent, comment les lire, d'où viennent les chiffres, et se termine par une notice d'utilisation. Les captures datent du 18 septembre 2026 au soir (journée publiée du 17 septembre) ; les chiffres bougent chaque matin, la lecture ne change pas.
+Ce document s'adresse à quelqu'un qui découvre Buta.Lyfh sans rien en connaître : ni le projet, ni le métier, ni l'outil. Il explique le contexte, la finalité, ce que chaque écran et chaque visuel montrent, comment les lire, d'où viennent les chiffres, et se termine par une notice d'utilisation. Les captures datent du 19 septembre 2026 (journée publiée du 18 septembre) ; les chiffres bougent chaque matin, la lecture ne change pas.
 
 Adresse : https://buta.lyfh.fr, sur ordinateur ou téléphone, sans compte.
 
@@ -44,8 +44,8 @@ Chaque dossier client suit six étapes, et tout l'outil est construit autour d'e
 | Cohorte | Tous les leads créés un même mois. Les taux de conversion se mesurent toujours sur une cohorte : « des leads de mai, combien ont signé ». |
 | Cohorte mûre, cohorte en cours | Une cohorte est mûre 90 jours après son mois de création : elle a eu le temps de convertir. Avant, ses taux sont provisoires et l'écran le dit (« cohorte en cours »). |
 | Mesure d'événement | Rattachée au mois où l'événement a lieu : la vente au mois de signature, la pose au mois de pose, l'encaissement au mois d'encaissement. Sert au chiffre d'affaires, à la marge, à la trésorerie. |
-| Journée publiée | La dernière journée d'activité intégrée dans l'outil (le 17 septembre sur les captures). Tout ce qui est postérieur est invisible, comme dans un vrai système où la journée d'hier arrive le matin. |
-| Prorata | Le mois en cours n'est pas fini : 17 jours publiés sur 30 en septembre. L'objectif et le N-1 sont multipliés par 17/30 avant comparaison, sinon tout serait « en retard de 43 % ». L'écran l'écrit chaque fois. |
+| Journée publiée | La dernière journée d'activité intégrée dans l'outil (le 18 septembre sur les captures). Tout ce qui est postérieur est invisible, comme dans un vrai système où la journée d'hier arrive le matin. |
+| Prorata | Le mois en cours n'est pas fini : 18 jours publiés sur 30 en septembre. L'objectif et le N-1 sont multipliés par 18/30 avant comparaison, sinon tout serait « en retard de 40 % ». L'écran l'écrit chaque fois. |
 | Objectif | Le chiffre d'affaires attendu, fixé par agence, produit et mois ; dans la simulation, il vaut le réalisé de 2025 plus 15 %. |
 | N-1 | Le même mois de l'année précédente. Il n'existe pas pour 2025 (pas d'historique 2024) et l'écran le dit alors « n. d. ». |
 | CA signé HT | Somme des devis signés, hors taxes et net de remise, au mois de signature. C'est la base de l'objectif et de l'atterrissage. |
@@ -113,7 +113,7 @@ De gauche à droite :
 - **Période** : un mois, un trimestre ou une année à date. Par défaut, le mois de la journée publiée.
 - **Vs** : la comparaison, objectif ou N-1. Elle s'applique à tous les écarts affichés.
 - **Agence** : toutes les agences (le réseau) ou une seule. Le titre de chaque écran se met au nom de l'agence choisie.
-- **Journée du 17/09 intégrée à 11:25** : le badge de fraîcheur. Il dit quelle journée simulée est publiée et à quelle heure elle a été intégrée. Il se relit tout seul quand on revient sur l'onglet.
+- **Journée du 18/09 intégrée à 13:01** : le badge de fraîcheur. Il dit quelle journée simulée est publiée et à quelle heure elle a été intégrée. Il se relit tout seul quand on revient sur l'onglet.
 - **Rechercher (Cmd K ou Ctrl K)** : la palette de commandes.
 - **Exporter** : exporte le tableau principal de l'écran (CSV ou tableur).
 - Le bouton rond à droite bascule entre le thème sombre et le thème clair.
@@ -128,7 +128,7 @@ Le rail à gauche liste les onze écrans (le libellé apparaît au survol) : Vue
 
 ### 4.3 Les badges
 
-Trois badges disent la nature de ce qu'on regarde : **simulé** (ambre) pour les données d'activité, **réel, source** (vert) pour le marché, **instantané** (gris) quand l'application affiche l'instantané de secours parce que la base n'a pas répondu.
+Trois badges disent la nature de ce qu'on regarde : **simulé** (ambre) pour les données d'activité, **réel, source** (menthe) pour le marché, **instantané** (gris) quand l'application affiche l'instantané de secours parce que la base n'a pas répondu.
 
 ### 4.4 Une carte KPI, élément par élément
 
@@ -139,7 +139,7 @@ Chaque compteur se lit ainsi :
 - le **libellé** en capitales (« CA signé HT ») et parfois un sous-libellé qui précise la mesure (« cohorte de mai 2026, à 90 jours ») ;
 - la **valeur**, en chiffres à espacement fixe pour que les colonnes s'alignent ;
 - la **variation** avec sa flèche et sa couleur (vert : favorable, rouge : défavorable ; pour un indicateur où « plus bas = mieux », les couleurs s'inversent) et sa base (« vs objectif prorata », « vs N-1 ») ;
-- la **mini courbe** des douze derniers mois, le point ambre marquant la dernière valeur ;
+- la **mini courbe** des douze derniers mois, le point menthe marquant la dernière valeur ;
 - le bouton **i** qui ouvre la fiche de l'indicateur.
 
 Quand l'écart franchit un seuil, la carte le signale une fois, après son compteur : à -20 % (ou -5 points pour un taux), elle s'enflamme (bordure chaude, flammes qui montent du bord bas, braises) ; à +10 % (ou +3 points), elle verdit et lance une gerbe de couleurs. Un indicateur où « plus bas = mieux » inverse le sens. Rien ne bouge si le système demande un mouvement réduit.
@@ -191,22 +191,22 @@ Chaque écran répond à une question, écrite dans son titre. Pour chaque visue
 La question : où en est le réseau ce mois-ci, où sont les écarts, que faire ce matin.
 
 **Les quatre compteurs** (ventes signées, CA signé HT, taux de marge brute, conversion lead vers vente).
-- Ce que ça montre : le mois en cours contre l'objectif au prorata des jours publiés (17 jours sur 30), la marge contre N-1, et la conversion de la dernière cohorte mûre (celle de mai 2026, à 90 jours).
-- Comment le lire : 111 ventes signées, 18,6 % sous l'objectif proratisé ; 924,6 k€ de CA, 27,8 % sous l'objectif ; marge brute à 26,3 %, un point sous N-1 ; 8,6 % des leads de mai sont devenus une vente.
+- Ce que ça montre : le mois en cours contre l'objectif au prorata des jours publiés (18 jours sur 30), la marge contre N-1, et la conversion de la dernière cohorte mûre (celle de mai 2026, à 90 jours).
+- Comment le lire : 116 ventes signées, 19,7 % sous l'objectif proratisé ; 967,1 k€ de CA, 28,6 % sous l'objectif ; marge brute à 26,3 %, un point sous N-1 ; 8,6 % des leads de mai sont devenus une vente.
 - Ce qu'on en fait : c'est l'ordre du jour du point du matin. Un écart s'explique sur Ventes et marge, une conversion sur Funnel.
 
 ![Atterrissage 2026](captures/guide/accueil-01-atterrissage-2026.png)
 
 **Atterrissage 2026.**
-- Ce que ça montre : le CA signé attendu en fin d'année (24,8 M€), l'objectif (29,2 M€), l'écart (-15 %), la probabilité d'atteindre l'objectif (moins de 1 %), et une jauge : réalisé à date (19,5 M€), bornes basse et haute (24,3 à 25,3 M€), objectif.
+- Ce que ça montre : le CA signé attendu en fin d'année (24,9 M€), l'objectif (29,2 M€), l'écart (-14,7 %), la probabilité d'atteindre l'objectif (moins de 1 %), et une jauge : réalisé à date (19,5 M€), bornes basse et haute (24,4 à 25,4 M€), objectif.
 - Comment le lire : la partie pleine de la jauge est le réalisé ; le trait clair est la fourchette d'atterrissage ; le trait vert est l'objectif. Si l'objectif est à droite de la fourchette, il ne sera pas atteint sans changer quelque chose.
 - Ce qu'on en fait : le montant à trouver et le délai qui reste ; le détail des hypothèses est sur l'écran Forecast.
 
 ![Funnel de la cohorte du mois](captures/guide/accueil-02-funnel-de-la-cohorte-du-mois.png)
 
 **Funnel de la cohorte du mois.**
-- Ce que ça montre : les leads créés ce mois-ci (2 284) et, pour chacune des étapes suivantes, combien y sont arrivés à ce jour, avec le taux de passage depuis l'étape précédente.
-- Comment le lire : en gris tant que la cohorte a moins de 90 jours (« taux provisoires ») ; un lead de septembre n'a pas fini de convertir, ses 9 signatures ne disent rien encore. La barre en ambre apparaît quand la cohorte est mûre.
+- Ce que ça montre : les leads créés ce mois-ci (2 427) et, pour chacune des étapes suivantes, combien y sont arrivés à ce jour, avec le taux de passage depuis l'étape précédente.
+- Comment le lire : en gris tant que la cohorte a moins de 90 jours (« taux provisoires ») ; un lead de septembre n'a pas fini de convertir, ses 10 signatures ne disent rien encore. La barre en menthe apparaît quand la cohorte est mûre.
 - Ce qu'on en fait : rien de définitif avant 90 jours ; c'est justement la leçon.
 
 ![Alertes du matin](captures/guide/accueil-03-alertes-du-matin.png)
@@ -252,7 +252,7 @@ La question : pourquoi le CA n'est pas là où il devrait être, et qui gagne de
 **Cascade de l'écart de CA.**
 - Ce que ça montre : on part de l'objectif (au prorata), on ajoute ou retire quatre effets et on arrive au réalisé : l'effet **volume** (moins de ventes), l'effet **mix** (des produits moins chers dans le panier), l'effet **prix** (des prix catalogue différents), l'effet **remise** (plus ou moins de remise accordée). Le résiduel est nul par construction.
 - Comment le lire : les barres rouges retirent, les vertes ajoutent ; les deux barres grises sont les points de départ et d'arrivée. L'axe est tronqué pour que les effets se voient, et le sous-titre le dit.
-- Ce qu'on en fait : en septembre, l'écart de -355 k€ tient d'abord au volume (-238 k€, 67 % de l'écart) puis au mix (-106 k€) : ce n'est pas un problème de prix, c'est un problème de nombre de ventes. Le bouton « Expliquer » écrit le constat, les causes classées et une action.
+- Ce qu'on en fait : en septembre, l'écart de -388 k€ tient d'abord au volume (-266 k€, 69 % de l'écart) puis au mix (-111 k€) : ce n'est pas un problème de prix, c'est un problème de nombre de ventes. Le bouton « Expliquer » écrit le constat, les causes classées et une action.
 
 ![CA signé par produit](captures/guide/ventes-02-ca-signe-par-produit.png)
 
@@ -301,7 +301,7 @@ La question : à quelle étape on perd, quel canal vaut son coût, quels leads a
 
 **Du lead à l'encaissement (diagramme de flux).**
 - Ce que ça montre : les leads de la période coulent de gauche à droite : RDV tenus, devis, signatures, poses, encaissements. Les branches qui sortent sont les dossiers qui n'ont pas franchi l'étape.
-- Comment le lire : ambre, les étapes tenues ; rouge, les pertes ; gris, ce qui est encore en cours. Sur une cohorte de moins de 90 jours, les branches « sans RDV à date », « sans devis à date », « devis non signés à date » sont grises : un devis pas encore signé n'est pas un refus. Le sélecteur de canal filtre le flux ; changer d'agence le redessine.
+- Comment le lire : menthe, les étapes tenues ; rouge, les pertes ; gris, ce qui est encore en cours. Sur une cohorte de moins de 90 jours, les branches « sans RDV à date », « sans devis à date », « devis non signés à date » sont grises : un devis pas encore signé n'est pas un refus. Le sélecteur de canal filtre le flux ; changer d'agence le redessine.
 - Ce qu'on en fait : voir l'étape qui fuit le plus, et pour quel canal.
 
 ![Conversion par canal et agence](captures/guide/funnel-02-conversion-par-canal-et-agence.png)
@@ -338,22 +338,22 @@ La question : où on atterrit, avec quelles hypothèses, quels risques, quelles 
 ![Éventail d'atterrissage 2026](captures/guide/forecast-01-eventail-d-atterrissage-2026.png)
 
 **Éventail d'atterrissage.**
-- Ce que ça montre : le CA cumulé depuis janvier (ambre), l'objectif cumulé (pointillé vert), la ligne de la journée publiée, puis la projection jusqu'à décembre avec son intervalle à 68 %.
-- Comment le lire : tant que la courbe ambre est au-dessus du pointillé, on est en avance ; à partir de l'été elle passe dessous et la projection finit à 24,8 M€ contre 29,2 M€ d'objectif : -15 %, probabilité d'atteinte inférieure à 1 %.
+- Ce que ça montre : le CA cumulé depuis janvier (menthe), l'objectif cumulé (pointillé vert), la ligne de la journée publiée, puis la projection jusqu'à décembre avec son intervalle à 68 %.
+- Comment le lire : tant que la courbe menthe est au-dessus du pointillé, on est en avance ; à partir de l'été elle passe dessous et la projection finit à 24,9 M€ contre 29,2 M€ d'objectif : -14,7 %, probabilité d'atteinte inférieure à 1 %.
 - Ce qu'on en fait : chiffrer ce qu'il manque et sur combien de mois.
 
 ![Hypothèses](captures/guide/forecast-02-hypotheses.png)
 
 **Hypothèses.**
 - Ce que ça montre : tout ce qui entre dans le calcul : les devis en cours de moins de 90 jours et leur montant, le taux de signature observé selon l'âge du devis, l'annulation à six mois, le pipe pondéré, le run-rate des trois derniers mois, sa projection saisonnalisée sur les mois restants et la part retenue au-delà des 45 jours déjà couverts par le pipe, l'écart-type mensuel.
-- Comment le lire : réalisé à date + pipe pondéré + part retenue = atterrissage central (19,5 + 1,5 + 3,8 = 24,8 M€), on peut le refaire de tête. Le curseur « taux de signature du pipe » recalcule l'atterrissage à l'écran sans rien écrire : « et si le pipe signait à 20 % ? ».
+- Comment le lire : réalisé à date + pipe pondéré + part retenue = atterrissage central (19,5 + 1,6 + 3,8 = 24,9 M€), on peut le refaire de tête. Le curseur « taux de signature du pipe » recalcule l'atterrissage à l'écran sans rien écrire : « et si le pipe signait à 20 % ? ».
 - Ce qu'on en fait : discuter des hypothèses plutôt que du chiffre.
 
 ![Atterrissage par agence](captures/guide/forecast-03-atterrissage-par-agence.png)
 
 **Atterrissage par agence.**
 - Ce que ça montre : réalisé à date, objectif, atterrissage central, fourchette, écart, probabilité d'atteinte, pipe pondéré, statut.
-- Comment le lire : une seule agence est « tenu » (Bassin d'Arcachon, +6,7 %, probabilité 95 %) ; les autres sont en retrait de 10 à 29 %.
+- Comment le lire : une seule agence est « tenu » (Bassin d'Arcachon, +7,2 %, probabilité 95 %) ; les autres sont en retrait de 10 à 29 %.
 
 ![Risques](captures/guide/forecast-04-risques.png)
 ![Opportunités](captures/guide/forecast-05-opportunites.png)
@@ -383,7 +383,7 @@ La question : quel délai entre signature et pose, quelle charge pour les équip
 
 **Délai de pose, sur place contre à distance.**
 - Ce que ça montre : douze mois de délai médian entre signature et pose, pour les dossiers des départements avec agence (sur place) et pour ceux couverts à distance.
-- Comment le lire : la distance coûte environ un mois de délai (48 jours contre 74 au dernier mois), puis des annulations (écran Ventes).
+- Comment le lire : la distance coûte environ un mois de délai (48 jours contre 75 au dernier mois), puis des annulations (écran Ventes).
 
 ![Ce que dit le carnet](captures/guide/pose-03-ce-que-dit-le-carnet.png)
 
@@ -433,13 +433,13 @@ La question : la confiance dans le chiffre, rendue visible.
 
 **Score de qualité du jour et courbe des journées publiées.**
 - Ce que ça montre : un score de 0 à 100, part pondérée des contrôles réussis (poids 3 pour un contrôle bloquant), et son historique sur les journées publiées.
-- Comment le lire : 68 le 17 septembre, parce que deux contrôles bloquants sont en échec ; l'écran le dit au lieu de le masquer. L'historique remonte à mai 2026 : 100 avant l'intégration de l'agence Nord, 73 dès le 1er juin (premiers dossiers sans statut cohérent et libellés hors référentiel), 68 depuis le 17 juin (premiers doublons probables) ; le nombre de lignes en défaut monte de 2 à 83 au fil de l'été, parce que le référentiel n'est pas encore aligné (plan d'action à 40 %).
+- Comment le lire : 68 le 18 septembre, parce que deux contrôles bloquants sont en échec ; l'écran le dit au lieu de le masquer. L'historique remonte à mai 2026 : 100 avant l'intégration de l'agence Nord, 73 dès le 1er juin (premiers dossiers sans statut cohérent et libellés hors référentiel), 68 depuis le 17 juin (premiers doublons probables) ; le nombre de lignes en défaut monte de 2 à 83 au fil de l'été, parce que le référentiel n'est pas encore aligné (plan d'action à 40 %).
 
 ![Les douze contrôles](captures/guide/qualite-02-les-douze-controles.png)
 
 **Les douze contrôles.**
 - Ce que ça montre : pour chaque contrôle, la règle en une phrase, le nombre de lignes en défaut, la tendance sur la veille, le statut (OK, alerte, KO) et un échantillon des lignes concernées.
-- Comment le lire : les contrôles marqués « bloquant » comptent triple ; le 17 septembre, « statut incohérent avec les dates » (45 lignes) et « libellé produit hors référentiel » (83 lignes) sont KO, « doublon probable » (25 lignes) est en alerte. Ce sont les traces de l'agence intégrée en juin.
+- Comment le lire : les contrôles marqués « bloquant » comptent triple ; le 18 septembre, « statut incohérent avec les dates » (45 lignes) et « libellé produit hors référentiel » (83 lignes) sont KO, « doublon probable » (25 lignes) est en alerte. Ce sont les traces de l'agence intégrée en juin.
 - Ce qu'on en fait : traiter l'anomalie de données avant de lire un chiffre.
 
 ![Fraîcheur des sources](captures/guide/qualite-03-fraicheur-des-sources.png)
@@ -472,7 +472,7 @@ La question : que dit le marché réel des territoires couverts et alentour. Rie
 ![Indice de potentiel par département](captures/guide/territoires-01-indice-de-potentiel-par-departement.png)
 
 **Indice de potentiel par département.**
-- Ce que ça montre : la France des 96 départements colorée par un indice de 0 à 100 ; les onze départements du périmètre simulé sont détourés en ambre.
+- Ce que ça montre : la France des 96 départements colorée par un indice de 0 à 100 ; les onze départements du périmètre simulé sont détourés en menthe.
 - Comment le lire : plus le département est clair, plus le potentiel non servi est élevé ; le survol donne les chiffres bruts (propriétaires occupants, résidences au fioul et au gaz citerne, maisons F ou G, installations solaires, installateurs RGE). Un clic sélectionne le département.
 - Ce qu'on en fait : une lecture du marché, explicitement pas une recommandation d'implantation.
 
@@ -505,12 +505,12 @@ La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a ma
 
 **Les cinq cartes de workflows** (Journée simulée, Contrôles qualité, Revue hebdomadaire, Santé, Erreurs).
 - Ce que ça montre : pour chaque automatisation, son déclencheur (chaque jour à 06:00, à 06:20, le lundi à 07:00, toutes les six heures, sur erreur), ce qu'elle fait, sa dernière et sa prochaine exécution, son statut, et le bouton d'export de sa définition (un fichier sans aucun secret).
-- Comment le lire : « pas encore exécuté » et « Export JSON après publication » signifient que le workflow est construit mais pas encore publié dans l'outil d'automatisation (il attend un identifiant de connexion) ; en attendant, la journée simulée est publiée d'avance par script et les vues sont rafraîchies chaque matin par une tâche de secours dans la base.
+- Comment le lire : les cinq workflows sont publiés depuis le 19 septembre ; la dernière exécution, sa durée et son statut viennent du journal que chaque workflow écrit en base (« ok », « déjà publié », « alerte » quand un email est parti, « erreur ») ; « Export JSON » télécharge la définition du workflow, sans aucun secret. La journée simulée est aussi publiée d'avance par script : un matin sans automatisation n'empêche pas la veille d'apparaître.
 
 ![Journal des exécutions](captures/guide/automatisations-06-journal-des-executions.png)
 
 **Journal des exécutions.**
-- Ce que ça montre : les cinquante dernières exécutions, tous workflows confondus : début, statut, durée, lignes traitées, message. L'état vide explique pourquoi il est vide.
+- Ce que ça montre : les cinquante dernières exécutions, tous workflows confondus : début, statut, durée, lignes traitées, message ; d'abord les exécutions de mise en service du 19 septembre, puis chaque exécution planifiée.
 
 ![Le flux](captures/guide/automatisations-07-le-flux.png)
 
@@ -583,7 +583,7 @@ Une simulation n'est utile que si l'on peut y retrouver des situations connues. 
 | H2 Bordeaux Métropole | Leads achetés doublés à partir d'avril 2026 : volume en hausse, taux de RDV du canal en baisse, coût par vente du canal +48 % vs premier trimestre | Alerte de l'accueil, Funnel (qualité des leads par canal, leads par canal) |
 | H3 Saintonge | Taux de remise porté de 4 % à 9 % à partir d'avril 2026 : conversion gagnée, marge perdue | Ventes et marge (remises, tableau des agences) |
 | H4 Nord | Agence intégrée en juin 2026 : dossiers sans statut, doublons, libellés produits divergents, réconciliés semaine après semaine ; cas d'école simulé, sans lien avec une opération réelle | Qualité (contrôles 3, 5, 9 ; réconciliation des libellés), alerte de l'accueil |
-| H5 Départements à distance | Délai de pose et annulations plus élevés que sur place (74 jours contre 48, 14 % contre 8 %) | Pose (délai sur place contre à distance), Ventes (annulations) |
+| H5 Départements à distance | Délai de pose et annulations plus élevés que sur place (75 jours contre 48, 14 % contre 8 %) | Pose (délai sur place contre à distance), Ventes (annulations) |
 | H6 Saisonnalité | Photovoltaïque au printemps, chauffage à l'automne, août creux partout | Ventes (CA par produit), Funnel (leads par canal) |
 | H7 Bassin d'Arcachon | Capacité de pose réduite de 25 % de mai à août 2026 : carnet allongé, CA posé en retrait alors que le CA signé tient | Pose (calendrier, carnet), Plans d'action (renfort de pose) |
 
@@ -596,7 +596,7 @@ Vingt tests SQL vérifient chaque matin que ces histoires se retrouvent bien dan
 ### 7.1 Prise en main en dix minutes
 
 1. Ouvrir https://buta.lyfh.fr. Sur ordinateur, le rail à gauche liste les écrans ; sur téléphone, le bouton en haut à gauche ouvre le tiroir.
-2. Regarder le badge de fraîcheur en haut : « Journée du 17/09 intégrée à 11:25 » dit jusqu'où les données vont.
+2. Regarder le badge de fraîcheur en haut : « Journée du 18/09 intégrée à 13:01 » dit jusqu'où les données vont.
 3. Lire les quatre compteurs de l'accueil, puis l'atterrissage, puis les alertes du matin.
 4. Cliquer sur le « i » d'un compteur : la fiche dit ce que le chiffre veut dire et d'où il vient.
 5. Changer la période (mois, trimestre, année à date) et la comparaison (objectif, N-1) dans la barre haute : tous les écarts se recalculent.
@@ -635,7 +635,7 @@ Vingt tests SQL vérifient chaque matin que ces histoires se retrouvent bien dan
 
 ### 7.4 Ce qu'il faut savoir pour ne pas se tromper
 
-- **Le mois en cours est proratisé.** « -27,8 % vs objectif prorata » compare 17 jours de réalisé à 17/30 de l'objectif. Sans cela, tout mois en cours serait faussement en retard.
+- **Le mois en cours est proratisé.** « -28,6 % vs objectif prorata » compare 18 jours de réalisé à 18/30 de l'objectif. Sans cela, tout mois en cours serait faussement en retard.
 - **Une cohorte de moins de 90 jours n'a pas fini de convertir.** Ses taux sont provisoires et grisés ; les compteurs de conversion se lisent sur la dernière cohorte mûre, nommée sous le libellé.
 - **« n. d. » n'est jamais un zéro.** C'est une valeur qu'on ne peut pas calculer honnêtement (pas d'historique 2024, signatures de moins de 60 jours, aucune vente dans le dénominateur).
 - **Le résultat d'agence en cours de mois est souvent négatif** : les coûts d'acquisition sont engagés à la création du lead, la marge arrive à la signature. Sur un mois plein, le réseau est autour de l'équilibre avec des agences gagnantes et perdantes.
@@ -694,7 +694,7 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 
 Ce guide existe aussi sous forme de fiche mise en page, générée depuis ce fichier par `npm run fiche` : `docs/FICHE.html` (à ouvrir dans un navigateur, thème clair ou sombre) et `docs/FICHE.pdf` (A4 mis en pages pour l'impression : couverture, sommaire paginé, un chapitre par page, figures numérotées). Toute correction se fait ici, puis la fiche est regénérée.
 
-Toutes les captures de ce guide sont dans `docs/captures/guide/` : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et quatre vues téléphone. Celles de l'écran Analyste ont été prises le 19 septembre 2026 après sa mise en navigation, journée publiée du 18 septembre. Elles ont été prises sur le site en ligne le 18 septembre 2026 au soir, journée publiée du 17 septembre.
+Toutes les captures de ce guide sont dans `docs/captures/guide/` : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et quatre vues téléphone. Toutes ont été prises sur le site en ligne le 19 septembre 2026, journée publiée du 18 septembre, après le passage au logo et au thème menthe.
 
 ### 9.3 Pour aller plus loin
 

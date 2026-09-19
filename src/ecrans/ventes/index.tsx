@@ -286,7 +286,7 @@ export function EcranVentes() {
             lignes: boites.map((b) => ({ agence: b.nom, devis: b.devis, p10: b.boite[0], q1: b.boite[1], mediane: b.boite[2], q3: b.boite[3], p90: b.boite[4] })) }}
           enfantsSous={(
             <p className="text-[13px] leading-relaxed text-texte-2">
-              <span className="mr-[6px] inline-block h-[6px] w-[6px] rounded-full bg-ambre align-middle" aria-hidden="true" />
+              <span className="mr-[6px] inline-block h-[6px] w-[6px] rounded-full bg-accent align-middle" aria-hidden="true" />
               {remisesMois.donnees === undefined ? "Estimation de la pente en cours…" : phraseRemise(elasticite)}
             </p>
           )} />

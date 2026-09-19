@@ -43,7 +43,7 @@ export function TiroirMobile({ ouvert, onOuvertureChange }: TiroirMobileProps) {
                   className={({ isActive }) =>
                     cn(
                       "flex items-center gap-[var(--esp-3)] rounded-[10px] px-[var(--esp-3)] py-[10px] text-[14px] text-texte-2 transition-colors",
-                      isActive ? "bg-surface-2 text-ambre-texte" : "hover:bg-surface-2 hover:text-texte",
+                      isActive ? "bg-surface-2 text-accent-texte" : "hover:bg-surface-2 hover:text-texte",
                     )
                   }
                 >

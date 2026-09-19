@@ -29,7 +29,7 @@ function optionScore(points: readonly { jour: string; score: number }[], t: Toke
     xAxis: { ...base.xAxis, type: "category", data: points.map((p) => formatDateCourte(p.jour)) },
     yAxis: { ...base.yAxis, type: "value", min: 0, max: 100 },
     tooltip: { ...base.tooltip, trigger: "axis", valueFormatter: (v: unknown) => (typeof v === "number" ? `${formatNombre(v)} / 100` : "n. d.") },
-    series: [{ name: "Score", type: "line", data: points.map((p) => p.score), symbol: "circle", symbolSize: 6, lineStyle: { color: t.ambre, width: 1.5 }, itemStyle: { color: t.ambre }, areaStyle: { color: t.ambre, opacity: 0.08 },
+    series: [{ name: "Score", type: "line", data: points.map((p) => p.score), symbol: "circle", symbolSize: 6, lineStyle: { color: t.accent, width: 1.5 }, itemStyle: { color: t.accent }, areaStyle: { color: t.accent, opacity: 0.08 },
       markLine: { silent: true, symbol: "none", lineStyle: { color: t.texte3, type: "dashed" }, label: { color: t.texte3, fontSize: 11, formatter: "seuil 80" }, data: [{ yAxis: 80 }] } }],
   };
 }

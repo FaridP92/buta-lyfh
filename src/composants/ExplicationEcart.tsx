@@ -58,7 +58,7 @@ export function ExplicationEcart({ perimetre, mois, indicateur, repli, libelleBo
         <button type="button" onClick={() => void basculer()} aria-expanded={ouvert}
           className="inline-flex h-8 shrink-0 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">
           {ouvert ? "Masquer" : libelleBouton}
-          {chargement && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ambre" aria-hidden="true" />}
+          {chargement && <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent" aria-hidden="true" />}
         </button>
       </div>
       {ouvert && (modele || repli) && (
@@ -69,9 +69,9 @@ export function ExplicationEcart({ perimetre, mois, indicateur, repli, libelleBo
             <ol className="flex flex-col gap-1 text-texte-2">
               {modele
                 ? modele.explication?.causes.map((c, i) => (
-                  <li key={i} className="flex gap-[var(--esp-2)]"><span className="chiffre text-[11px] text-ambre-texte">{i + 1}</span><span>{c.texte}{c.fait ? <span className="text-texte-3"> · {c.fait}{c.source ? ` (${c.source})` : ""}</span> : null}</span></li>
+                  <li key={i} className="flex gap-[var(--esp-2)]"><span className="chiffre text-[11px] text-accent-texte">{i + 1}</span><span>{c.texte}{c.fait ? <span className="text-texte-3"> · {c.fait}{c.source ? ` (${c.source})` : ""}</span> : null}</span></li>
                 ))
-                : repli?.causes.map((c, i) => <li key={i} className="flex gap-[var(--esp-2)]"><span className="chiffre text-[11px] text-ambre-texte">{i + 1}</span><span>{c}</span></li>)}
+                : repli?.causes.map((c, i) => <li key={i} className="flex gap-[var(--esp-2)]"><span className="chiffre text-[11px] text-accent-texte">{i + 1}</span><span>{c}</span></li>)}
             </ol>
           </dd>
           <dt className={CLASSE_TERME}>Action</dt><dd className="text-texte-2">{modele ? modele.explication?.action : repli?.action}</dd>

@@ -124,7 +124,7 @@ export function EcranMethode() {
                       href={source.lien}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1 underline decoration-texte-3/40 underline-offset-2 hover:text-ambre-texte"
+                      className="inline-flex items-center gap-1 underline decoration-texte-3/40 underline-offset-2 hover:text-accent-texte"
                     >
                       {source.nom}
                       <ExternalLink size={11} strokeWidth={1.5} aria-hidden="true" />
@@ -162,7 +162,7 @@ export function EcranMethode() {
               key={histoire.code}
               className="rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-3)]"
             >
-              <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-ambre-texte">
+              <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-accent-texte">
                 {histoire.code} · {histoire.titre}
               </p>
               <p className="text-[13px] leading-relaxed text-texte-2">{histoire.texte}</p>

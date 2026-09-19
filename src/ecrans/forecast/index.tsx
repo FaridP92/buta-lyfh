@@ -161,7 +161,7 @@ export function EcranForecast() {
                   <span className="chiffre text-texte">{formatTaux(tauxCurseur)}{tauxObserve !== null && <span className="ml-1 text-[11px] text-texte-3">observé {formatTaux(tauxObserve)}</span>}</span>
                 </label>
                 <input id={idCurseur} type="range" min={0} max={curseurMax} step={0.5} value={tauxCurseur} onChange={(e) => setCurseur(Number(e.target.value))}
-                  className="h-1 w-full cursor-pointer accent-ambre" aria-valuetext={`${formatTaux(tauxCurseur)} de signature du pipe`} />
+                  className="h-1 w-full cursor-pointer accent-accent" aria-valuetext={`${formatTaux(tauxCurseur)} de signature du pipe`} />
                 <div className="flex items-center justify-between gap-[var(--esp-2)] text-[11px] text-texte-3">
                   <span>Pondéré par tranche d'âge, annulation comprise ; le curseur remplace ce taux pour tester une hypothèse.</span>
                   {curseurActif && <button type="button" onClick={() => setCurseur(null)} className="shrink-0 rounded-[8px] border border-bordure px-2 py-1 text-texte-2 hover:text-texte">Observé</button>}

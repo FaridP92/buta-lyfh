@@ -54,6 +54,7 @@ Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond
 - US-053 Fiche de présentation illustrée pour un lecteur étranger au projet : `npm run fiche` génère `docs/FICHE.html` et `docs/FICHE.pdf` depuis `docs/GUIDE_ILLUSTRE.md` seul (couverture, repères, sommaire, chaque visuel avec sa capture et sa lecture, notice) ; la page est aussi publiée comme lien partageable. Fait le 19 septembre.
 - US-054 Signaux animés des cartes KPI (demande de Frédéric du 19 septembre) : carte qui s'enflamme à -20 % ou -5 points (éclats et secousse du premier essai remplacés le jour même), gerbe à +10 % ou +3 points, règle testée dans `src/lib/signaux.ts`, canvas `SignalCarte`, une fois par période, rien en mouvement réduit. Fait le 19 septembre.
 - US-055 Logo fourni par Frédéric (19 septembre) : monogramme détouré dans le rail et les favicons, couverture et en-tête de la fiche de présentation, thème du document aux couleurs du logo (bleu et menthe). Fait le 19 septembre.
+- US-056 Thème de l'application aligné sur le logo (décision de Frédéric du 19 septembre, 14 h 30) : mot-marque « BUTA.LYFH » en Montserrat 800 avec le monogramme, accent menthe (token `--accent`) à la place de l'ambre pour l'identité et l'interaction, ambre conservé pour « simulé », « attention » et les paliers de charge ; palette des séries réordonnée ; captures du guide et chiffres du texte refaits sur la journée publiée du 18/09. Fait le 19 septembre.
 
 ## Palier C (après l'entretien)
 - US-060 Mode présentation (touche P, plein écran, enchaînement des écrans toutes les 20 s).

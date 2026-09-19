@@ -44,8 +44,8 @@ export function SchemaFlux() {
         const y = Y_BOITE + HAUTEUR_BOITE / 2;
         return (
           <g key={b.titre}>
-            <path d={`M ${x1} ${y} L ${x2 - 6} ${y}`} fill="none" className="stroke-ambre" strokeWidth={1.5} strokeDasharray={40} strokeDashoffset={40} style={{ animation: "buta-trace 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards", animationDelay: `${300 + i * 350}ms` }} />
-            <path d={`M ${x2 - 6} ${y - 4} L ${x2} ${y} L ${x2 - 6} ${y + 4}`} fill="none" className="stroke-ambre" strokeWidth={1.5} style={{ opacity: 0, animation: "buta-coche 200ms forwards", animationDelay: `${850 + i * 350}ms` }} />
+            <path d={`M ${x1} ${y} L ${x2 - 6} ${y}`} fill="none" className="stroke-accent" strokeWidth={1.5} strokeDasharray={40} strokeDashoffset={40} style={{ animation: "buta-trace 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards", animationDelay: `${300 + i * 350}ms` }} />
+            <path d={`M ${x2 - 6} ${y - 4} L ${x2} ${y} L ${x2 - 6} ${y + 4}`} fill="none" className="stroke-accent" strokeWidth={1.5} style={{ opacity: 0, animation: "buta-coche 200ms forwards", animationDelay: `${850 + i * 350}ms` }} />
           </g>
         );
       })}

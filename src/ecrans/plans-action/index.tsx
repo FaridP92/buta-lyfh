@@ -49,7 +49,7 @@ export function EcranPlansAction() {
     { cle: "echeance", libelle: "Échéance", largeur: "88px", rendu: (l) => <span className="chiffre text-[13px]">{formatDateCourte(l.echeance)}</span> },
     { cle: "avancement", libelle: "Avancement déclaré", numerique: true, largeur: "136px", rendu: (l) => (
       <span className="inline-flex items-center gap-[6px]">
-        <span className="h-[4px] w-[56px] overflow-hidden rounded-full bg-surface-2" aria-hidden="true"><span className="block h-full rounded-full bg-ambre" style={{ width: `${Math.max(0, Math.min(100, l.avancement))}%` }} /></span>
+        <span className="h-[4px] w-[56px] overflow-hidden rounded-full bg-surface-2" aria-hidden="true"><span className="block h-full rounded-full bg-accent" style={{ width: `${Math.max(0, Math.min(100, l.avancement))}%` }} /></span>
         <span className="chiffre text-[12px]">{formatTaux(l.avancement, 0)}</span>
       </span>
     ) },
@@ -100,7 +100,7 @@ export function EcranPlansAction() {
                 <h3 className="mb-[var(--esp-2)] text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">Décisions proposées</h3>
                 <ol className="flex flex-col gap-[8px] text-[13px] leading-[1.45] text-texte-2">
                   {blocs.decisions.map((d, i) => (
-                    <li key={d.texte} className="flex gap-[8px]"><span className="chiffre text-ambre">{i + 1}</span><span>{d.texte}{d.indicateur ? <> <PuceIndicateur code={d.indicateur} /></> : null}</span></li>
+                    <li key={d.texte} className="flex gap-[8px]"><span className="chiffre text-accent">{i + 1}</span><span>{d.texte}{d.indicateur ? <> <PuceIndicateur code={d.indicateur} /></> : null}</span></li>
                   ))}
                 </ol>
               </section>

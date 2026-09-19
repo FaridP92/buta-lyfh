@@ -40,7 +40,7 @@ export function Lignage() {
       })}
       {COLONNES.map((c, i) => c.noeuds.map((n, j) => (
         <g key={`${i}-${j}`} style={{ animation: "buta-coche 300ms ease-out both", animationDelay: `${i * 350}ms` }}>
-          <rect x={X[i]} y={Y0 + j * PAS - 12} width={150} height={24} rx={7} className={i === 2 ? "fill-ambre/15 stroke-ambre/60" : "fill-surface-2 stroke-bordure"} strokeWidth={1} />
+          <rect x={X[i]} y={Y0 + j * PAS - 12} width={150} height={24} rx={7} className={i === 2 ? "fill-accent/15 stroke-accent/60" : "fill-surface-2 stroke-bordure"} strokeWidth={1} />
           <text x={(X[i] ?? 0) + 8} y={Y0 + j * PAS + 4} className="fill-texte" style={{ fontSize: 11 }}>{n}</text>
         </g>
       )))}

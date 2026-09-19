@@ -37,14 +37,14 @@ export function Rail() {
                   to={route.chemin}
                   className={cn(
                     "relative flex h-10 w-10 items-center justify-center rounded-[10px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte",
-                    estActif && "text-ambre-texte",
+                    estActif && "text-accent-texte",
                   )}
                 >
                   <route.icone size={20} strokeWidth={1.5} aria-hidden="true" />
                   <span
                     aria-hidden="true"
                     className={cn(
-                      "absolute -left-[9px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-ambre transition-opacity",
+                      "absolute -left-[9px] top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-accent transition-opacity",
                       estActif ? "opacity-100" : "opacity-0",
                     )}
                   />

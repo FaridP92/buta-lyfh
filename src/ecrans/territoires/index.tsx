@@ -123,7 +123,7 @@ export function EcranTerritoires() {
                   <div className="flex flex-wrap items-center gap-[var(--esp-3)]">
                     <button type="button" onClick={() => setZoom(null)} className="inline-flex h-8 items-center rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 hover:bg-surface-2 hover:text-texte">Retour à la France</button>
                     <label className="flex items-center gap-2 text-[12px] text-texte-2">
-                      <input type="checkbox" checked={afficherRge} onChange={(e) => setAfficherRge(e.target.checked)} className="accent-ambre" />
+                      <input type="checkbox" checked={afficherRge} onChange={(e) => setAfficherRge(e.target.checked)} className="accent-accent" />
                       Installateurs RGE PAC ou PV (points par commune, sans nom)
                     </label>
                   </div>
@@ -137,7 +137,7 @@ export function EcranTerritoires() {
               )} />
           ) : <Carte className="lg:col-span-8" titre={`Communes : ${nomZoom}`}>{carteCommunes.erreur ? <p className="text-[13px] text-texte-2">Contours indisponibles : {carteCommunes.erreur}</p> : <Squelette hauteur={520} />}</Carte>
         ) : optionCarte ? (
-          <CarteGraphique className="lg:col-span-8" titre="Indice de potentiel par département" sousTitre={`Rangs centiles sur 96 départements ; les onze du périmètre simulé sont détourés en ambre${personnalise ? " ; poids personnalisés" : ""}. Clic : sélectionner un département.`} option={optionCarte} hauteur={520} hauteurMobile={380}
+          <CarteGraphique className="lg:col-span-8" titre="Indice de potentiel par département" sousTitre={`Rangs centiles sur 96 départements ; les onze du périmètre simulé sont détourés en menthe${personnalise ? " ; poids personnalisés" : ""}. Clic : sélectionner un département.`} option={optionCarte} hauteur={520} hauteurMobile={380}
             description="Carte de France par département colorée par l'indice de potentiel, périmètre simulé détouré" codeIndicateur="INDICE"
             requete="select * from buta.mart_marche_departement order by indice desc"
             onEvenements={{ click: (p: unknown) => { const { name } = p as { name?: string }; if (name && lignes.some((l) => l.departement === name)) setSelection(name); } }}
@@ -162,8 +162,8 @@ export function EcranTerritoires() {
                         <label htmlFor={id} className="text-texte-2">{LIBELLES_COMPOSANTES[cle]}</label>
                         <span className="chiffre text-texte">{Number.isNaN(valeur) ? "n. d." : formatNombre(Math.round(valeur))}<span className="ml-1 text-texte-3">· {penalite ? "pénalité" : "poids"} {formatNombre(Math.round(poids[cle] * 100))} %</span></span>
                       </div>
-                      <div className="h-[6px] w-full overflow-hidden rounded-full bg-surface-2"><div className={penalite ? "h-full rounded-full bg-texte-3" : "h-full rounded-full bg-ambre"} style={{ width: `${Number.isNaN(valeur) ? 0 : Math.max(0, Math.min(100, valeur))}%`, transition: "width 500ms cubic-bezier(0.22, 1, 0.36, 1)" }} /></div>
-                      <input id={id} type="range" min={0} max={BORNES[cle].max} step={BORNES[cle].pas} value={poids[cle]} onChange={(e) => setPoids((p) => ({ ...p, [cle]: Number(e.target.value) }))} className="h-1 w-full cursor-pointer accent-ambre" aria-valuetext={`poids ${formatNombre(Math.round(poids[cle] * 100))} %`} />
+                      <div className="h-[6px] w-full overflow-hidden rounded-full bg-surface-2"><div className={penalite ? "h-full rounded-full bg-texte-3" : "h-full rounded-full bg-accent"} style={{ width: `${Number.isNaN(valeur) ? 0 : Math.max(0, Math.min(100, valeur))}%`, transition: "width 500ms cubic-bezier(0.22, 1, 0.36, 1)" }} /></div>
+                      <input id={id} type="range" min={0} max={BORNES[cle].max} step={BORNES[cle].pas} value={poids[cle]} onChange={(e) => setPoids((p) => ({ ...p, [cle]: Number(e.target.value) }))} className="h-1 w-full cursor-pointer accent-accent" aria-valuetext={`poids ${formatNombre(Math.round(poids[cle] * 100))} %`} />
                     </li>
                   );
                 })}

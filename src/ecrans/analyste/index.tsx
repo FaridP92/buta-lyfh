@@ -162,7 +162,7 @@ export function EcranAnalyste() {
           <div className="flex flex-col gap-[var(--esp-2)] sm:flex-row">
             <textarea id="question-analyste" ref={champRef} value={question} onChange={(e) => setQuestion(e.target.value.slice(0, 500))} rows={2} disabled={enCours}
               placeholder="Quel canal a le coût par vente le plus élevé sur les cohortes de mars à mai 2026 ?"
-              className="min-h-[56px] flex-1 resize-none rounded-[10px] max-sm:min-h-[84px] border border-bordure bg-surface-2 px-[var(--esp-3)] py-[10px] text-[15px] text-texte placeholder:text-texte-3 focus:border-ambre" />
+              className="min-h-[56px] flex-1 resize-none rounded-[10px] max-sm:min-h-[84px] border border-bordure bg-surface-2 px-[var(--esp-3)] py-[10px] text-[15px] text-texte placeholder:text-texte-3 focus:border-accent" />
             <button type="submit" disabled={enCours || question.trim().length < 3}
               className="bouton-primaire inline-flex h-9 min-w-[168px] items-center justify-center rounded-[10px] px-[var(--esp-4)] text-[14px] font-semibold transition-opacity max-md:h-10">
               {enCours ? "Réponse en cours…" : "Demander"}
