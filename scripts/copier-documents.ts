@@ -1,6 +1,6 @@
 /**
  * Copie dans dist/ les documents générés du dossier docs/ qui sont servis à une adresse stable
- * (fiche de présentation : /fiche.pdf). Appelé par `npm run build`, après le bundle : un document
+ * (fiche de présentation : /fiche.pdf, synthèse d'une page : /synthese.pdf). Appelé par `npm run build`, après le bundle : un document
  * absent est signalé sans faire échouer la construction.
  */
 import { copyFileSync, existsSync, mkdirSync, statSync } from "node:fs";
@@ -8,6 +8,7 @@ import { join } from "node:path";
 
 const DOCUMENTS: ReadonlyArray<{ source: string; cible: string }> = [
   { source: join("docs", "FICHE.pdf"), cible: "fiche.pdf" },
+  { source: join("docs", "SYNTHESE.pdf"), cible: "synthese.pdf" },
 ];
 
 const DIST = join(process.cwd(), "dist");

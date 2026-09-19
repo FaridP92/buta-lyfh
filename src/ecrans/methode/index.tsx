@@ -251,6 +251,7 @@ export function EcranMethode() {
           La fiche de présentation illustrée reprend le guide du dépôt : contexte, vocabulaire, données,
           lecture de chaque écran avec ses captures, notice d'utilisation. Mise en pages A4, environ
           quatre-vingts pages.
+          La synthèse tient sur une page : les cinq attentes de l'annonce face aux écrans qui y répondent.
         </p>
         <div className="flex flex-wrap gap-[var(--esp-2)]">
           <a
@@ -260,6 +261,14 @@ export function EcranMethode() {
             className="flex items-center gap-1 rounded-[10px] border border-bordure px-[var(--esp-3)] py-[8px] text-[13px] text-texte hover:bg-surface-2"
           >
             Fiche de présentation (PDF) <Download size={12} strokeWidth={1.5} aria-hidden="true" />
+          </a>
+          <a
+            href="/synthese.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1 rounded-[10px] border border-bordure px-[var(--esp-3)] py-[8px] text-[13px] text-texte hover:bg-surface-2"
+          >
+            Synthèse d'une page (PDF) <Download size={12} strokeWidth={1.5} aria-hidden="true" />
           </a>
         </div>
       </section>
