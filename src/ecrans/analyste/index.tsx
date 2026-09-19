@@ -8,7 +8,7 @@ import { Tableau, type Colonne } from "@/composants/Tableau";
 import { Badge } from "@/composants/Badge";
 import { Pastille } from "@/composants/Pastille";
 import { LigneSources } from "@/composants/LigneSources";
-import { formatDateCourte, formatMontant, formatNombre } from "@/lib/format";
+import { formatDateCourte, formatMontant, formatMontantUnite, formatNombre } from "@/lib/format";
 
 /** Six suggestions (IA.md §5, jeu d'évaluation) : les histoires du jeu et le marché réel. */
 const SUGGESTIONS = [
@@ -118,7 +118,7 @@ export function EcranAnalyste() {
           <p className="mt-1 text-[13px] text-texte-2">Le modèle écrit la requête SQL sur les vues autorisées, la base répond, le modèle rédige sans jamais calculer · <Badge variante="simule">simulé</Badge></p>
         </div>
         <p className="text-[12px] text-texte-3">
-          Coût du jour : {formatMontant(coutDuJour).replace(/^0 €$/, "0 €")}{budget ? ` sur ${formatMontant(budget)}` : ""} · {formatNombre(appelsDuJour)} appel{appelsDuJour > 1 ? "s" : ""}
+          Coût du jour : {formatMontantUnite(coutDuJour, "eur", 2)}{budget ? ` sur ${formatMontant(budget)}` : ""} · {formatNombre(appelsDuJour)} appel{appelsDuJour > 1 ? "s" : ""}
         </p>
       </header>
 
@@ -151,7 +151,7 @@ export function EcranAnalyste() {
                 <p className="text-[15px] leading-relaxed text-texte">{r.reponse}</p>
                 {(r.sources ?? []).length > 0 && <p className="mt-[var(--esp-2)] text-[12px] text-texte-3">Sources : {(r.sources ?? []).join(" · ")}</p>}
                 <p className="mt-[var(--esp-2)] text-[12px] text-texte-3">
-                  {r.modele ?? "modèle"} · {formatNombre(r.duree_ms ?? 0)} ms · coût {r.cout_eur && r.cout_eur >= 0.005 ? formatMontant(r.cout_eur) : `${new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 4 }).format(r.cout_eur ?? 0)} €`}
+                  {r.modele ?? "modèle"} · {formatNombre(r.duree_ms ?? 0)} ms · coût {formatMontantUnite(r.cout_eur ?? 0, "eur", (r.cout_eur ?? 0) >= 1 ? 2 : 3)}
                 </p>
               </Carte>
               <Carte titre="Les chiffres" sousTitre={`${formatNombre(lignes.length)} ligne${lignes.length > 1 ? "s" : ""} renvoyée${lignes.length > 1 ? "s" : ""} par la base (200 au plus), lecture seule sous le rôle analyste_ro`} nu>

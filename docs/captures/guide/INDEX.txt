@@ -70,3 +70,12 @@ commun-theme-clair.png : accueil en thème clair
 mobile-accueil.png : accueil sur téléphone, premier écran
 mobile-ventes.png : ventes sur téléphone, premier écran
 mobile-tiroir.png : tiroir de navigation sur téléphone
+analyste-00-avant-question.png : l'écran avant toute question (formulaire, suggestions, garde-fous)
+analyste.png : page entière après une réponse
+analyste-01-la-reponse.png : La réponse
+analyste-02-les-chiffres.png : Les chiffres
+analyste-03-historique-de-la-session.png : Historique de la session
+analyste-04-garde-fous.png : Garde-fous
+analyste-05-la-requete-sql-executee.png : la requête SQL exécutée, dépliée
+analyste-06-question-refusee.png : une question refusée (conseil)
+mobile-analyste.png : l'écran Analyste sur téléphone

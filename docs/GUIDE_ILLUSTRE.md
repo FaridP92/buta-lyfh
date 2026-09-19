@@ -122,7 +122,7 @@ Ces réglages vivent dans l'adresse de la page : un lien copié montre exactemen
 
 ### 4.2 Le rail et le tiroir
 
-Le rail à gauche liste les dix écrans (le libellé apparaît au survol) : Vue d'ensemble, Territoires, Funnel et leads, Ventes et marge, Forecast et atterrissage, Pose et encaissement, Plans d'action et rituels, Qualité et référentiels, Automatisations, Méthode. Le monogramme en haut ramène à l'accueil. Sur téléphone, le rail devient un tiroir ouvert par le bouton en haut à gauche.
+Le rail à gauche liste les onze écrans (le libellé apparaît au survol) : Vue d'ensemble, Territoires, Funnel et leads, Ventes et marge, Forecast et atterrissage, Pose et encaissement, Plans d'action et rituels, Qualité et référentiels, Automatisations, Analyste, Méthode. Le monogramme en haut ramène à l'accueil. Sur téléphone, le rail devient un tiroir ouvert par le bouton en haut à gauche.
 
 ![Tiroir de navigation sur téléphone](captures/guide/mobile-tiroir.png)
 
@@ -515,7 +515,53 @@ La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a ma
 **Le flux.**
 - Ce que ça montre : de l'outil d'automatisation aux écrans : les workflows appellent des fonctions SQL avec une clé serveur, les vues recalculent, l'application lit ; les alertes partent par email ; aucun secret ne circule dans le navigateur.
 
-### 5.10 Méthode et auteur
+### 5.10 Analyste : « Posez la question au cockpit »
+
+![Analyste, page entière](captures/guide/analyste.png)
+
+La question : que répond le cockpit quand on lui pose une question en français, et peut-on lui faire confiance. L'écran est entré dans la navigation le 19 septembre 2026, après un jeu d'évaluation de vingt-quatre questions réussi à 100 % (le seuil de mise en ligne était de 90 %).
+
+![L'écran avant toute question](captures/guide/analyste-00-avant-question.png)
+
+**Le formulaire et les suggestions.**
+- Ce que ça montre : un champ de question libre (500 caractères au plus), le bouton « Demander », six suggestions qui correspondent aux histoires plantées dans la simulation et au marché réel. En haut à droite, le coût du jour et le nombre d'appels, avec le budget quotidien dès qu'une réponse l'a transmis.
+- Comment le lire : une question porte sur les indicateurs, les agences, les canaux, les produits, les périodes, les délais, la qualité ou le marché des territoires. Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (cinq secondes, deux cents lignes), puis le modèle rédige à partir des lignes renvoyées, sans jamais calculer.
+
+![La réponse](captures/guide/analyste-01-la-reponse.png)
+
+**La réponse.**
+- Ce que ça montre : trois à six phrases en français, la période et le périmètre rappelés, les codes traduits en bassins, puis les sources (vues utilisées, période, « données d'activité simulées » ou « marché réel »), le modèle, la durée et le coût de la question.
+- Comment le lire : la pastille verte « chaque nombre vérifié dans les lignes » dit que tous les nombres de la prose ont été retrouvés dans les lignes renvoyées par la base. Si un nombre ne s'y trouve pas, la rédaction est rejetée, la pastille passe en orange et une phrase explique que les lignes ci-dessous restent la réponse.
+
+![Les chiffres](captures/guide/analyste-02-les-chiffres.png)
+
+**Les chiffres.**
+- Ce que ça montre : les lignes exactes renvoyées par la base, avec les noms de colonnes choisis par le modèle, triables et exportables comme tout tableau du site.
+- Comment le lire : c'est la matière première de la réponse ; en cas de doute sur une phrase, la ligne fait foi.
+
+![La requête SQL exécutée](captures/guide/analyste-05-la-requete-sql-executee.png)
+
+**La requête SQL exécutée.**
+- Ce que ça montre : la requête telle qu'elle a été validée et exécutée, dépliable et copiable.
+- Comment le lire : un lecteur qui connaît SQL vérifie en quelques secondes le périmètre (agence, mois, canal), les filtres et le calcul ; c'est la transparence qui rend la réponse discutable en réunion.
+
+![Une question refusée](captures/guide/analyste-06-question-refusee.png)
+
+**Une question refusée.**
+- Ce que ça montre : le motif du refus, en clair. Quatre motifs existent : conseil (« faut-il ouvrir une agence à Niort ? » : le démonstrateur lit le marché, il ne recommande pas), hors périmètre (la météo), données non couvertes (chiffres réels d'une entreprise, résultats par personne, MaPrimeRénov' par commune), écriture (toute demande de modification ou de suppression).
+- Comment le lire : un refus n'est pas une panne. Le refus a coûté un seul appel court au modèle.
+
+![Historique de la session](captures/guide/analyste-03-historique-de-la-session.png)
+
+**Historique de la session.**
+- Ce que ça montre : les dix dernières questions posées dans ce navigateur, avec leur statut (répondu, refusé) ; un clic rouvre la réponse. Rien n'est conservé ailleurs que dans le navigateur.
+
+![Garde-fous](captures/guide/analyste-04-garde-fous.png)
+
+**Garde-fous.**
+- Ce que ça montre : ce que l'analyste ne peut pas faire, par construction : lecture seule sur les vues, une seule requête SELECT validée avant exécution (mots interdits, vues hors liste, schémas système refusés), contrôle des nombres, refus explicites, quotas (cinq questions par minute et vingt par jour par adresse hachée, quatre cents par jour au total) et budget quotidien en euros.
+
+### 5.11 Méthode et auteur
 
 ![Méthode, page entière](captures/guide/methode.png)
 
@@ -560,7 +606,7 @@ Vingt tests SQL vérifient chaque matin que ces histoires se retrouvent bien dan
 
 ### 7.2 Les parcours types
 
-**Le matin, cinq minutes.** Badge de fraîcheur ; accueil (compteurs, atterrissage, alertes) ; Qualité (score et contrôles en échec) ; « Ce que dit le mois » pour le point quotidien.
+**Le matin, cinq minutes.** Badge de fraîcheur ; accueil (compteurs, atterrissage, alertes) ; Qualité (score et contrôles en échec) ; « Ce que dit le mois » pour le point quotidien. Une question à l'Analyste quand un chiffre surprend (« quelles agences sont sous leur objectif en septembre ? »).
 
 **Chaque semaine.** Plans d'action : la revue hebdomadaire du lundi (faits, lecture, décisions). Funnel : où se perd la conversion, les leads sans rendez-vous à 48 h, le canal « à revoir ». Forecast : le pipe pondéré, les devis qui vieillissent, les risques.
 
@@ -581,6 +627,7 @@ Vingt tests SQL vérifient chaque matin que ces histoires se retrouvent bien dan
 | Sélecteur de canal | Funnel | filtre le diagramme de flux |
 | Sélecteur de semaine | Plans d'action | ouvre une revue précédente |
 | Bouton « Expliquer » | Ventes, accueil | explication rédigée sur les mêmes faits (par règles si le modèle n'est pas branché) |
+| Question en français | Analyste | requête SQL écrite par le modèle, lignes exactes, réponse dont chaque nombre est vérifié |
 | Bouton rond en haut à droite | partout | thème sombre ou clair |
 | Adresse de la page | partout | contient période, comparaison et agence ; se partage telle quelle |
 
@@ -598,6 +645,8 @@ Vingt tests SQL vérifient chaque matin que ces histoires se retrouvent bien dan
 
 ![Accueil sur téléphone](captures/guide/mobile-accueil.png)
 
+![Analyste sur téléphone](captures/guide/mobile-analyste.png)
+
 Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent leurs colonnes essentielles et se font défiler horizontalement, les graphiques prennent une hauteur adaptée, le diagramme de flux se lit de haut en bas. Une ligne sous le titre rappelle l'objet du site.
 
 ---
@@ -613,6 +662,8 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 **Et avec des données réelles ?** Le modèle (un dossier avec ses dates, son agence, son canal, son produit, ses montants) est celui d'un CRM d'installateur. L'ingestion remplacerait le générateur ; les vues, les contrôles, les référentiels et les écrans resteraient.
 
 **Que fait le modèle de langage ?** Il rédige à partir de faits calculés en SQL et ne calcule jamais ; un contrôle refuse toute phrase contenant un nombre absent des faits. Sans clé configurée, tout est rédigé par règles et l'écran le dit.
+
+**L'analyste peut-il se tromper ?** Il peut mal choisir une vue ou un filtre, comme un analyste humain pressé : c'est pourquoi la requête et les lignes sont toujours affichées avec la réponse. Ce qu'il ne peut pas faire, c'est inventer un chiffre : tout nombre de sa phrase absent des lignes fait rejeter la phrase. Le jeu d'évaluation de vingt-quatre questions (dont quatre refus attendus) est rejoué avant chaque mise en ligne de l'écran.
 
 **Et Power BI ?** L'export de la page Méthode fournit les tables en CSV, un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux), quarante mesures DAX et un mode d'emploi.
 
@@ -639,7 +690,7 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 
 ### 9.2 Les captures
 
-Toutes les captures de ce guide sont dans `docs/captures/guide/` : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et trois vues téléphone. Elles ont été prises sur le site en ligne le 18 septembre 2026 au soir, journée publiée du 17 septembre.
+Toutes les captures de ce guide sont dans `docs/captures/guide/` : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et quatre vues téléphone. Celles de l'écran Analyste ont été prises le 19 septembre 2026 après sa mise en navigation, journée publiée du 18 septembre. Elles ont été prises sur le site en ligne le 18 septembre 2026 au soir, journée publiée du 17 septembre.
 
 ### 9.3 Pour aller plus loin
 

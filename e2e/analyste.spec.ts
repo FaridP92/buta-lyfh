@@ -25,6 +25,9 @@ test("l'écran Analyste est en navigation et répond à une question", async ({ 
 
 test("le rail et le tiroir mènent à l'écran Analyste", async ({ page }) => {
   await page.goto("/");
+  // Sur téléphone, le rail est remplacé par un tiroir qu'il faut ouvrir d'abord.
+  const tiroir = page.getByRole("button", { name: "Ouvrir la navigation" });
+  if (await tiroir.isVisible()) await tiroir.click();
   await page.getByRole("link", { name: /Analyste/ }).first().click();
   await expect(page).toHaveURL(/\/analyste$/);
   await expect(page.getByRole("main")).toContainText("Garde-fous");

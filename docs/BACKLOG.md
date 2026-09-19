@@ -42,7 +42,7 @@ Critères : sources et licences affichées ; H4 visible ; GeoJSON communes simpl
 Critères : WF1, WF2, WF5 ont une ligne de journal réussie ; palier A irréprochable en ligne dimanche soir.
 
 ## Lot 4b · Palier B (lundi, seulement si le palier A est irréprochable)
-- US-042 Edge Functions `analyste` et `expliquer-ecart`, secrets, quotas, journal, jeu d'évaluation à 90 %.
+- US-042 Edge Functions `analyste` et `expliquer-ecart`, secrets, quotas, journal, jeu d'évaluation à 90 %. Fait le 19 septembre : clé posée le 18 au soir, évaluation 21/24 puis 23/24 puis 24/24 (migration 0031 : catalogue commenté colonne par colonne et surcharge `round` ; socle IA : cache du prompt, budgets de sortie, rejeu sans réflexion) ; écran Analyste en navigation, parcours Playwright `e2e/analyste.spec.ts`.
 - US-043 WF3 et WF4 ; écrans Automatisations (§9), Analyste (§10), bouton Expliquer sur Ventes et Vue d'ensemble. Décision du 18 septembre : WF4 (marché mensuel) n'est pas construit avant l'entretien, le rejeu mensuel des sources de marché reste un script (`npm run ingerer:marche`) ; l'écran Automatisations ne le montre pas.
 - US-044 Pose et encaissement (§6), Plans d'action et rituels (§7) avec la revue générée ; `mesures.dax` et `LISEZMOI.md` dans l'export Power BI (skill powerbi-dax-expert).
 Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond aux 24 questions selon l'attendu ; budget visible. Tout écran non fini est retiré de la navigation.
