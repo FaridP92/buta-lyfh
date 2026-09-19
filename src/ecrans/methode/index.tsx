@@ -245,6 +245,25 @@ export function EcranMethode() {
         </div>
       </section>
 
+      <section className="flex flex-col gap-[var(--esp-3)]">
+        <h2 className={TITRE_SECTION}>Documents</h2>
+        <p className={PARAGRAPHE}>
+          La fiche de présentation illustrée reprend le guide du dépôt : contexte, vocabulaire, données,
+          lecture de chaque écran avec ses captures, notice d'utilisation. Mise en pages A4, environ
+          quatre-vingts pages.
+        </p>
+        <div className="flex flex-wrap gap-[var(--esp-2)]">
+          <a
+            href="/fiche.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1 rounded-[10px] border border-bordure px-[var(--esp-3)] py-[8px] text-[13px] text-texte hover:bg-surface-2"
+          >
+            Fiche de présentation (PDF) <Download size={12} strokeWidth={1.5} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+
       <section className="flex flex-col gap-[var(--esp-3)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)]">
         <h2 className={TITRE_SECTION}>L'auteur</h2>
         <p className={PARAGRAPHE}>
