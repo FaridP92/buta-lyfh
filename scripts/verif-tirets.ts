@@ -14,7 +14,7 @@ const DOSSIERS = ["src", "docs", "supabase", "n8n", "scripts"];
 // Un chiffre ou une accolade fermante de gabarit (`${valeur} %`) suivi d'une espace ordinaire puis de % ;
 // les opérateurs modulo (`i % 2`) ne sont pas concernés.
 const ESPACE_ORDINAIRE_AVANT_POURCENT = /(\d|\})[\x20 ]%/;
-const EXTENSIONS_IGNOREES = new Set([".png", ".jpg", ".jpeg", ".svg", ".woff", ".woff2", ".ico"]);
+const EXTENSIONS_IGNOREES = new Set([".png", ".jpg", ".jpeg", ".svg", ".woff", ".woff2", ".ico", ".pdf"]);
 const RACINE = process.cwd();
 
 function listerFichiers(dossier: string): string[] {

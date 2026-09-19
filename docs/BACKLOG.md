@@ -51,6 +51,7 @@ Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond
 - US-050 Playwright complet (routes, filtres, export, palette, analyste, mobile), Lighthouse, accessibilité clavier.
 - US-051 Relecture par workflow de réfutation (mode ultracode, trois lentilles : faits contre DONNEES.md et INDICATEURS.md, forme et typographie, recruteur Butagaz simulé), corrections.
 - US-052 Retrait de la navigation de tout écran non fini ; test téléphone 4G ; gel à 20 h ; journal final ; commit ; déploiement.
+- US-053 Fiche de présentation illustrée pour un lecteur étranger au projet : `npm run fiche` génère `docs/FICHE.html` et `docs/FICHE.pdf` depuis `docs/GUIDE_ILLUSTRE.md` seul (couverture, repères, sommaire, chaque visuel avec sa capture et sa lecture, notice) ; la page est aussi publiée comme lien partageable. Fait le 19 septembre.
 
 ## Palier C (après l'entretien)
 - US-060 Mode présentation (touche P, plein écran, enchaînement des écrans toutes les 20 s).

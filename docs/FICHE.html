@@ -1,0 +1,537 @@
+<title>Buta.Lyfh</title>
+<meta name="description" content="Fiche de présentation illustrée de Buta.Lyfh : contexte, vocabulaire, données, lecture de chaque écran et notice d'utilisation, avec les captures du site.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --fond: #f7f8fb; --surface: #ffffff; --surface-2: #f1f3f8; --bordure: rgba(15, 23, 42, 0.08);
+  --texte: #0f172a; --texte-2: #475569; --texte-3: #5b677d;
+  --ambre: #a67c00; --ambre-doux: rgba(166, 124, 0, 0.10); --menthe: #127a70; --succes: #157a55; --alerte: #c42d47;
+  --nuit: #0b0f17; --ombre: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 10px rgba(15, 23, 42, 0.06);
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #0b0f17; --surface: #111827; --surface-2: #161f2e; --bordure: rgba(255, 255, 255, 0.08);
+    --texte: #e6eaf2; --texte-2: #9aa4b8; --texte-3: #808a9d;
+    --ambre: #f5b700; --ambre-doux: rgba(245, 183, 0, 0.12); --menthe: #2dd4bf; --succes: #34d399; --alerte: #fb7185; --ombre: none;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #0b0f17; --surface: #111827; --surface-2: #161f2e; --bordure: rgba(255, 255, 255, 0.08);
+  --texte: #e6eaf2; --texte-2: #9aa4b8; --texte-3: #808a9d;
+  --ambre: #f5b700; --ambre-doux: rgba(245, 183, 0, 0.12); --menthe: #2dd4bf; --succes: #34d399; --alerte: #fb7185; --ombre: none;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--fond); color: var(--texte); font-family: var(--sans); font-size: 16px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.page { max-width: 1080px; margin: 0 auto; padding-block: 32px 80px; padding-inline: 24px; }
+a { color: inherit; text-decoration-color: var(--ambre); text-underline-offset: 3px; }
+a:hover { color: var(--ambre); }
+:focus-visible { outline: 2px solid var(--ambre); outline-offset: 3px; border-radius: 4px; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2); border: 1px solid var(--bordure); border-radius: 6px; padding: 1px 5px; white-space: nowrap; }
+strong { font-weight: 600; }
+.num { font-family: var(--mono); font-weight: 500; color: var(--ambre); font-variant-numeric: tabular-nums; margin-right: 0.6em; font-size: 0.8em; letter-spacing: 0.02em; }
+
+/* Couverture */
+.couverture { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 52px; align-items: end; padding-block: 20px 52px; border-bottom: 1px solid var(--bordure); }
+.couverture .sur-titre { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); margin: 0 0 12px; }
+.couverture h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 9vw, 104px); line-height: 0.95; letter-spacing: -0.01em; margin: 0 0 20px; text-wrap: balance; }
+.couverture h1 .point { color: var(--ambre); font-size: 1.12em; line-height: 0; }
+.couverture .objet { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; margin: 0 0 20px; color: var(--texte); text-wrap: balance; }
+.couverture .adresse { font-family: var(--mono); font-size: 15px; margin: 0; }
+.couverture .adresse a { text-decoration: none; border-bottom: 1px solid var(--ambre); }
+.couverture .intro p { margin: 0 0 12px; color: var(--texte-2); }
+.couverture .intro p:last-child { margin-bottom: 0; }
+.mention { font-size: 13px; color: var(--texte-3); margin: 0; border-left: 2px solid var(--ambre); padding-left: 12px; }
+
+/* En bref */
+.en-bref { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 32px 0 0; padding: 0; list-style: none; }
+.en-bref li { background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; padding: 14px 16px 12px; box-shadow: var(--ombre); }
+.en-bref .valeur { display: block; font-family: var(--mono); font-size: 26px; font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.en-bref .valeur small { font-size: 15px; color: var(--texte-2); font-weight: 400; }
+.en-bref .libelle { display: block; margin-top: 6px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); }
+
+/* Sommaire */
+.sommaire { margin: 40px 0 12px; padding: 24px 24px 20px; background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; box-shadow: var(--ombre); }
+.sommaire h2 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); font-weight: 500; margin: 0 0 14px; }
+.sommaire ol { list-style: none; margin: 0; padding: 0; }
+.sommaire > ol { columns: 2; column-gap: 40px; }
+.sommaire > ol > li { break-inside: avoid; margin-bottom: 10px; }
+.sommaire > ol > li > a { font-family: var(--serif); font-size: 20px; text-decoration: none; }
+.sommaire ol ol { margin: 4px 0 0 1.6em; }
+.sommaire ol ol li { font-size: 14px; color: var(--texte-2); line-height: 1.5; }
+.sommaire ol ol a { text-decoration: none; }
+.sommaire ol ol .num { font-size: 11px; }
+
+/* Sections */
+section { padding-block: 52px 12px; border-top: 1px solid var(--bordure); margin-top: 32px; }
+section:first-of-type { border-top: 0; margin-top: 8px; }
+section > * { max-width: 760px; }
+section > .figures, section > .figure-seule, section > .tableau { max-width: none; }
+h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 46px); line-height: 1.05; margin: 0 0 24px; letter-spacing: -0.01em; text-wrap: balance; }
+h2 .num { font-size: 0.5em; vertical-align: 0.5em; }
+h3 { font-family: var(--serif); font-weight: 400; font-size: 27px; line-height: 1.15; margin: 44px 0 14px; text-wrap: balance; }
+h3 .num { font-size: 0.55em; vertical-align: 0.45em; }
+h4 { font-family: var(--sans); font-weight: 600; font-size: 17px; margin: 0 0 6px; }
+p { margin: 0 0 14px; }
+p.legende { color: var(--texte-3); font-size: 14px; margin-top: -4px; }
+ul, ol { margin: 0 0 14px; padding-left: 1.3em; }
+li { margin-bottom: 5px; }
+li::marker { color: var(--ambre); }
+
+.visuel { background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; padding: 18px 20px 8px; margin: 12px 0 28px; box-shadow: var(--ombre); }
+.visuel > p:first-of-type { color: var(--texte-2); }
+.visuel ul { margin-bottom: 10px; }
+.lecture { margin: 8px 0 12px; display: grid; gap: 10px; }
+.lecture div { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 12px; align-items: start; }
+.lecture dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ambre); padding-top: 4px; }
+.lecture dd { margin: 0; }
+
+/* Figures */
+.figure-seule, .figures { margin: 20px 0 22px; }
+.figures { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
+.figures.tels { grid-template-columns: repeat(auto-fit, minmax(200px, 300px)); }
+figure { margin: 0; width: fit-content; max-width: 100%; background: var(--nuit); border: 1px solid var(--bordure); border-radius: 14px; overflow: hidden; }
+figure img { display: block; width: auto; height: auto; max-width: 100%; }
+figure.tel { max-width: 320px; }
+figcaption { font-size: 13px; color: var(--texte-2); background: var(--surface); border-top: 1px solid var(--bordure); padding: 8px 12px; }
+
+/* Tableaux */
+.tableau { overflow-x: auto; margin: 12px 0 24px; border: 1px solid var(--bordure); border-radius: 14px; background: var(--surface); box-shadow: var(--ombre); }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: var(--texte-3); text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--bordure); background: var(--surface-2); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--bordure); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td:first-child { font-weight: 600; white-space: nowrap; }
+
+/* Pied */
+.pied { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--bordure); color: var(--texte-3); font-size: 13px; display: grid; gap: 8px; }
+.pied p { margin: 0; }
+
+@media (max-width: 760px) {
+  .page { padding-inline: 16px; padding-block: 20px 56px; }
+  .couverture { grid-template-columns: 1fr; gap: 20px; }
+  .sommaire > ol { columns: 1; }
+  .lecture div { grid-template-columns: 1fr; gap: 2px; }
+  td:first-child { white-space: normal; }
+  figure.tel { max-width: none; }
+  code { white-space: normal; overflow-wrap: anywhere; }
+}
+
+@media print {
+  :root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
+    --fond: #ffffff; --surface: #ffffff; --surface-2: #f1f3f8; --bordure: rgba(15, 23, 42, 0.14);
+    --texte: #0f172a; --texte-2: #475569; --texte-3: #5b677d; --ambre: #a67c00; --ambre-doux: rgba(166, 124, 0, 0.10); --ombre: none;
+  }
+  body { font-size: 10.5pt; line-height: 1.45; }
+  .page { max-width: none; padding: 0; }
+  a { text-decoration: none; }
+  .couverture { padding-block: 24mm 16mm; min-height: 0; grid-template-columns: 1fr; gap: 12mm; border-bottom: 0; }
+  .couverture h1 { font-size: 64pt; }
+  .couverture .objet { font-size: 18pt; }
+  .en-bref { margin-top: 10mm; break-after: page; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sommaire { break-after: page; box-shadow: none; margin-top: 0; }
+  .sommaire > ol { columns: 2; }
+  .lecture div { grid-template-columns: 120px minmax(0, 1fr); gap: 8px; }
+  section { break-before: page; border-top: 0; margin-top: 0; padding-top: 0; }
+  section > * { max-width: none; }
+  h2 { font-size: 28pt; }
+  h3 { font-size: 17pt; margin-top: 9mm; break-after: avoid; }
+  h4 { break-after: avoid; }
+  .visuel, figure, .tableau, .en-bref li, tr { break-inside: avoid; }
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .figures.tels { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  figure.entiere img { max-height: 215mm; width: auto; margin: 0 auto; }
+  figure.tel img { max-height: 150mm; }
+  figure img { max-height: 235mm; }
+  code { white-space: normal; }
+}
+</style>
+<main class="page">
+<header class="couverture">
+  <div>
+    <p class="sur-titre">Fiche de présentation illustrée</p>
+    <h1>Buta<span class="point">.</span>Lyfh</h1>
+    <p class="objet">Le cockpit d'un Responsable Performance, du lead à l'encaissement, sur un réseau d'installateurs simulé posé sur le marché réel.</p>
+    <p class="adresse"><a href="https://buta.lyfh.fr">buta.lyfh.fr</a></p>
+  </div>
+  <div class="intro">
+    <p>Ce document s'adresse à quelqu'un qui découvre Buta.Lyfh sans rien en connaître : ni le projet, ni le métier, ni l'outil. Il explique le contexte, la finalité, ce que chaque écran et chaque visuel montrent, comment les lire, d'où viennent les chiffres, et se termine par une notice d'utilisation. Les captures datent du 18 septembre 2026 au soir (journée publiée du 17 septembre) ; les chiffres bougent chaque matin, la lecture ne change pas.</p><p>Adresse : <a href="https://buta.lyfh.fr">https://buta.lyfh.fr</a>, sur ordinateur ou téléphone, sans compte.</p>
+    <p class="mention">Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées.</p>
+  </div>
+</header>
+<ul class="en-bref" aria-label="En bref">
+  <li><span class="valeur">11</span><span class="libelle">écrans</span></li>
+  <li><span class="valeur">21</span><span class="libelle">vues de calcul SQL</span></li>
+  <li><span class="valeur">72 261</span><span class="libelle">dossiers simulés</span></li>
+  <li><span class="valeur">96</span><span class="libelle">départements de marché réel</span></li>
+  <li><span class="valeur">12</span><span class="libelle">contrôles chaque matin</span></li>
+  <li><span class="valeur">7</span><span class="libelle">histoires plantées</span></li>
+</ul>
+<nav class="sommaire" aria-label="Sommaire"><h2>Sommaire</h2><ol><li><a href="#s1"><span class="num">1</span>Le contexte</a><ol><li><a href="#s1-1"><span class="num">1.1</span>Pourquoi cet outil existe</a></li><li><a href="#s1-2"><span class="num">1.2</span>Ce que c'est, ce que ce n'est pas</a></li><li><a href="#s1-3"><span class="num">1.3</span>Le métier en une image : le parcours d'un dossier</a></li></ol></li><li><a href="#s2"><span class="num">2</span>Le vocabulaire</a></li><li><a href="#s3"><span class="num">3</span>D'où viennent les données</a><ol><li><a href="#s3-1"><span class="num">3.1</span>Le marché : réel et sourcé</a></li><li><a href="#s3-2"><span class="num">3.2</span>L'activité : simulée, avec des hypothèses écrites</a></li><li><a href="#s3-3"><span class="num">3.3</span>Comment les chiffres circulent</a></li></ol></li><li><a href="#s4"><span class="num">4</span>Lire l'interface : les éléments communs</a><ol><li><a href="#s4-1"><span class="num">4.1</span>La barre haute</a></li><li><a href="#s4-2"><span class="num">4.2</span>Le rail et le tiroir</a></li><li><a href="#s4-3"><span class="num">4.3</span>Les badges</a></li><li><a href="#s4-4"><span class="num">4.4</span>Une carte KPI, élément par élément</a></li><li><a href="#s4-5"><span class="num">4.5</span>La fiche d'un indicateur</a></li><li><a href="#s4-6"><span class="num">4.6</span>Les tableaux</a></li><li><a href="#s4-7"><span class="num">4.7</span>Les graphiques</a></li><li><a href="#s4-8"><span class="num">4.8</span>La palette de commandes</a></li><li><a href="#s4-9"><span class="num">4.9</span>La ligne « Sources et hypothèses »</a></li><li><a href="#s4-10"><span class="num">4.10</span>Thème clair</a></li></ol></li><li><a href="#s5"><span class="num">5</span>Les écrans, visuel par visuel</a><ol><li><a href="#s5-1"><span class="num">5.1</span>Vue d'ensemble : « Le réseau ce mois-ci »</a></li><li><a href="#s5-2"><span class="num">5.2</span>Ventes et marge : « D'où vient l'écart de chiffre d'affaires »</a></li><li><a href="#s5-3"><span class="num">5.3</span>Funnel et leads : « Où se perd la conversion »</a></li><li><a href="#s5-4"><span class="num">5.4</span>Forecast et atterrissage : « Où finit l'année 2026 »</a></li><li><a href="#s5-5"><span class="num">5.5</span>Pose et encaissement : « Ce qui est signé et pas encore posé »</a></li><li><a href="#s5-6"><span class="num">5.6</span>Plans d'action et rituels : « Ce qu'on a décidé de changer »</a></li><li><a href="#s5-7"><span class="num">5.7</span>Qualité et référentiels : « Peut-on faire confiance au chiffre »</a></li><li><a href="#s5-8"><span class="num">5.8</span>Territoires : « Où est le potentiel non servi »</a></li><li><a href="#s5-9"><span class="num">5.9</span>Automatisations : « Ce qui tourne chaque matin »</a></li><li><a href="#s5-10"><span class="num">5.10</span>Analyste : « Vérifier un chiffre avant de décider »</a></li><li><a href="#s5-11"><span class="num">5.11</span>Méthode et auteur</a></li></ol></li><li><a href="#s6"><span class="num">6</span>Les sept histoires plantées dans la simulation, et où les retrouver</a></li><li><a href="#s7"><span class="num">7</span>Notice d'utilisation</a><ol><li><a href="#s7-1"><span class="num">7.1</span>Prise en main en dix minutes</a></li><li><a href="#s7-2"><span class="num">7.2</span>Les parcours types</a></li><li><a href="#s7-3"><span class="num">7.3</span>Les gestes utiles</a></li><li><a href="#s7-4"><span class="num">7.4</span>Ce qu'il faut savoir pour ne pas se tromper</a></li><li><a href="#s7-5"><span class="num">7.5</span>Sur téléphone</a></li></ol></li><li><a href="#s8"><span class="num">8</span>Questions fréquentes</a></li><li><a href="#s9"><span class="num">9</span>Annexes</a><ol><li><a href="#s9-1"><span class="num">9.1</span>Formules essentielles</a></li><li><a href="#s9-2"><span class="num">9.2</span>Les captures et la fiche</a></li><li><a href="#s9-3"><span class="num">9.3</span>Pour aller plus loin</a></li></ol></li></ol></nav>
+<section id="s1"><h2><span class="num">1</span>Le contexte</h2>
+<h3 id="s1-1"><span class="num">1.1</span>Pourquoi cet outil existe</h3>
+<p>Buta.Lyfh est un démonstrateur personnel construit par Frédéric Poissonnier à l'appui d'une candidature au poste de Responsable Performance chez Butagaz Eco-énergie (entretien téléphonique le mardi 22 septembre 2026). Il n'est affilié ni à Butagaz ni à Butagaz Eco-énergie : aucun logo, aucune couleur de marque, aucun chiffre présenté comme celui de l'entreprise.</p>
+<p>Le poste consiste à piloter la performance d'un réseau d'installateurs (photovoltaïque, pompes à chaleur, chauffe-eau thermodynamiques, poêles, bornes de recharge) : construire et fiabiliser le pilotage du lead à l'encaissement, analyser les écarts, prévoir l'atterrissage de l'année, transformer l'analyse en plans d'action, tenir des rituels de revue, faire évoluer les outils et les référentiels. Plutôt que de décrire ce qu'il ferait, le candidat a construit l'outil avec lequel il le ferait.</p>
+<h3 id="s1-2"><span class="num">1.2</span>Ce que c'est, ce que ce n'est pas</h3>
+<ul><li>C'est un cockpit de pilotage d'un réseau d'installateurs simulé, du premier contact client (le « lead ») jusqu'à l'argent encaissé, posé sur le marché réel des dix départements dans lesquels l'entreprise annonce publiquement être présente.</li><li>Ce n'est ni un outil Butagaz, ni une base de données Butagaz, ni une recommandation d'implantation. Les données de marché sont réelles et publiques ; les données d'activité (leads, ventes, poses, encaissements) sont entièrement simulées, et chaque écran qui en montre porte le badge « simulé ».</li><li>Aucune agence, personne ou entité réelle n'est associée à une performance simulée. Les neuf agences portent des noms de bassins géographiques (Saintonge, Angoumois, Marensin, Born, Marsan, Bordeaux Métropole, Haute Gironde, Bassin d'Arcachon, Nord), les commerciaux et techniciens sont des codes.</li></ul>
+<h3 id="s1-3"><span class="num">1.3</span>Le métier en une image : le parcours d'un dossier</h3>
+<p>Chaque dossier client suit six étapes, et tout l'outil est construit autour d'elles :</p>
+<ol><li><strong>Lead</strong> : un contact entre dans le réseau par un canal (site web, leads achetés à une plateforme, prospection terrain, appels entrants, partenaires artisans ou courtiers, parrainage, base clients, salons).</li><li><strong>RDV tenu</strong> : un commercial rencontre le client.</li><li><strong>Devis</strong> : une offre chiffrée est remise.</li><li><strong>Signature</strong> : le devis est signé ; c'est la vente. Elle peut être <strong>annulée</strong> dans les semaines qui suivent (rétractation, refus de financement).</li><li><strong>Pose</strong> : les techniciens installent ; le délai entre signature et pose dépend de la charge des équipes et de la distance.</li><li><strong>Encaissement</strong> : le client paie ; une partie peut arriver plus tard sous forme d'aides publiques versées à l'installateur.</li></ol>
+<p>À chaque étape correspondent des indicateurs (un taux de passage, un délai, un montant) et un écran qui permet de décider quelque chose.</p>
+</section>
+<section id="s2"><h2><span class="num">2</span>Le vocabulaire</h2>
+<div class="tableau"><table><thead><tr><th scope="col">Terme</th><th scope="col">Ce que ça veut dire ici</th></tr></thead><tbody><tr><td>Cohorte</td><td>Tous les leads créés un même mois. Les taux de conversion se mesurent toujours sur une cohorte : « des leads de mai, combien ont signé ».</td></tr><tr><td>Cohorte mûre, cohorte en cours</td><td>Une cohorte est mûre 90 jours après son mois de création : elle a eu le temps de convertir. Avant, ses taux sont provisoires et l'écran le dit (« cohorte en cours »).</td></tr><tr><td>Mesure d'événement</td><td>Rattachée au mois où l'événement a lieu : la vente au mois de signature, la pose au mois de pose, l'encaissement au mois d'encaissement. Sert au chiffre d'affaires, à la marge, à la trésorerie.</td></tr><tr><td>Journée publiée</td><td>La dernière journée d'activité intégrée dans l'outil (le 17 septembre sur les captures). Tout ce qui est postérieur est invisible, comme dans un vrai système où la journée d'hier arrive le matin.</td></tr><tr><td>Prorata</td><td>Le mois en cours n'est pas fini : 17 jours publiés sur 30 en septembre. L'objectif et le N-1 sont multipliés par 17/30 avant comparaison, sinon tout serait « en retard de 43 % ». L'écran l'écrit chaque fois.</td></tr><tr><td>Objectif</td><td>Le chiffre d'affaires attendu, fixé par agence, produit et mois ; dans la simulation, il vaut le réalisé de 2025 plus 15 %.</td></tr><tr><td>N-1</td><td>Le même mois de l'année précédente. Il n'existe pas pour 2025 (pas d'historique 2024) et l'écran le dit alors « n. d. ».</td></tr><tr><td>CA signé HT</td><td>Somme des devis signés, hors taxes et net de remise, au mois de signature. C'est la base de l'objectif et de l'atterrissage.</td></tr><tr><td>CA posé, encaissé</td><td>Les mêmes montants, comptés au mois de pose puis au mois d'encaissement.</td></tr><tr><td>Marge brute</td><td>CA signé moins le coût du matériel moins le coût de pose (la main d'œuvre technique).</td></tr><tr><td>Marge après acquisition</td><td>Marge brute moins les coûts d'acquisition des leads moins les commissions commerciales.</td></tr><tr><td>Résultat d'agence</td><td>Marge après acquisition moins les charges fixes de l'agence (salaires commerciaux, structure, véhicules).</td></tr><tr><td>Panier moyen</td><td>CA signé divisé par le nombre de ventes.</td></tr><tr><td>Remise moyenne</td><td>Remises accordées rapportées aux prix catalogue, pondérées par les prix.</td></tr><tr><td>Taux d'annulation à 60 jours</td><td>Part des signatures d'un mois annulées dans les 60 jours. N'est affiché que quand les 60 jours sont écoulés.</td></tr><tr><td>Coût par lead, coût par vente</td><td>Coût d'un canal d'acquisition divisé par ses leads, puis par les ventes issues de ces leads (hors commissions).</td></tr><tr><td>Pipe pondéré</td><td>Les devis en cours de moins de 90 jours, multipliés par la probabilité qu'ils signent (observée par âge du devis) et par la probabilité qu'ils ne soient pas annulés.</td></tr><tr><td>Run-rate</td><td>Le rythme des trois derniers mois, projeté sur les mois restants avec la saisonnalité du réseau.</td></tr><tr><td>Atterrissage</td><td>Le CA signé attendu en fin d'année : réalisé à date, plus pipe pondéré, plus run-rate au-delà des 45 jours couverts par le pipe, avec un intervalle et une probabilité d'atteindre l'objectif.</td></tr><tr><td>Carnet de pose</td><td>Le travail signé mais pas encore posé, exprimé en jours ouvrés de capacité technique.</td></tr><tr><td>n. d.</td><td>« Non disponible » : la valeur ne peut pas être calculée honnêtement (pas d'historique, cohorte trop jeune, division par zéro). L'outil n'affiche jamais un zéro trompeur à la place.</td></tr></tbody></table></div>
+</section>
+<section id="s3"><h2><span class="num">3</span>D'où viennent les données</h2>
+<h3 id="s3-1"><span class="num">3.1</span>Le marché : réel et sourcé</h3>
+<p>Cinq sources publiques, chacune avec sa licence et sa date de référence, affichées en bas de chaque écran qui les utilise.</p>
+<div class="tableau"><table><thead><tr><th scope="col">Source</th><th scope="col">Ce qu'on en retient</th><th scope="col">Référence</th></tr></thead><tbody><tr><td>Insee, Logement 2022 (à la commune)</td><td>résidences principales, maisons, propriétaires occupants, chauffage au fioul, au gaz en citerne, au gaz de ville, à l'électricité</td><td>millésime 2022, vérifié le 17 septembre 2026</td></tr><tr><td>ADEME, liste des entreprises RGE</td><td>installateurs qualifiés pompe à chaleur, photovoltaïque, chauffe-eau thermodynamique, comptés par commune et département</td><td>vérifié le 17 septembre 2026, rejeu mensuel</td></tr><tr><td>RTE (ODRÉ), registre des installations</td><td>installations solaires raccordées et leur puissance, par commune</td><td>au 31 juillet 2026</td></tr><tr><td>ADEME, DPE logements existants</td><td>maisons en étiquette F ou G, énergie de chauffage (fioul, GPL, propane, butane)</td><td>vérifié le 17 septembre 2026, rejeu mensuel</td></tr><tr><td>Etalab, contours administratifs</td><td>contours des départements et des communes, simplifiés pour la carte</td><td>annuel</td></tr></tbody></table></div>
+<p>Des chiffres de contrôle sont revérifiés à chaque chargement (tolérance 0,5 %) : par exemple 32,7 millions de résidences principales en France, 2,6 millions au fioul, 23 500 installations solaires en Charente-Maritime.</p>
+<h3 id="s3-2"><span class="num">3.2</span>L'activité : simulée, avec des hypothèses écrites</h3>
+<ul><li>Un générateur déterministe (même graine, même résultat) produit 72 261 dossiers du 1er janvier 2025 au 31 décembre 2026. Seule la part jusqu'à la veille est « publiée » : l'outil vit comme un vrai système, la journée d'hier arrive le matin.</li><li>Le volume de leads découle du marché réel (propriétaires occupants de chaque bassin, plafonné par l'effectif commercial) : environ 3 000 leads par mois, 3 100 ventes et 2 800 poses par an, 27 M€ de CA signé annuel.</li><li>Neuf agences, huit canaux d'acquisition, huit produits avec prix catalogue, taux de pose, marge cible et saisonnalité propres, 44 commerciaux et 52 techniciens désignés par des codes.</li><li>Funnel de base par cohorte : 45 % de RDV tenus, 70 % de devis, 32 % de signature, 8 % d'annulations, modulés par canal, par agence et par commercial. Délais tirés au sort autour de médianes réalistes (6 jours du lead au RDV, 12 du devis à la signature, 45 de la signature à la pose sur place, 75 à distance, 20 de la pose à l'encaissement).</li><li>Coûts d'acquisition par canal, commissions de 4 % du CA, charges d'agence par effectif, aides publiques en mandat financier : des ordres de grandeur documentés, jamais présentés comme réels.</li><li>Objectifs 2026 : réalisé 2025 plus 15 %. Le réseau ne les atteint pas ; c'est le scénario voulu, celui où un Responsable Performance sert à quelque chose.</li></ul>
+<h3 id="s3-3"><span class="num">3.3</span>Comment les chiffres circulent</h3>
+<ol><li>Les dossiers simulés et les données de marché sont stockés dans une base Postgres (Supabase).</li><li>Vingt et une <strong>vues de calcul</strong> (préfixées <code>mart_</code>) calculent tous les indicateurs en SQL : chaque vue et chaque colonne est commentée. <strong>Aucun chiffre n'est calculé dans l'interface</strong> ; ce qui doit réagir à un réglage à l'écran (un curseur, un poids) passe par une petite bibliothèque testée.</li><li>Chaque matin, des automatisations publient la journée de la veille, rafraîchissent les vues, exécutent douze contrôles de cohérence et envoient un email si quelque chose cloche.</li><li>L'application web lit les vues. Si la base ne répond pas, elle bascule sur un <strong>instantané</strong> statique embarqué avec le site, et le badge le dit.</li><li>Un modèle de langage peut rédiger des explications, mais seulement à partir de faits calculés en SQL qui lui sont transmis ; un contrôle refuse toute phrase contenant un nombre absent des faits. Sans clé de modèle, tout est rédigé par règles et l'écran le dit.</li></ol>
+</section>
+<section id="s4"><h2><span class="num">4</span>Lire l'interface : les éléments communs</h2>
+<div class="figure-seule"><figure class=""><img src="captures/guide/commun-barre-haute.png" alt="Barre haute, rail de navigation et première rangée de l'accueil"><figcaption>Barre haute, rail de navigation et première rangée de l'accueil</figcaption></figure></div>
+<p class="legende">La barre haute et le rail sont les mêmes sur tous les écrans.</p>
+<h3 id="s4-1"><span class="num">4.1</span>La barre haute</h3>
+<p>De gauche à droite :</p>
+<ul><li><strong>Période</strong> : un mois, un trimestre ou une année à date. Par défaut, le mois de la journée publiée.</li><li><strong>Vs</strong> : la comparaison, objectif ou N-1. Elle s'applique à tous les écarts affichés.</li><li><strong>Agence</strong> : toutes les agences (le réseau) ou une seule. Le titre de chaque écran se met au nom de l'agence choisie.</li><li><strong>Journée du 17/09 intégrée à 11:25</strong> : le badge de fraîcheur. Il dit quelle journée simulée est publiée et à quelle heure elle a été intégrée. Il se relit tout seul quand on revient sur l'onglet.</li><li><strong>Rechercher (Cmd K ou Ctrl K)</strong> : la palette de commandes.</li><li><strong>Exporter</strong> : exporte le tableau principal de l'écran (CSV ou tableur).</li><li>Le bouton rond à droite bascule entre le thème sombre et le thème clair.</li></ul>
+<p>Ces réglages vivent dans l'adresse de la page : un lien copié montre exactement la même vue à quelqu'un d'autre (<code>?periode=2026-05&amp;comparaison=n1&amp;agence=SAI</code>).</p>
+<h3 id="s4-2"><span class="num">4.2</span>Le rail et le tiroir</h3>
+<p>Le rail à gauche liste les onze écrans (le libellé apparaît au survol) : Vue d'ensemble, Territoires, Funnel et leads, Ventes et marge, Forecast et atterrissage, Pose et encaissement, Plans d'action et rituels, Qualité et référentiels, Automatisations, Analyste, Méthode. Le monogramme en haut ramène à l'accueil. Sur téléphone, le rail devient un tiroir ouvert par le bouton en haut à gauche.</p>
+<div class="figure-seule"><figure class="tel"><img src="captures/guide/mobile-tiroir.png" alt="Tiroir de navigation sur téléphone"><figcaption>Tiroir de navigation sur téléphone</figcaption></figure></div>
+<h3 id="s4-3"><span class="num">4.3</span>Les badges</h3>
+<p>Trois badges disent la nature de ce qu'on regarde : <strong>simulé</strong> (ambre) pour les données d'activité, <strong>réel, source</strong> (vert) pour le marché, <strong>instantané</strong> (gris) quand l'application affiche l'instantané de secours parce que la base n'a pas répondu.</p>
+<h3 id="s4-4"><span class="num">4.4</span>Une carte KPI, élément par élément</h3>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-00-compteurs.png" alt="Compteurs de l'accueil"><figcaption>Compteurs de l'accueil</figcaption></figure></div>
+<p>Chaque compteur se lit ainsi :</p>
+<ul><li>le <strong>libellé</strong> en capitales (« CA signé HT ») et parfois un sous-libellé qui précise la mesure (« cohorte de mai 2026, à 90 jours ») ;</li><li>la <strong>valeur</strong>, en chiffres à espacement fixe pour que les colonnes s'alignent ;</li><li>la <strong>variation</strong> avec sa flèche et sa couleur (vert : favorable, rouge : défavorable ; pour un indicateur où « plus bas = mieux », les couleurs s'inversent) et sa base (« vs objectif prorata », « vs N-1 ») ;</li><li>la <strong>mini courbe</strong> des douze derniers mois, le point ambre marquant la dernière valeur ;</li><li>le bouton <strong>i</strong> qui ouvre la fiche de l'indicateur.</li></ul>
+<h3 id="s4-5"><span class="num">4.5</span>La fiche d'un indicateur</h3>
+<div class="figure-seule"><figure class=""><img src="captures/guide/commun-fiche-indicateur.png" alt="Fiche de l'indicateur CA signé"><figcaption>Fiche de l'indicateur CA signé</figcaption></figure></div>
+<p>Chaque indicateur a une fiche : définition, formule, grain (la maille de calcul), vue SQL d'origine, sens de lecture, source, note. C'est la garantie qu'on parle tous de la même chose : un chiffre sans définition ne se discute pas.</p>
+<h3 id="s4-6"><span class="num">4.6</span>Les tableaux</h3>
+<ul><li>Clic sur un en-tête : tri par colonne ; la flèche indique le sens.</li><li><strong>Exporter</strong> en bas à droite : le tableau en CSV ou en tableur, avec les mêmes colonnes.</li><li>Sur téléphone, les colonnes secondaires se masquent et une mention indique de faire défiler horizontalement.</li></ul>
+<div class="figure-seule"><figure class=""><img src="captures/guide/commun-export.png" alt="Menu Exporter d'un tableau"><figcaption>Menu Exporter d'un tableau</figcaption></figure></div>
+<h3 id="s4-7"><span class="num">4.7</span>Les graphiques</h3>
+<p>Le menu « ⋯ » de chaque graphique propose : plein écran, image PNG, export CSV des données tracées, et la requête SQL qui les produit. Le bouton « i » ouvre la fiche de l'indicateur principal. Chaque graphique porte son unité et, quand un axe est tronqué, le sous-titre le dit.</p>
+<h3 id="s4-8"><span class="num">4.8</span>La palette de commandes</h3>
+<div class="figure-seule"><figure class=""><img src="captures/guide/commun-palette.png" alt="Palette de commandes"><figcaption>Palette de commandes</figcaption></figure></div>
+<p>Cmd K (Ctrl K sur Windows) ouvre une recherche : un écran (on y va), une agence (elle filtre l'écran courant), un indicateur (sa fiche s'ouvre). La recherche ignore les accents et tout se fait au clavier.</p>
+<h3 id="s4-9"><span class="num">4.9</span>La ligne « Sources et hypothèses »</h3>
+<p>En bas de chaque écran : les vues SQL lues, les sources réelles avec leur licence et leur date, les hypothèses de calcul, et le badge « données d'activité simulées ». C'est là qu'on vérifie d'où sort ce qu'on vient de lire.</p>
+<h3 id="s4-10"><span class="num">4.10</span>Thème clair</h3>
+<div class="figure-seule"><figure class=""><img src="captures/guide/commun-theme-clair.png" alt="Accueil en thème clair"><figcaption>Accueil en thème clair</figcaption></figure></div>
+<p>Le thème clair reprend les mêmes tokens ; les graphiques suivent.</p>
+</section>
+<section id="s5"><h2><span class="num">5</span>Les écrans, visuel par visuel</h2>
+<p>Chaque écran répond à une question, écrite dans son titre. Pour chaque visuel : ce qu'il montre, comment le lire, ce qu'on en fait.</p>
+<h3 id="s5-1"><span class="num">5.1</span>Vue d'ensemble : « Le réseau ce mois-ci »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/accueil.png" alt="Vue d'ensemble, page entière"><figcaption>Vue d'ensemble, page entière</figcaption></figure></div>
+<p>La question : où en est le réseau ce mois-ci, où sont les écarts, que faire ce matin.</p>
+<div class="visuel"><h4>Les quatre compteurs</h4><p>(ventes signées, CA signé HT, taux de marge brute, conversion lead vers vente).</p>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le mois en cours contre l'objectif au prorata des jours publiés (17 jours sur 30), la marge contre N-1, et la conversion de la dernière cohorte mûre (celle de mai 2026, à 90 jours).</dd></div><div><dt>Comment le lire</dt><dd>111 ventes signées, 18,6 % sous l'objectif proratisé ; 924,6 k€ de CA, 27,8 % sous l'objectif ; marge brute à 26,3 %, un point sous N-1 ; 8,6 % des leads de mai sont devenus une vente.</dd></div><div><dt>Ce qu'on en fait</dt><dd>c'est l'ordre du jour du point du matin. Un écart s'explique sur Ventes et marge, une conversion sur Funnel.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-01-atterrissage-2026.png" alt="Atterrissage 2026"></figure></div>
+<div class="visuel"><h4>Atterrissage 2026</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le CA signé attendu en fin d'année (24,8 M€), l'objectif (29,2 M€), l'écart (-15 %), la probabilité d'atteindre l'objectif (moins de 1 %), et une jauge : réalisé à date (19,5 M€), bornes basse et haute (24,3 à 25,3 M€), objectif.</dd></div><div><dt>Comment le lire</dt><dd>la partie pleine de la jauge est le réalisé ; le trait clair est la fourchette d'atterrissage ; le trait vert est l'objectif. Si l'objectif est à droite de la fourchette, il ne sera pas atteint sans changer quelque chose.</dd></div><div><dt>Ce qu'on en fait</dt><dd>le montant à trouver et le délai qui reste ; le détail des hypothèses est sur l'écran Forecast.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-02-funnel-de-la-cohorte-du-mois.png" alt="Funnel de la cohorte du mois"></figure></div>
+<div class="visuel"><h4>Funnel de la cohorte du mois</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les leads créés ce mois-ci (2 284) et, pour chacune des étapes suivantes, combien y sont arrivés à ce jour, avec le taux de passage depuis l'étape précédente.</dd></div><div><dt>Comment le lire</dt><dd>en gris tant que la cohorte a moins de 90 jours (« taux provisoires ») ; un lead de septembre n'a pas fini de convertir, ses 9 signatures ne disent rien encore. La barre en ambre apparaît quand la cohorte est mûre.</dd></div><div><dt>Ce qu'on en fait</dt><dd>rien de définitif avant 90 jours ; c'est justement la leçon.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-03-alertes-du-matin.png" alt="Alertes du matin"></figure></div>
+<div class="visuel"><h4>Alertes du matin</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>des alertes calculées par règles à la journée publiée, datées, avec leur valeur : coût par vente des leads achetés de Bordeaux Métropole à +48 % vs le premier trimestre ; 123 dossiers à qualifier dans le Nord, référentiel en cours d'alignement.</dd></div><div><dt>Comment le lire</dt><dd>une alerte rouge demande une décision, une alerte ambre une vérification. Le texte est assemblé en SQL à partir de la valeur, pas rédigé à la main.</dd></div><div><dt>Ce qu'on en fait</dt><dd>chacune renvoie à un plan d'action (écran Plans d'action) ou à Qualité.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-04-agences.png" alt="Agences"></figure></div>
+<div class="visuel"><h4>Agences</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>par agence, l'écart à l'objectif du CA, les ventes, le taux de marge, le résultat, le délai de pose, et un statut (tenu, attention, retrait).</dd></div><div><dt>Comment le lire</dt><dd>trié par ventes ; la pastille dit le statut avec un mot, jamais la couleur seule. Un clic ouvre l'écran Ventes filtré sur l'agence.</dd></div><div><dt>Ce qu'on en fait</dt><dd>repérer en une ligne qui décroche et de combien.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-05-agences-simulees.png" alt="Agences simulées"></figure></div>
+<div class="visuel"><h4>Agences simulées</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les onze départements du périmètre et les neuf agences, chacune au centre de son bassin, colorées par leur écart à l'objectif.</dd></div><div><dt>Comment le lire</dt><dd>le Sud-Ouest et le Nord ; les départements sans agence sont couverts à distance par l'agence la plus proche.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/accueil-06-ce-que-dit-le-mois.png" alt="Ce que dit le mois"></figure></div>
+<div class="visuel"><h4>Ce que dit le mois</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>trois phrases assemblées par règles à partir des faits SQL : le CA et son écart, la décomposition de l'écart, la marge et les alertes.</dd></div><div><dt>Comment le lire</dt><dd>chaque nombre de ces phrases existe dans une vue SQL. Le bouton « Expliquer avec le modèle » demande la même explication rédigée par un modèle de langage, sur les mêmes faits ; si le modèle n'est pas configuré, les phrases par règles restent et l'écran le dit.</dd></div><div><dt>Ce qu'on en fait</dt><dd>le texte du point du matin, prêt à copier.</dd></div></dl>
+</div>
+<h3 id="s5-2"><span class="num">5.2</span>Ventes et marge : « D'où vient l'écart de chiffre d'affaires »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/ventes.png" alt="Ventes et marge, page entière"><figcaption>Ventes et marge, page entière</figcaption></figure></div>
+<p>La question : pourquoi le CA n'est pas là où il devrait être, et qui gagne de l'argent.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-00-compteurs.png" alt="Compteurs de Ventes et marge"><figcaption>Compteurs de Ventes et marge</figcaption></figure></div>
+<div class="visuel"><h4>Les six compteurs</h4><p>: CA signé HT, CA posé HT, taux de marge brute, panier moyen, remise moyenne, taux d'annulation à 60 jours.</p>
+<dl class="lecture"><div><dt>Comment le lire</dt><dd>le taux d'annulation affiche « n. d. » pour le mois en cours parce que les signatures n'ont pas encore 60 jours ; sur un mois clos, il s'affiche et se compare à N-1.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-01-cascade-de-l-ecart-de-ca.png" alt="Cascade de l'écart de CA"></figure></div>
+<div class="visuel"><h4>Cascade de l'écart de CA</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>on part de l'objectif (au prorata), on ajoute ou retire quatre effets et on arrive au réalisé : l'effet <strong>volume</strong> (moins de ventes), l'effet <strong>mix</strong> (des produits moins chers dans le panier), l'effet <strong>prix</strong> (des prix catalogue différents), l'effet <strong>remise</strong> (plus ou moins de remise accordée). Le résiduel est nul par construction.</dd></div><div><dt>Comment le lire</dt><dd>les barres rouges retirent, les vertes ajoutent ; les deux barres grises sont les points de départ et d'arrivée. L'axe est tronqué pour que les effets se voient, et le sous-titre le dit.</dd></div><div><dt>Ce qu'on en fait</dt><dd>en septembre, l'écart de -355 k€ tient d'abord au volume (-238 k€, 67 % de l'écart) puis au mix (-106 k€) : ce n'est pas un problème de prix, c'est un problème de nombre de ventes. Le bouton « Expliquer » écrit le constat, les causes classées et une action.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-02-ca-signe-par-produit.png" alt="CA signé par produit"></figure></div>
+<div class="visuel"><h4>CA signé par produit</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>douze mois de CA en barres empilées par produit, et le taux de marge brute en courbe sur l'axe de droite.</dd></div><div><dt>Comment le lire</dt><dd>la saisonnalité se voit (photovoltaïque au printemps, chauffage à l'automne, août creux) ; la courbe de marge dit si le mix qui se vend est le mix qui rapporte.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-03-quelle-agence-gagne-de-l-argent.png" alt="Quelle agence gagne de l'argent"></figure></div>
+<div class="visuel"><h4>Quelle agence gagne de l'argent</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>par agence, le CA, l'écart à l'objectif et à N-1, la marge brute, la marge après acquisition, le résultat, les ventes par commercial, la remise, les annulations.</dd></div><div><dt>Comment le lire</dt><dd>la marge brute dit si l'agence vend bien ; la marge après acquisition dit si elle vend à un coût raisonnable ; le résultat dit si elle couvre ses charges. Sur un mois plein le réseau gagne de 12 à 200 k€ avec une à cinq agences en perte ; en cours de mois, le résultat est souvent négatif parce que les coûts d'acquisition sont engagés à la création du lead et la marge n'arrive qu'à la signature, plusieurs semaines après.</dd></div><div><dt>Ce qu'on en fait</dt><dd>c'est le tableau de la revue de marge mensuelle.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-04-matrice-agence-produit.png" alt="Matrice agence × produit"></figure></div>
+<div class="visuel"><h4>Matrice agence × produit</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>une bulle par couple agence et produit ; la taille est le CA, la couleur le taux de marge.</dd></div><div><dt>Comment le lire</dt><dd>une grosse bulle sombre est un produit qui pèse mais rapporte peu ; une petite bulle claire, un produit rentable qu'on vend peu.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-05-annulations-a-60-jours-a-distance-ou-sur-place.png" alt="Annulations à 60 jours : à distance ou sur place"><figcaption>Annulations à 60 jours : à distance ou sur place</figcaption></figure></div>
+<div class="visuel"><h4>Annulations à 60 jours, à distance ou sur place</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>par agence, le taux d'annulation des ventes réalisées dans les départements couverts à distance contre celles réalisées sur place.</dd></div><div><dt>Comment le lire</dt><dd>la distance se paie en annulations (14 % contre 8 % dans la simulation), après s'être payée en délai de pose (écran Pose).</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/ventes-06-remises.png" alt="Remises"></figure></div>
+<div class="visuel"><h4>Remises</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>la distribution des remises par agence en boîtes à moustaches (médiane, quartiles, extrêmes), et une phrase qui mesure ce que la remise rapporte.</dd></div><div><dt>Comment le lire</dt><dd>la phrase vient d'une régression à effets fixes agence sur les mois clos : chaque point de remise gagne 0,84 point de taux de signature (intervalle à 95 % : 0,15 à 1,52). À cette pente, aucune remise n'augmente la marge ; il faudrait 1,78 point de signature par point de remise pour qu'une remise de 8 % soit le bon niveau.</dd></div><div><dt>Ce qu'on en fait</dt><dd>une démonstration de méthode sur données simulées ; sur des données réelles, la même méthode dirait où plafonner la remise.</dd></div></dl>
+</div>
+<h3 id="s5-3"><span class="num">5.3</span>Funnel et leads : « Où se perd la conversion »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/funnel.png" alt="Funnel et leads, page entière"><figcaption>Funnel et leads, page entière</figcaption></figure></div>
+<p>La question : à quelle étape on perd, quel canal vaut son coût, quels leads attendent.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/funnel-00-compteurs.png" alt="Compteurs du Funnel"><figcaption>Compteurs du Funnel</figcaption></figure></div>
+<div class="visuel"><h4>Les six compteurs</h4><p>: leads, taux de RDV, taux de devis, taux de signature, coût par lead, coût par vente.</p>
+<dl class="lecture"><div><dt>Comment le lire</dt><dd>les leads du mois se comparent aux cohortes N-1 au prorata ; les taux et le coût par vente sont mesurés sur la dernière cohorte mûre (mai 2026, à 90 jours : 41,8 % de RDV, 67,8 % de devis, 33,8 % de signature, 914 € par vente), parce qu'une cohorte de septembre n'a pas fini de convertir.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/funnel-01-du-lead-a-l-encaissement.png" alt="Du lead à l'encaissement"><figcaption>Du lead à l'encaissement</figcaption></figure></div>
+<div class="visuel"><h4>Du lead à l'encaissement (diagramme de flux)</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les leads de la période coulent de gauche à droite : RDV tenus, devis, signatures, poses, encaissements. Les branches qui sortent sont les dossiers qui n'ont pas franchi l'étape.</dd></div><div><dt>Comment le lire</dt><dd>ambre, les étapes tenues ; rouge, les pertes ; gris, ce qui est encore en cours. Sur une cohorte de moins de 90 jours, les branches « sans RDV à date », « sans devis à date », « devis non signés à date » sont grises : un devis pas encore signé n'est pas un refus. Le sélecteur de canal filtre le flux ; changer d'agence le redessine.</dd></div><div><dt>Ce qu'on en fait</dt><dd>voir l'étape qui fuit le plus, et pour quel canal.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/funnel-02-conversion-par-canal-et-agence.png" alt="Conversion par canal et agence"></figure></div>
+<div class="visuel"><h4>Conversion par canal et agence</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le taux de conversion (ventes nettes / leads) de chaque canal dans chaque agence, sur la dernière cohorte close à 90 jours ; l'intensité de la couleur est la conversion, le petit trait le volume de leads.</dd></div><div><dt>Comment le lire</dt><dd>un canal sombre partout convertit mal partout (problème de canal) ; un canal sombre dans une seule agence pointe l'agence. Tri par colonne en cliquant.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/funnel-03-leads-par-canal-et-ventes.png" alt="Leads par canal et ventes"></figure></div>
+<div class="visuel"><h4>Leads par canal et ventes</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>vingt mois de leads empilés par canal, et les ventes nettes de chaque cohorte en courbe (axe de droite).</dd></div><div><dt>Comment le lire</dt><dd>quand une couleur grossit sans que la courbe suive, le canal apporte du volume, pas des ventes (c'est l'histoire des leads achetés de Bordeaux Métropole).</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/funnel-04-leads-sans-rdv-planifie.png" alt="Leads sans RDV planifié"></figure></div>
+<div class="visuel"><h4>Leads sans RDV planifié</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les leads créés depuis plus de 48 heures sans rendez-vous planifié, par agence, et sur les huit dernières cohortes.</dd></div><div><dt>Ce qu'on en fait</dt><dd>la file d'attente à relancer sous 48 h ; un plan d'action y est rattaché.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/funnel-05-qualite-des-leads-par-canal.png" alt="Qualité des leads par canal"></figure></div>
+<div class="visuel"><h4>Qualité des leads par canal</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>par canal, les leads, le taux de RDV, la conversion, le coût, le coût par lead, le coût par vente, le délai lead vers RDV, et un verdict.</dd></div><div><dt>Comment le lire</dt><dd>« à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux payants ; « sans coût » pour les canaux gratuits ; « provisoire » tant que la cohorte n'est pas mûre.</dd></div><div><dt>Ce qu'on en fait</dt><dd>décider où mettre l'argent d'acquisition.</dd></div></dl>
+</div>
+<h3 id="s5-4"><span class="num">5.4</span>Forecast et atterrissage : « Où finit l'année 2026 »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/forecast.png" alt="Forecast, page entière"><figcaption>Forecast, page entière</figcaption></figure></div>
+<p>La question : où on atterrit, avec quelles hypothèses, quels risques, quelles opportunités.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/forecast-01-eventail-d-atterrissage-2026.png" alt="Éventail d'atterrissage 2026"><figcaption>Éventail d'atterrissage 2026</figcaption></figure></div>
+<div class="visuel"><h4>Éventail d'atterrissage</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le CA cumulé depuis janvier (ambre), l'objectif cumulé (pointillé vert), la ligne de la journée publiée, puis la projection jusqu'à décembre avec son intervalle à 68 %.</dd></div><div><dt>Comment le lire</dt><dd>tant que la courbe ambre est au-dessus du pointillé, on est en avance ; à partir de l'été elle passe dessous et la projection finit à 24,8 M€ contre 29,2 M€ d'objectif : -15 %, probabilité d'atteinte inférieure à 1 %.</dd></div><div><dt>Ce qu'on en fait</dt><dd>chiffrer ce qu'il manque et sur combien de mois.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/forecast-02-hypotheses.png" alt="Hypothèses"></figure></div>
+<div class="visuel"><h4>Hypothèses</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>tout ce qui entre dans le calcul : les devis en cours de moins de 90 jours et leur montant, le taux de signature observé selon l'âge du devis, l'annulation à six mois, le pipe pondéré, le run-rate des trois derniers mois, sa projection saisonnalisée sur les mois restants et la part retenue au-delà des 45 jours déjà couverts par le pipe, l'écart-type mensuel.</dd></div><div><dt>Comment le lire</dt><dd>réalisé à date + pipe pondéré + part retenue = atterrissage central (19,5 + 1,5 + 3,8 = 24,8 M€), on peut le refaire de tête. Le curseur « taux de signature du pipe » recalcule l'atterrissage à l'écran sans rien écrire : « et si le pipe signait à 20 % ? ».</dd></div><div><dt>Ce qu'on en fait</dt><dd>discuter des hypothèses plutôt que du chiffre.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/forecast-03-atterrissage-par-agence.png" alt="Atterrissage par agence"></figure></div>
+<div class="visuel"><h4>Atterrissage par agence</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>réalisé à date, objectif, atterrissage central, fourchette, écart, probabilité d'atteinte, pipe pondéré, statut.</dd></div><div><dt>Comment le lire</dt><dd>une seule agence est « tenu » (Bassin d'Arcachon, +6,7 %, probabilité 95 %) ; les autres sont en retrait de 10 à 29 %.</dd></div></dl>
+</div>
+<div class="figures"><figure class=""><img src="captures/guide/forecast-04-risques.png" alt="Risques"><figcaption>Risques</figcaption></figure><figure class=""><img src="captures/guide/forecast-05-opportunites.png" alt="Opportunités"><figcaption>Opportunités</figcaption></figure></div>
+<div class="visuel"><h4>Risques et opportunités</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>des signaux calculés par règles, chacun avec un montant et la nature de ce montant : poses en retard (CA posé à risque, estimé), atterrissage sous l'objectif (au plus trois lignes), devis en cours insuffisants pour couvrir un mois de run-rate ; en face, les agences dont l'objectif est atteignable, celles dont la borne haute dépasse l'objectif, celles dont le pipe couvre plus de 45 jours.</dd></div><div><dt>Ce qu'on en fait</dt><dd>l'ordre du jour de la revue de forecast.</dd></div></dl>
+</div>
+<h3 id="s5-5"><span class="num">5.5</span>Pose et encaissement : « Ce qui est signé et pas encore posé »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/pose.png" alt="Pose et encaissement, page entière"><figcaption>Pose et encaissement, page entière</figcaption></figure></div>
+<p>La question : quel délai entre signature et pose, quelle charge pour les équipes, ce qui reste à encaisser.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/pose-00-compteurs.png" alt="Compteurs de Pose et encaissement"><figcaption>Compteurs de Pose et encaissement</figcaption></figure></div>
+<div class="visuel"><h4>Les six compteurs</h4><p>: délai signature vers pose (médiane), poses dans les délais (moins de 60 jours), carnet de pose (jours ouvrés), encaissé, en attente d'encaissement, aides en attente.</p>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/pose-01-calendrier-de-charge-des-equipes-de-pose.png" alt="Calendrier de charge des équipes de pose"></figure></div>
+<div class="visuel"><h4>Calendrier de charge des équipes de pose</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>une case par agence et par semaine, colorée par la charge en part de la capacité (techniciens actifs × 5 jours) : quatre semaines réalisées (cadre plein), puis la semaine en cours et onze semaines planifiées (cadre pointillé).</dd></div><div><dt>Comment le lire</dt><dd>gris sous 50 %, ambre foncé de 50 à 80 %, ambre de 80 à 100 %, rouge au-delà de 100 % (surcharge : plus de poses planifiées que de capacité). Une case vide est une semaine sans pose.</dd></div><div><dt>Ce qu'on en fait</dt><dd>déplacer des poses ou de la capacité avant que la semaine rouge n'arrive.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/pose-02-delai-de-pose-sur-place-contre-a-distance.png" alt="Délai de pose : sur place contre à distance"><figcaption>Délai de pose : sur place contre à distance</figcaption></figure></div>
+<div class="visuel"><h4>Délai de pose, sur place contre à distance</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>douze mois de délai médian entre signature et pose, pour les dossiers des départements avec agence (sur place) et pour ceux couverts à distance.</dd></div><div><dt>Comment le lire</dt><dd>la distance coûte environ un mois de délai (48 jours contre 74 au dernier mois), puis des annulations (écran Ventes).</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/pose-03-ce-que-dit-le-carnet.png" alt="Ce que dit le carnet"></figure></div>
+<div class="visuel"><h4>Ce que dit le carnet</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le carnet en jours ouvrés à la dernière semaine, sa tendance, les dossiers signés à poser et ceux en retard (plus de 60 jours sur place, 90 à distance), et la règle de l'alerte carnet.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/pose-04-encaissement-et-carnet-par-agence.png" alt="Encaissement et carnet par agence"></figure></div>
+<div class="visuel"><h4>Encaissement et carnet par agence</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>par agence, l'encaissé de la période, le délai pose vers encaissement, l'attente d'encaissement, les retards (plus de 30 jours après la pose), les aides en attente, le carnet et les poses en retard.</dd></div><div><dt>Ce qu'on en fait</dt><dd>la trésorerie et la charge technique dans un seul tableau.</dd></div></dl>
+</div>
+<h3 id="s5-6"><span class="num">5.6</span>Plans d'action et rituels : « Ce qu'on a décidé de changer »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/plans-action.png" alt="Plans d'action, page entière"><figcaption>Plans d'action, page entière</figcaption></figure></div>
+<p>La question : quels leviers sont engagés, par qui, pour quel gain, et comment on en parle chaque semaine.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/plans-action-01-plans-d-action.png" alt="Plans d'action"></figure></div>
+<div class="visuel"><h4>Plans d'action</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>douze plans, chacun avec un levier, une agence ou le réseau, un propriétaire (code), un gain de marge attendu et un avancement déclarés par le propriétaire, un statut, une échéance et l'indicateur qui dira si ça marche.</dd></div><div><dt>Comment le lire</dt><dd>les plans découlent des histoires plantées dans la simulation : plafonner les leads achetés de Bordeaux Métropole, plafonner la remise en Saintonge, renforcer la pose au Bassin d'Arcachon, aligner le référentiel du Nord. « n. d. » dans la colonne des gains signale un levier de qualité, non chiffrable en marge.</dd></div><div><dt>Ce qu'on en fait</dt><dd>la liste que le Responsable Performance tient à jour et fait vivre dans les rituels.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/plans-action-02-revue-hebdomadaire.png" alt="Revue hebdomadaire"></figure></div>
+<div class="visuel"><h4>Revue hebdomadaire</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>chaque semaine, trois colonnes : les <strong>faits</strong> (leads, RDV, signatures, CA, poses, encaissé, comparaison avec la semaine précédente, écarts du mois, alertes), la <strong>lecture</strong> (cinq phrases d'interprétation) et les <strong>décisions proposées</strong>, chacune rattachée à un indicateur.</dd></div><div><dt>Comment le lire</dt><dd>les faits sont calculés en SQL ; la lecture est rédigée par règles, ou par un modèle de langage le lundi à 07:00 quand il est branché, avec un contrôle qui refuse tout nombre absent des faits ; le sous-titre dit qui a rédigé et quand. Le sélecteur en haut à droite ouvre les semaines précédentes.</dd></div><div><dt>Ce qu'on en fait</dt><dd>la revue de pipe du lundi matin, prête avant l'arrivée au bureau.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/plans-action-03-rituels.png" alt="Rituels"></figure></div>
+<div class="visuel"><h4>Rituels</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>quatre revues avec leur cadence, leur moment, leur durée, leurs participants, leur ordre du jour type et les indicateurs qu'elles regardent : revue de pipe (hebdomadaire, lundi 09:00, 30 minutes), revue de marge (le 5 du mois, 45 minutes), revue de forecast (le 10 du mois, 30 minutes), revue de performance (trimestrielle, comité de direction, 2 heures).</dd></div><div><dt>Ce qu'on en fait</dt><dd>c'est le mode de fonctionnement proposé pour le poste, écran par écran.</dd></div></dl>
+</div>
+<h3 id="s5-7"><span class="num">5.7</span>Qualité et référentiels : « Peut-on faire confiance au chiffre »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/qualite.png" alt="Qualité, page entière"><figcaption>Qualité, page entière</figcaption></figure></div>
+<p>La question : la confiance dans le chiffre, rendue visible.</p>
+<div class="figures"><figure class=""><img src="captures/guide/qualite-00-compteurs.png" alt="Score de qualité du jour"><figcaption>Score de qualité du jour</figcaption></figure><figure class=""><img src="captures/guide/qualite-01-score-des-journees-publiees.png" alt="Score des journées publiées"><figcaption>Score des journées publiées</figcaption></figure></div>
+<div class="visuel"><h4>Score de qualité du jour et courbe des journées publiées</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>un score de 0 à 100, part pondérée des contrôles réussis (poids 3 pour un contrôle bloquant), et son historique sur les journées publiées.</dd></div><div><dt>Comment le lire</dt><dd>68 le 17 septembre, parce que deux contrôles bloquants sont en échec ; l'écran le dit au lieu de le masquer.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/qualite-02-les-douze-controles.png" alt="Les douze contrôles"></figure></div>
+<div class="visuel"><h4>Les douze contrôles</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>pour chaque contrôle, la règle en une phrase, le nombre de lignes en défaut, la tendance sur la veille, le statut (OK, alerte, KO) et un échantillon des lignes concernées.</dd></div><div><dt>Comment le lire</dt><dd>les contrôles marqués « bloquant » comptent triple ; le 17 septembre, « statut incohérent avec les dates » (45 lignes) et « libellé produit hors référentiel » (83 lignes) sont KO, « doublon probable » (25 lignes) est en alerte. Ce sont les traces de l'agence intégrée en juin.</dd></div><div><dt>Ce qu'on en fait</dt><dd>traiter l'anomalie de données avant de lire un chiffre.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/qualite-03-fraicheur-des-sources.png" alt="Fraîcheur des sources"></figure></div>
+<div class="visuel"><h4>Fraîcheur des sources</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>pour chaque source (journée simulée, Insee, RGE, RTE, DPE, contours), la date de référence, la date de chargement et la prochaine mise à jour attendue ; pour la journée simulée, jusqu'à quelle date les dossiers sont déjà publiés d'avance.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/qualite-04-lignage.png" alt="Lignage"></figure></div>
+<div class="visuel"><h4>Lignage</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le chemin des sources aux écrans : sources, tables de préparation, vues de calcul, écrans. Rien n'est calculé ailleurs que dans les vues.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/qualite-05-referentiels.png" alt="Référentiels"></figure></div>
+<div class="visuel"><h4>Référentiels</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les agences (code, bassin, département, année d'ouverture), les canaux avec leur modèle de coût, les produits avec prix catalogue et durée de pose en jours-technicien, les statuts. Ce sont les listes de référence que toutes les entités doivent partager.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/qualite-06-reconciliation-des-libelles-produits.png" alt="Réconciliation des libellés produits"></figure></div>
+<div class="visuel"><h4>Réconciliation des libellés produits</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les libellés reçus du système source de l'agence Nord pendant son intégration (« PAC AIR EAU 11KW », « PV 3KW ») et le produit du référentiel vers lequel chacun a été résolu, avec le nombre de dossiers et la période.</dd></div><div><dt>Ce qu'on en fait</dt><dd>c'est exactement le travail d'alignement des référentiels après un rachat, rendu visible.</dd></div></dl>
+</div>
+<h3 id="s5-8"><span class="num">5.8</span>Territoires : « Où est le potentiel non servi »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/territoires.png" alt="Territoires, page entière"><figcaption>Territoires, page entière</figcaption></figure></div>
+<p>La question : que dit le marché réel des territoires couverts et alentour. Rien n'est simulé sur cet écran, sauf la position des neuf agences.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/territoires-01-indice-de-potentiel-par-departement.png" alt="Indice de potentiel par département"></figure></div>
+<div class="visuel"><h4>Indice de potentiel par département</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>la France des 96 départements colorée par un indice de 0 à 100 ; les onze départements du périmètre simulé sont détourés en ambre.</dd></div><div><dt>Comment le lire</dt><dd>plus le département est clair, plus le potentiel non servi est élevé ; le survol donne les chiffres bruts (propriétaires occupants, résidences au fioul et au gaz citerne, maisons F ou G, installations solaires, installateurs RGE). Un clic sélectionne le département.</dd></div><div><dt>Ce qu'on en fait</dt><dd>une lecture du marché, explicitement pas une recommandation d'implantation.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/territoires-02-composantes-de-l-indice.png" alt="Composantes de l'indice"></figure></div>
+<div class="visuel"><h4>Composantes de l'indice</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>pour le département sélectionné, les cinq composantes en rangs centiles (le Nord : volume de propriétaires 98, intensité fioul et citerne 4, maisons F ou G 19, frein concurrence RGE 1, saturation solaire 9) et leurs poids, réglables au curseur.</dd></div><div><dt>Comment le lire</dt><dd>indice = (0,4 × volume + 0,3 × fioul et citerne + 0,3 × F ou G) × (1 - 0,3 × frein / 100) × (1 - 0,3 × saturation / 100). Déplacer un curseur recalcule la carte et le tableau à l'écran ; « Réinitialiser les poids » revient aux poids de référence.</dd></div><div><dt>Ce qu'on en fait</dt><dd>discuter des poids en réunion, pas d'un chiffre sorti d'une boîte noire.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/territoires-03-departements-les-26-premiers.png" alt="Départements, les 26 premiers"><figcaption>Départements, les 26 premiers</figcaption></figure></div>
+<div class="visuel"><h4>Départements</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les onze du périmètre en tête, puis les autres par indice ; les chiffres bruts en colonnes, exportables ; « Afficher les 96 départements » pour tout voir ; « Voir les communes » ouvre la vue communale du département sélectionné (potentiel par commune, agence du bassin, installateurs RGE en points sans nom).</dd></div></dl>
+</div>
+<div class="figures"><figure class=""><img src="captures/guide/territoires-04-le-parc-gaz-en-citerne.png" alt="Le parc gaz en citerne"><figcaption>Le parc gaz en citerne</figcaption></figure><figure class=""><img src="captures/guide/territoires-05-un-parc-a-convertir.png" alt="Un parc à convertir"><figcaption>Un parc à convertir</figcaption></figure></div>
+<div class="visuel"><h4>Le parc gaz en citerne et « un parc à convertir »</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les résidences chauffées au gaz en citerne ou en bouteille par département (Insee 2022), et ce que ce parc représente dans le périmètre.</dd></div><div><dt>Comment le lire</dt><dd>un parc à convertir, à lire comme tel : ce sont des ménages équipés d'une énergie que le métier remplace.</dd></div></dl>
+</div>
+<h3 id="s5-9"><span class="num">5.9</span>Automatisations : « Ce qui tourne chaque matin »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/automatisations.png" alt="Automatisations, page entière"><figcaption>Automatisations, page entière</figcaption></figure></div>
+<p>La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a marché.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/automatisations-01-journee-simulee.png" alt="Journée simulée"><figcaption>Journée simulée</figcaption></figure></div>
+<div class="visuel"><h4>Les cinq cartes de workflows</h4><p>(Journée simulée, Contrôles qualité, Revue hebdomadaire, Santé, Erreurs).</p>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>pour chaque automatisation, son déclencheur (chaque jour à 06:00, à 06:20, le lundi à 07:00, toutes les six heures, sur erreur), ce qu'elle fait, sa dernière et sa prochaine exécution, son statut, et le bouton d'export de sa définition (un fichier sans aucun secret).</dd></div><div><dt>Comment le lire</dt><dd>« pas encore exécuté » et « Export JSON après publication » signifient que le workflow est construit mais pas encore publié dans l'outil d'automatisation (il attend un identifiant de connexion) ; en attendant, la journée simulée est publiée d'avance par script et les vues sont rafraîchies chaque matin par une tâche de secours dans la base.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/automatisations-06-journal-des-executions.png" alt="Journal des exécutions"></figure></div>
+<div class="visuel"><h4>Journal des exécutions</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les cinquante dernières exécutions, tous workflows confondus : début, statut, durée, lignes traitées, message. L'état vide explique pourquoi il est vide.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/automatisations-07-le-flux.png" alt="Le flux"></figure></div>
+<div class="visuel"><h4>Le flux</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>de l'outil d'automatisation aux écrans : les workflows appellent des fonctions SQL avec une clé serveur, les vues recalculent, l'application lit ; les alertes partent par email ; aucun secret ne circule dans le navigateur.</dd></div></dl>
+</div>
+<h3 id="s5-10"><span class="num">5.10</span>Analyste : « Vérifier un chiffre avant de décider »</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/analyste.png" alt="Analyste, page entière"><figcaption>Analyste, page entière</figcaption></figure></div>
+<p>La question : que répond le cockpit quand on lui pose une question de fait en français, et peut-on lui faire confiance. L'écran est entré dans la navigation le 19 septembre 2026, après un jeu d'évaluation de vingt-quatre questions réussi à 100 % (le seuil de mise en ligne était de 90 %). Ce que le jeu vérifie : le statut attendu (réponse ou refus), l'absence de tout nombre hors des lignes, et la présence dans la phrase du modèle de la valeur attendue pour les onze questions dont la valeur ne bouge pas d'un jour à l'autre. Un chiffre exact prêté à la mauvaise agence dans une phrase qui la nomme est rejeté aussi ; les lignes et la requête restent affichées parce qu'elles sont la matière de la réponse.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-00-avant-question.png" alt="L'écran avant toute question"><figcaption>L'écran avant toute question</figcaption></figure></div>
+<div class="visuel"><h4>Le formulaire et les suggestions</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>un champ de question libre (500 caractères au plus), le bouton « Demander », six suggestions qui correspondent aux histoires plantées dans la simulation et au marché réel, et la règle du jeu en une ligne : la question se suffit, les filtres de la barre haute ne s'appliquent pas ici.</dd></div><div><dt>Comment le lire</dt><dd>une question de fait porte sur les indicateurs, les agences, les canaux, les produits, les périodes, les délais, la qualité ou le marché des territoires ; le pourquoi d'un écart, lui, se demande au bouton Expliquer de Ventes et marge. Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (cinq secondes, deux cents lignes), puis le modèle rédige à partir des lignes renvoyées, sans jamais calculer.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-01-la-reponse.png" alt="La réponse"></figure></div>
+<div class="visuel"><h4>La réponse</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>trois à six phrases en français, la période et le périmètre rappelés, les codes traduits en bassins, puis les sources, calculées par le programme et non par le modèle (vues lues par la requête, période des lignes bornée à la journée publiée, nature des données), le modèle, la durée en secondes et le coût de la question. Le badge « simulé » ou « marché réel » vient lui aussi des vues citées par la requête validée.</dd></div><div><dt>Comment le lire</dt><dd>la pastille verte « chaque nombre retrouvé dans sa ligne » dit que tous les nombres de la prose, en chiffres ou en lettres et avec leur signe, ont été retrouvés dans les lignes renvoyées par la base, et, quand la phrase nomme une agence, un canal ou un produit, dans la ligne de celui-ci. Si un nombre ne s'y trouve pas, la rédaction est rejetée, la pastille passe en orange et une phrase explique que les lignes ci-dessous restent la réponse. En cas de doute, le tableau fait foi.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-02-les-chiffres.png" alt="Les chiffres"></figure></div>
+<div class="visuel"><h4>Les chiffres</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les lignes exactes renvoyées par la base, avec les noms de colonnes tels que la requête les a écrits (en minuscules, police à chasse fixe : ce sont des alias SQL, pas des libellés), les codes d'agence, de canal, de produit et de département traduits en libellés par le programme (le modèle reçoit ces libellés et les recopie), triables et exportables comme tout tableau du site.</dd></div><div><dt>Comment le lire</dt><dd>c'est la matière première de la réponse ; en cas de doute sur une phrase, la ligne fait foi.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-06-la-requete-sql-executee.png" alt="La requête SQL exécutée"></figure></div>
+<div class="visuel"><h4>La requête SQL exécutée</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>la requête telle qu'elle a été validée et exécutée, dans une carte repliée, mise en forme pour la lecture (une clause par ligne) et copiable telle quelle.</dd></div><div><dt>Comment le lire</dt><dd>un lecteur qui connaît SQL vérifie en quelques secondes le périmètre (agence, mois, canal), les filtres et le calcul ; c'est la transparence qui rend la réponse discutable en réunion.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-07-question-refusee.png" alt="Une question refusée"></figure></div>
+<div class="visuel"><h4>Une question refusée</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>le motif du refus, en une phrase, et un renvoi utile quand il existe (le marché d'un département se lit sur Territoires ; ce que le cockpit contient, sur Méthode). Quatre motifs existent : conseil (« faut-il ouvrir une agence à Niort ? » : le démonstrateur lit le marché, il ne recommande pas), hors périmètre (la météo), données non couvertes (chiffres réels d'une entreprise, résultats par personne, MaPrimeRénov' par commune), écriture (toute demande de modification ou de suppression).</dd></div><div><dt>Comment le lire</dt><dd>un refus n'est pas une panne, et il a coûté un seul appel court au modèle. Une limite atteinte (cinq questions par minute, vingt par jour, budget du jour) s'affiche à part, « Analyste en pause », sans être un refus.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-04-historique-de-la-session.png" alt="Historique de la session"></figure></div>
+<div class="visuel"><h4>Historique de la session</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>les dix dernières questions posées dans ce navigateur, avec l'heure et le statut (répondu, lignes seules, refusé, en pause) ; un clic rouvre la réponse. L'historique visible n'existe que dans ce navigateur ; côté serveur, la question, sa requête et son statut sont journalisés avec une empreinte hachée de l'adresse et du navigateur, jamais l'adresse, et purgés après trente jours.</dd></div></dl>
+</div>
+<div class="figure-seule"><figure class=""><img src="captures/guide/analyste-05-garde-fous.png" alt="Garde-fous"></figure></div>
+<div class="visuel"><h4>Garde-fous</h4>
+<dl class="lecture"><div><dt>Ce que ça montre</dt><dd>ce que l'analyste ne peut pas faire, par construction : lecture seule sur les vues, une seule requête SELECT validée avant exécution (mots interdits, vues hors liste, schémas système refusés), contrôle des nombres, refus explicites, quotas (cinq questions par minute et vingt par jour par adresse et navigateur hachés, quatre cents par jour au total) et, en dernière ligne, le budget du jour consommé, toutes fonctions IA confondues.</dd></div></dl>
+</div>
+<h3 id="s5-11"><span class="num">5.11</span>Méthode et auteur</h3>
+<div class="figure-seule"><figure class="entiere"><img src="captures/guide/methode.png" alt="Méthode, page entière"><figcaption>Méthode, page entière</figcaption></figure></div>
+<p>La page qui dit tout : ce que c'est et ce que ce n'est pas, les sources réelles avec liens et licences, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture en langage simple, l'export Power BI (vingt et une tables CSV, un modèle en étoile documenté, quarante mesures DAX et un mode d'emploi), l'auteur et ses liens.</p>
+<div class="figure-seule"><figure class=""><img src="captures/guide/methode-03-le-modele-de-simulation.png" alt="Le modèle de simulation"><figcaption>Le modèle de simulation</figcaption></figure></div>
+</section>
+<section id="s6"><h2><span class="num">6</span>Les sept histoires plantées dans la simulation, et où les retrouver</h2>
+<p>Une simulation n'est utile que si l'on peut y retrouver des situations connues. Sept histoires ont été plantées ; aucune ne décrit un fait réel.</p>
+<div class="tableau"><table><thead><tr><th scope="col">Histoire</th><th scope="col">Ce qui se passe</th><th scope="col">Où ça se voit</th></tr></thead><tbody><tr><td>H1 Marensin</td><td>Changement d'organisation commerciale en février 2026 : taux RDV vers devis en retrait de 10 points de mars à juin, retour progressif ensuite</td><td>Funnel (taux de devis par agence), Forecast (Marensin à -29 %)</td></tr><tr><td>H2 Bordeaux Métropole</td><td>Leads achetés doublés à partir d'avril 2026 : volume en hausse, taux de RDV du canal en baisse, coût par vente du canal +48 % vs premier trimestre</td><td>Alerte de l'accueil, Funnel (qualité des leads par canal, leads par canal)</td></tr><tr><td>H3 Saintonge</td><td>Taux de remise porté de 4 % à 9 % à partir d'avril 2026 : conversion gagnée, marge perdue</td><td>Ventes et marge (remises, tableau des agences)</td></tr><tr><td>H4 Nord</td><td>Agence intégrée en juin 2026 : dossiers sans statut, doublons, libellés produits divergents, réconciliés semaine après semaine ; cas d'école simulé, sans lien avec une opération réelle</td><td>Qualité (contrôles 3, 5, 9 ; réconciliation des libellés), alerte de l'accueil</td></tr><tr><td>H5 Départements à distance</td><td>Délai de pose et annulations plus élevés que sur place (74 jours contre 48, 14 % contre 8 %)</td><td>Pose (délai sur place contre à distance), Ventes (annulations)</td></tr><tr><td>H6 Saisonnalité</td><td>Photovoltaïque au printemps, chauffage à l'automne, août creux partout</td><td>Ventes (CA par produit), Funnel (leads par canal)</td></tr><tr><td>H7 Bassin d'Arcachon</td><td>Capacité de pose réduite de 25 % de mai à août 2026 : carnet allongé, CA posé en retrait alors que le CA signé tient</td><td>Pose (calendrier, carnet), Plans d'action (renfort de pose)</td></tr></tbody></table></div>
+<p>Vingt tests SQL vérifient chaque matin que ces histoires se retrouvent bien dans les vues.</p>
+</section>
+<section id="s7"><h2><span class="num">7</span>Notice d'utilisation</h2>
+<h3 id="s7-1"><span class="num">7.1</span>Prise en main en dix minutes</h3>
+<ol><li>Ouvrir <a href="https://buta.lyfh.fr">https://buta.lyfh.fr</a>. Sur ordinateur, le rail à gauche liste les écrans ; sur téléphone, le bouton en haut à gauche ouvre le tiroir.</li><li>Regarder le badge de fraîcheur en haut : « Journée du 17/09 intégrée à 11:25 » dit jusqu'où les données vont.</li><li>Lire les quatre compteurs de l'accueil, puis l'atterrissage, puis les alertes du matin.</li><li>Cliquer sur le « i » d'un compteur : la fiche dit ce que le chiffre veut dire et d'où il vient.</li><li>Changer la période (mois, trimestre, année à date) et la comparaison (objectif, N-1) dans la barre haute : tous les écarts se recalculent.</li><li>Choisir une agence : chaque écran se recentre sur elle, son nom passe dans le titre.</li><li>Aller sur Ventes et marge pour comprendre un écart, sur Funnel pour une conversion, sur Forecast pour l'année, sur Pose pour la charge technique, sur Qualité avant de croire un chiffre qui surprend.</li><li>Exporter un tableau (bouton en bas à droite) ou tout l'écran (bouton Exporter de la barre haute).</li><li>Copier l'adresse de la page pour partager exactement la même vue.</li><li>Sur la page Méthode, télécharger l'export Power BI si l'on veut travailler dans son propre outil.</li></ol>
+<h3 id="s7-2"><span class="num">7.2</span>Les parcours types</h3>
+<div class="visuel"><h4>Le matin, cinq minutes</h4><p>Badge de fraîcheur ; accueil (compteurs, atterrissage, alertes) ; Qualité (score et contrôles en échec) ; « Ce que dit le mois » pour le point quotidien. Une question à l'Analyste quand un chiffre surprend (« quelles agences sont sous leur objectif en septembre ? »).</p>
+</div>
+<div class="visuel"><h4>Chaque semaine</h4><p>Plans d'action : la revue hebdomadaire du lundi (faits, lecture, décisions). Funnel : où se perd la conversion, les leads sans rendez-vous à 48 h, le canal « à revoir ». Forecast : le pipe pondéré, les devis qui vieillissent, les risques.</p>
+</div>
+<div class="visuel"><h4>Chaque mois</h4><p>Ventes et marge : la cascade de l'écart, les agences qui gagnent ou perdent de l'argent, la distribution des remises. Forecast : atterrissage, hypothèses, curseur pour tester un scénario. Pose : calendrier de charge et carnet.</p>
+</div>
+<div class="visuel"><h4>Chaque trimestre</h4><p>Territoires : le marché réel, l'indice avec les poids discutés en réunion, la couverture des départements à distance et ce qu'elle coûte. Export Power BI pour les directions.</p>
+</div>
+<h3 id="s7-3"><span class="num">7.3</span>Les gestes utiles</h3>
+<div class="tableau"><table><thead><tr><th scope="col">Geste</th><th scope="col">Où</th><th scope="col">Effet</th></tr></thead><tbody><tr><td>Cmd K ou Ctrl K</td><td>partout</td><td>palette : aller à un écran, filtrer une agence, ouvrir une fiche</td></tr><tr><td>Clic sur un en-tête de colonne</td><td>tableaux</td><td>tri croissant, puis décroissant</td></tr><tr><td>Menu « ⋯ » d'un graphique</td><td>graphiques</td><td>plein écran, image PNG, export CSV, requête SQL</td></tr><tr><td>Bouton « i »</td><td>compteurs, graphiques, tableaux</td><td>fiche de l'indicateur (Échap pour fermer)</td></tr><tr><td>Curseur « taux de signature du pipe »</td><td>Forecast</td><td>recalcule l'atterrissage sans rien écrire</td></tr><tr><td>Curseurs de poids</td><td>Territoires</td><td>recalcule l'indice, la carte et le tableau</td></tr><tr><td>Sélecteur de canal</td><td>Funnel</td><td>filtre le diagramme de flux</td></tr><tr><td>Sélecteur de semaine</td><td>Plans d'action</td><td>ouvre une revue précédente</td></tr><tr><td>Bouton « Expliquer »</td><td>Ventes, accueil</td><td>explication rédigée sur les mêmes faits (par règles si le modèle n'est pas branché)</td></tr><tr><td>Question en français</td><td>Analyste</td><td>requête SQL écrite par le modèle, lignes exactes, réponse dont chaque nombre est vérifié</td></tr><tr><td>Bouton rond en haut à droite</td><td>partout</td><td>thème sombre ou clair</td></tr><tr><td>Adresse de la page</td><td>partout</td><td>contient période, comparaison et agence ; se partage telle quelle</td></tr></tbody></table></div>
+<h3 id="s7-4"><span class="num">7.4</span>Ce qu'il faut savoir pour ne pas se tromper</h3>
+<ul><li><strong>Le mois en cours est proratisé.</strong> « -27,8 % vs objectif prorata » compare 17 jours de réalisé à 17/30 de l'objectif. Sans cela, tout mois en cours serait faussement en retard.</li><li><strong>Une cohorte de moins de 90 jours n'a pas fini de convertir.</strong> Ses taux sont provisoires et grisés ; les compteurs de conversion se lisent sur la dernière cohorte mûre, nommée sous le libellé.</li><li><strong>« n. d. » n'est jamais un zéro.</strong> C'est une valeur qu'on ne peut pas calculer honnêtement (pas d'historique 2024, signatures de moins de 60 jours, aucune vente dans le dénominateur).</li><li><strong>Le résultat d'agence en cours de mois est souvent négatif</strong> : les coûts d'acquisition sont engagés à la création du lead, la marge arrive à la signature. Sur un mois plein, le réseau est autour de l'équilibre avec des agences gagnantes et perdantes.</li><li><strong>Les données d'activité sont simulées.</strong> Elles sont cohérentes, calibrées sur le marché réel, mais elles ne décrivent l'activité de personne.</li><li><strong>Le badge « instantané »</strong> signifie que la base n'a pas répondu et que l'application montre les données embarquées avec le site ; les chiffres datent alors du dernier déploiement.</li><li><strong>Les workflows d'automatisation affichent « pas encore exécuté »</strong> tant qu'ils ne sont pas publiés ; les vues sont rafraîchies chaque matin par une tâche de secours et la journée simulée est publiée d'avance.</li></ul>
+<h3 id="s7-5"><span class="num">7.5</span>Sur téléphone</h3>
+<div class="figure-seule"><figure class="tel"><img src="captures/guide/mobile-accueil.png" alt="Accueil sur téléphone"><figcaption>Accueil sur téléphone</figcaption></figure></div>
+<div class="figure-seule"><figure class="tel"><img src="captures/guide/mobile-analyste.png" alt="Analyste sur téléphone"><figcaption>Analyste sur téléphone</figcaption></figure></div>
+<p>Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent leurs colonnes essentielles et se font défiler horizontalement, les graphiques prennent une hauteur adaptée, le diagramme de flux se lit de haut en bas. Une ligne sous le titre rappelle l'objet du site.</p>
+</section>
+<section id="s8"><h2><span class="num">8</span>Questions fréquentes</h2>
+<div class="visuel"><h4>Ce sont les données de l'entreprise ?</h4><p>Non. Le marché est public et sourcé (Insee, ADEME, RTE, Etalab), l'activité est simulée par un générateur dont les hypothèses sont écrites. Rien de ce qui est affiché ne décrit l'activité de l'entreprise.</p>
+</div>
+<div class="visuel"><h4>Pourquoi simuler plutôt que prendre un jeu de données existant ?</h4><p>Parce qu'un réseau d'installateurs n'a pas de jeu public, et parce qu'une simulation permet de planter des situations à retrouver (une agence qui remise trop, un canal qui dérape, une intégration) et de vérifier que les indicateurs les font remonter.</p>
+</div>
+<div class="visuel"><h4>Comment être sûr des chiffres ?</h4><p>Aucun calcul dans l'interface : tout est en SQL ou dans une bibliothèque testée ; chaque indicateur a sa fiche avec la formule ; le mois en cours est proratisé ; les cohortes immatures ne sont pas comparées ; douze contrôles tournent chaque matin ; vingt tests SQL vérifient les vues et les histoires ; une relecture à trois lentilles (faits, forme, recruteur simulé) a été faite avant la mise en ligne.</p>
+</div>
+<div class="visuel"><h4>Et avec des données réelles ?</h4><p>Le modèle (un dossier avec ses dates, son agence, son canal, son produit, ses montants) est celui d'un CRM d'installateur. L'ingestion remplacerait le générateur ; les vues, les contrôles, les référentiels et les écrans resteraient.</p>
+</div>
+<div class="visuel"><h4>Que fait le modèle de langage ?</h4><p>Il rédige à partir de faits calculés en SQL et ne calcule jamais ; un contrôle refuse toute phrase contenant un nombre absent des faits. Sans clé configurée, tout est rédigé par règles et l'écran le dit.</p>
+</div>
+<div class="visuel"><h4>L'analyste peut-il se tromper ?</h4><p>Il peut mal choisir une vue ou un filtre, comme un analyste humain pressé : c'est pourquoi la requête et les lignes sont toujours affichées avec la réponse. Ce qu'il ne peut pas faire, c'est inventer ou déplacer un chiffre : tout nombre de sa phrase absent des lignes, en chiffres ou en lettres, au signe contraire, ou attribué à une autre ligne que celle que la phrase nomme, fait rejeter la phrase. Le jeu d'évaluation de vingt-quatre questions (dont six refus attendus) est rejoué avant chaque mise en ligne de l'écran.</p>
+</div>
+<div class="visuel"><h4>Et Power BI ?</h4><p>L'export de la page Méthode fournit les tables en CSV, un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux), quarante mesures DAX et un mode d'emploi.</p>
+</div>
+<div class="visuel"><h4>Combien ça coûte à faire tourner ?</h4><p>Un hébergement mutualisé, une base Supabase, une instance d'automatisation : quelques dizaines d'euros par mois, et un budget de modèle de langage plafonné par jour.</p>
+</div>
+</section>
+<section id="s9"><h2><span class="num">9</span>Annexes</h2>
+<h3 id="s9-1"><span class="num">9.1</span>Formules essentielles</h3>
+<ul><li>Ventes signées : dossiers signés dans le mois, hors annulations connues à la journée publiée.</li><li>CA signé HT : somme des montants HT nets de remise ; CA posé et encaissé : idem au mois de pose et d'encaissement.</li><li>Taux de marge brute : (CA - matériel - pose) / CA. Marge après acquisition : marge brute - coûts d'acquisition - commissions. Résultat d'agence : marge après acquisition - charges d'agence.</li><li>Panier moyen : CA signé / ventes. Remise moyenne : remises / prix catalogue, pondérée par les prix.</li><li>Taux d'annulation à 60 jours : annulations dans les 60 jours de la signature / signatures.</li><li>Taux de RDV : RDV tenus / leads ; taux de devis : devis / RDV tenus ; taux de signature : signatures / devis ; conversion : ventes nettes / leads, sur une cohorte mûre.</li><li>Coût par lead : coûts du canal / leads ; coût par vente : coûts du canal / ventes de la cohorte, hors commissions.</li><li>Écart de CA : volume + mix + prix + remise, résiduel nul par construction (effet remise mesuré dossier par dossier contre le taux de la comparaison).</li><li>Atterrissage : réalisé + pipe pondéré + projection × (mois restants - 1,5) / mois restants ; intervalle à un écart-type mensuel × racine des mois restants ; probabilité d'atteinte par loi normale.</li><li>Carnet de pose : signatures non posées × durée de pose du produit / capacité hebdomadaire des techniciens, en jours ouvrés.</li><li>Indice de potentiel : (0,4 × volume + 0,3 × fioul et citerne + 0,3 × F ou G) × (1 - 0,3 × frein RGE / 100) × (1 - 0,3 × saturation solaire / 100), composantes en rangs centiles sur 96 départements.</li><li>Score de qualité : 100 × poids des contrôles OK / poids total (3 pour un contrôle bloquant, 1 sinon).</li></ul>
+<h3 id="s9-2"><span class="num">9.2</span>Les captures et la fiche</h3>
+<p>Ce guide existe aussi sous forme de fiche mise en page, générée depuis ce fichier par <code>npm run fiche</code> : <code>docs/FICHE.html</code> (à ouvrir dans un navigateur, thème clair ou sombre) et <code>docs/FICHE.pdf</code> (A4, à imprimer ou à envoyer). Toute correction se fait ici, puis la fiche est regénérée.</p>
+<p>Toutes les captures de ce guide sont dans <code>docs/captures/guide/</code> : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et quatre vues téléphone. Celles de l'écran Analyste ont été prises le 19 septembre 2026 après sa mise en navigation, journée publiée du 18 septembre. Elles ont été prises sur le site en ligne le 18 septembre 2026 au soir, journée publiée du 17 septembre.</p>
+<h3 id="s9-3"><span class="num">9.3</span>Pour aller plus loin</h3>
+<p>Le dépôt contient la documentation complète : le brief, les écrans composant par composant, le catalogue des indicateurs, les données et le modèle de simulation, le système de design, l'architecture, le déploiement, les automatisations, l'analyste, le backlog, la vérification et le journal des décisions.</p>
+</section>
+<footer class="pied">
+  <p>Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées.</p>
+  <p>Fiche générée depuis le guide illustré du dépôt (docs/GUIDE_ILLUSTRE.md) ; captures du site en ligne, prises le 18 septembre 2026 au soir (journée publiée du 17 septembre), écran Analyste le 19 septembre.</p>
+</footer>
+</main>

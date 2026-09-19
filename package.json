@@ -23,6 +23,7 @@
     "n8n:wf3": "tsx scripts/generer-code-wf3.ts",
     "evaluer:analyste": "tsx scripts/evaluer-analyste.ts",
     "export:powerbi": "tsx scripts/export-powerbi.ts",
+    "fiche": "tsx scripts/generer-fiche.ts --pdf",
     "deploiement": "bash scripts/deploiement.sh"
   },
   "dependencies": {

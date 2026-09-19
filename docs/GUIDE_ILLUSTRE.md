@@ -688,7 +688,9 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 - Indice de potentiel : (0,4 × volume + 0,3 × fioul et citerne + 0,3 × F ou G) × (1 - 0,3 × frein RGE / 100) × (1 - 0,3 × saturation solaire / 100), composantes en rangs centiles sur 96 départements.
 - Score de qualité : 100 × poids des contrôles OK / poids total (3 pour un contrôle bloquant, 1 sinon).
 
-### 9.2 Les captures
+### 9.2 Les captures et la fiche
+
+Ce guide existe aussi sous forme de fiche mise en page, générée depuis ce fichier par `npm run fiche` : `docs/FICHE.html` (à ouvrir dans un navigateur, thème clair ou sombre) et `docs/FICHE.pdf` (A4, à imprimer ou à envoyer). Toute correction se fait ici, puis la fiche est regénérée.
 
 Toutes les captures de ce guide sont dans `docs/captures/guide/` : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et quatre vues téléphone. Celles de l'écran Analyste ont été prises le 19 septembre 2026 après sa mise en navigation, journée publiée du 18 septembre. Elles ont été prises sur le site en ligne le 18 septembre 2026 au soir, journée publiée du 17 septembre.
 
