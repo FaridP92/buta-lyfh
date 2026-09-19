@@ -519,7 +519,7 @@ La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a ma
 
 ![Analyste, page entière](captures/guide/analyste.png)
 
-La question : que répond le cockpit quand on lui pose une question de fait en français, et peut-on lui faire confiance. L'écran est entré dans la navigation le 19 septembre 2026, après un jeu d'évaluation de vingt-quatre questions réussi à 100 % (le seuil de mise en ligne était de 90 %). Ce que le jeu vérifie : le statut attendu (réponse ou refus), l'absence de tout nombre hors des lignes, et la présence dans la phrase du modèle de la valeur attendue pour les onze questions dont la valeur ne bouge pas d'un jour à l'autre. Ce qu'il ne vérifie pas : qu'un chiffre exact est attribué à la bonne agence ; c'est pour cela que les lignes et la requête sont toujours affichées.
+La question : que répond le cockpit quand on lui pose une question de fait en français, et peut-on lui faire confiance. L'écran est entré dans la navigation le 19 septembre 2026, après un jeu d'évaluation de vingt-quatre questions réussi à 100 % (le seuil de mise en ligne était de 90 %). Ce que le jeu vérifie : le statut attendu (réponse ou refus), l'absence de tout nombre hors des lignes, et la présence dans la phrase du modèle de la valeur attendue pour les onze questions dont la valeur ne bouge pas d'un jour à l'autre. Un chiffre exact prêté à la mauvaise agence dans une phrase qui la nomme est rejeté aussi ; les lignes et la requête restent affichées parce qu'elles sont la matière de la réponse.
 
 ![L'écran avant toute question](captures/guide/analyste-00-avant-question.png)
 
@@ -531,12 +531,12 @@ La question : que répond le cockpit quand on lui pose une question de fait en f
 
 **La réponse.**
 - Ce que ça montre : trois à six phrases en français, la période et le périmètre rappelés, les codes traduits en bassins, puis les sources, calculées par le programme et non par le modèle (vues lues par la requête, période des lignes bornée à la journée publiée, nature des données), le modèle, la durée en secondes et le coût de la question. Le badge « simulé » ou « marché réel » vient lui aussi des vues citées par la requête validée.
-- Comment le lire : la pastille verte « aucun nombre hors des lignes » dit que tous les nombres de la prose, en chiffres ou en lettres et avec leur signe, ont été retrouvés dans les lignes renvoyées par la base. Si un nombre ne s'y trouve pas, la rédaction est rejetée, la pastille passe en orange et une phrase explique que les lignes ci-dessous restent la réponse. Ce que la pastille ne dit pas : que chaque chiffre est attribué à la bonne ligne ; en cas de doute, le tableau fait foi.
+- Comment le lire : la pastille verte « chaque nombre retrouvé dans sa ligne » dit que tous les nombres de la prose, en chiffres ou en lettres et avec leur signe, ont été retrouvés dans les lignes renvoyées par la base, et, quand la phrase nomme une agence, un canal ou un produit, dans la ligne de celui-ci. Si un nombre ne s'y trouve pas, la rédaction est rejetée, la pastille passe en orange et une phrase explique que les lignes ci-dessous restent la réponse. En cas de doute, le tableau fait foi.
 
 ![Les chiffres](captures/guide/analyste-02-les-chiffres.png)
 
 **Les chiffres.**
-- Ce que ça montre : les lignes exactes renvoyées par la base, avec les noms de colonnes tels que la requête les a écrits (en minuscules, police à chasse fixe : ce sont des alias SQL, pas des libellés), les codes d'agence, de canal et de produit traduits en libellés, triables et exportables comme tout tableau du site.
+- Ce que ça montre : les lignes exactes renvoyées par la base, avec les noms de colonnes tels que la requête les a écrits (en minuscules, police à chasse fixe : ce sont des alias SQL, pas des libellés), les codes d'agence, de canal, de produit et de département traduits en libellés par le programme (le modèle reçoit ces libellés et les recopie), triables et exportables comme tout tableau du site.
 - Comment le lire : c'est la matière première de la réponse ; en cas de doute sur une phrase, la ligne fait foi.
 
 ![La requête SQL exécutée](captures/guide/analyste-05-la-requete-sql-executee.png)
@@ -663,7 +663,7 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 
 **Que fait le modèle de langage ?** Il rédige à partir de faits calculés en SQL et ne calcule jamais ; un contrôle refuse toute phrase contenant un nombre absent des faits. Sans clé configurée, tout est rédigé par règles et l'écran le dit.
 
-**L'analyste peut-il se tromper ?** Il peut mal choisir une vue ou un filtre, ou prêter le chiffre d'une agence à une autre, comme un analyste humain pressé : c'est pourquoi la requête et les lignes sont toujours affichées avec la réponse. Ce qu'il ne peut pas faire, c'est inventer un chiffre : tout nombre de sa phrase absent des lignes, en chiffres ou en lettres, ou au signe contraire, fait rejeter la phrase. Le jeu d'évaluation de vingt-quatre questions (dont six refus attendus) est rejoué avant chaque mise en ligne de l'écran.
+**L'analyste peut-il se tromper ?** Il peut mal choisir une vue ou un filtre, comme un analyste humain pressé : c'est pourquoi la requête et les lignes sont toujours affichées avec la réponse. Ce qu'il ne peut pas faire, c'est inventer ou déplacer un chiffre : tout nombre de sa phrase absent des lignes, en chiffres ou en lettres, au signe contraire, ou attribué à une autre ligne que celle que la phrase nomme, fait rejeter la phrase. Le jeu d'évaluation de vingt-quatre questions (dont six refus attendus) est rejoué avant chaque mise en ligne de l'écran.
 
 **Et Power BI ?** L'export de la page Méthode fournit les tables en CSV, un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux), quarante mesures DAX et un mode d'emploi.
 

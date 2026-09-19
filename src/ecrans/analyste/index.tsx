@@ -191,7 +191,7 @@ export function EcranAnalyste() {
           {r.statut === "ok" && (
             <>
               <Carte titre="La réponse" sousTitre={`« ${courant.question} »`}
-                actions={<><Badge variante={r.nature === "reel" ? "reel" : "simule"}>{libelleNature(r.nature)}</Badge><Pastille statut={r.redaction_rejetee ? "attention" : "succes"} texte={r.redaction_rejetee ? "rédaction rejetée, lignes exactes" : "aucun nombre hors des lignes"} /></>}>
+                actions={<><Badge variante={r.nature === "reel" ? "reel" : "simule"}>{libelleNature(r.nature)}</Badge><Pastille statut={r.redaction_rejetee ? "attention" : "succes"} texte={r.redaction_rejetee ? "rédaction rejetée, lignes exactes" : "chaque nombre retrouvé dans sa ligne"} /></>}>
                 <p className="max-w-[72ch] text-[15px] leading-relaxed text-texte">{r.reponse}</p>
                 {(r.sources ?? []).length > 0 && <p className="mt-[var(--esp-2)] max-w-[72ch] text-[12px] text-texte-3">Sources : {(r.sources ?? []).join(" · ")}</p>}
                 <p className="mt-[var(--esp-2)] text-[12px] text-texte-3">
@@ -280,7 +280,7 @@ export function EcranAnalyste() {
               "Le modèle écrit la requête SQL, la base répond, le modèle rédige sans jamais calculer.",
               "Lecture seule : rôle SQL limité aux vues mart_ et à la table de fraîcheur, délai de 5 secondes, 200 lignes au plus.",
               "Une seule requête SELECT, validée avant exécution : mots interdits, vues hors liste, schémas système sont refusés.",
-              "Aucun nombre inventé : tout nombre de la réponse, en chiffres ou en lettres, signe compris, est retrouvé dans les lignes, sinon la rédaction est rejetée et les lignes restent la réponse. L'attribution se lit dans le tableau.",
+              "Aucun nombre inventé ni déplacé : tout nombre de la réponse, en chiffres ou en lettres, signe compris, est retrouvé dans les lignes, et dans la ligne que la phrase nomme ; sinon la rédaction est rejetée et les lignes restent la réponse.",
               "Refus explicites : conseil, hors périmètre, données non couvertes (chiffres réels, personnes, MaPrimeRénov' par commune), écriture.",
               "Quotas : 5 questions par minute et 20 par jour par adresse et navigateur hachés, 400 par jour au total, budget quotidien en euros.",
             ].map((texte) => (

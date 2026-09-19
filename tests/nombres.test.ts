@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extraireNombres, nombresAutorises, nombresNonTraces, normaliserNombre, representations, signesIncoherents } from "../supabase/functions/_partage/nombres.ts";
+import { attributionsIncoherentes, extraireNombres, nombresAutorises, nombresNonTraces, normaliserNombre, representations, signesIncoherents } from "../supabase/functions/_partage/nombres.ts";
 
 describe("normaliserNombre et extraireNombres", () => {
   it("ramène les écritures françaises et machine à une même clé", () => {
@@ -88,5 +88,27 @@ describe("nombres en lettres, signes et référentiels", () => {
     expect(autorises.has("18")).toBe(true);
     expect(autorises.has("60")).toBe(false);
     expect(autorises.has("0.06")).toBe(false);
+  });
+});
+
+describe("attributionsIncoherentes", () => {
+  const lignes = [
+    { agence: "Saintonge", resultat_total: 299537 },
+    { agence: "Marensin", resultat_total: 123994 },
+    { agence: "Born", resultat_total: -18736 },
+    { agence: "Bassin d'Arcachon", resultat_total: -77647 },
+  ];
+  const horsLignes = nombresAutorises([], "résultat 2026", lignes.length, { journee: "2026-09-18" });
+  it("rejette un nombre cité avec une ligne qui ne le porte pas", () => {
+    expect(attributionsIncoherentes("Le Born (123 994 €) suit avec un résultat positif.", lignes, horsLignes)).toEqual(["123994"]);
+  });
+  it("accepte un nombre cité avec sa ligne, ses reformulations, et les nombres hors lignes", () => {
+    expect(attributionsIncoherentes("À date (18 septembre 2026), la Saintonge affiche 299 537 €, soit 299,5 k€ ; le Marensin suit à 123 994 €.", lignes, horsLignes)).toEqual([]);
+    expect(attributionsIncoherentes("Nord est derrière Saintonge avec 220 223 €.", [{ agence: "Nord", resultat_total: 220223 }, ...lignes], horsLignes)).toEqual([]);
+    expect(attributionsIncoherentes("Le Bassin d'Arcachon est le plus bas avec -77 647 €, sur 4 agences.", lignes, horsLignes)).toEqual([]);
+  });
+  it("ne juge pas une phrase qui ne nomme aucune ligne, et tolère un trait d'union dans le libellé", () => {
+    expect(attributionsIncoherentes("Le résultat le plus élevé est de 299 537 €.", lignes, horsLignes)).toEqual([]);
+    expect(attributionsIncoherentes("Le Bassin-d'Arcachon affiche -77 647 €.", lignes, horsLignes)).toEqual([]);
   });
 });

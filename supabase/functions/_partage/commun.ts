@@ -216,10 +216,11 @@ export async function journaliser(fonction: "analyste" | "expliquer-ecart", emp:
   }
 }
 
-interface Referentiels {
+export interface Referentiels {
   agences: { code: string; nom_bassin: string; departement: string; ouverture: string }[];
   canaux: { code: string; libelle: string }[];
   produits: { code: string; libelle: string; famille: string }[];
+  departements: { code: string; nom: string }[];
   journee: string | null;
 }
 
@@ -228,15 +229,46 @@ let referentielsCache: { valeur: Referentiels; expire: number } | null = null;
 /** Référentiels (agences, canaux, produits) et journée publiée, transmis au modèle pour traduire les codes ; cache 10 minutes. */
 export async function referentiels(): Promise<Referentiels> {
   if (referentielsCache && referentielsCache.expire > Date.now()) return referentielsCache.valeur;
-  const [agences, canaux, produits, fraicheur] = await Promise.all([
+  const [agences, canaux, produits, departements, fraicheur] = await Promise.all([
     lireVue<Referentiels["agences"][number]>("dim_agence", "select=code,nom_bassin,departement,ouverture&order=code"),
     lireVue<Referentiels["canaux"][number]>("dim_canal", "select=code,libelle&order=code"),
     lireVue<Referentiels["produits"][number]>("dim_produit", "select=code,libelle,famille&order=code"),
+    lireVue<Referentiels["departements"][number]>("dim_departement", "select=code,nom&order=code"),
     lireVue<{ date_reference: string | null }>("mart_fraicheur", "select=date_reference&source=eq.journee_simulee"),
   ]);
-  const valeur = { agences, canaux, produits, journee: fraicheur[0]?.date_reference ?? null };
+  const valeur = { agences, canaux, produits, departements, journee: fraicheur[0]?.date_reference ?? null };
   referentielsCache = { valeur, expire: Date.now() + 10 * 60_000 };
   return valeur;
+}
+
+/**
+ * Codes traduits en libellés dans les lignes, colonne par colonne (agence, canal, produit, departement), avant la
+ * rédaction et l'affichage : le modèle recopie des noms, il ne traduit plus, et le contrôle d'attribution compare des
+ * libellés. Une liste de codes (« SAI, ANG ») est traduite terme à terme.
+ */
+export function traduireLignes(lignes: readonly Record<string, unknown>[], r: Referentiels): Record<string, unknown>[] {
+  const agences = new Map(r.agences.map((a) => [a.code, a.nom_bassin]));
+  const canaux = new Map(r.canaux.map((c) => [c.code, c.libelle]));
+  const produits = new Map(r.produits.map((p) => [p.code, p.libelle]));
+  const departements = new Map<string, string>([...r.departements.map((d): [string, string] => [d.code, d.nom]), ["SUR_PLACE", "Sur place"], ["A_DISTANCE", "À distance"]]);
+  const dictionnaire = (colonne: string): Map<string, string> | null => {
+    const c = colonne.toLowerCase();
+    if (c.includes("agence")) return agences;
+    if (c.includes("canal") || c.includes("canaux")) return canaux;
+    if (c.includes("produit")) return produits;
+    if (c.includes("departement")) return departements;
+    return null;
+  };
+  const traduire = (v: string, d: Map<string, string>): string => {
+    if (v === "RESEAU") return "Réseau";
+    if (v === "TOUS") return "Tous";
+    if (v.includes(", ")) return v.split(", ").map((x) => d.get(x) ?? x).join(", ");
+    return d.get(v) ?? v;
+  };
+  return lignes.map((l) => Object.fromEntries(Object.entries(l).map(([k, v]) => {
+    const d = dictionnaire(k);
+    return [k, d && typeof v === "string" ? traduire(v, d) : v];
+  })));
 }
 
 export function texteReferentiels(r: Referentiels): string {

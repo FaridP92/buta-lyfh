@@ -98,7 +98,8 @@ Deno.serve(async (req: Request) => {
     };
     const texteComplet = [explication.constat, ...explication.causes.map((c) => `${c.texte} ${c.fait}`), explication.action].join("\n");
     // Les référentiels (départements, années d'ouverture) et la journée publiée font partie des faits transmis au modèle.
-    const nonTraces = [...nombresNonTraces(texteComplet, nombresAutorises(faits, `${mois}`, null, refs)), ...signesIncoherents(texteComplet, faits)];
+    const { departements: _departements, ...refsSansDepartements } = refs;
+    const nonTraces = [...nombresNonTraces(texteComplet, nombresAutorises(faits, `${mois}`, null, refsSansDepartements)), ...signesIncoherents(texteComplet, faits)];
     await journaliser("expliquer-ecart", emp, null, null, nonTraces.length || !explication.constat ? "repli_nombres" : "ok", r.coutEur, duree(), r.tokensEntree, r.tokensSortie);
     if (!explication.constat || nonTraces.length > 0) {
       console.warn("explication rejetée", nonTraces.join(", "));

@@ -7,9 +7,9 @@
  * simulée ou réelle) sont calculées par le programme, la limite de 200 lignes est imposée par une sous-requête,
  * le quota a son propre statut, le contexte de l'écran n'est plus transmis (la question se suffit).
  */
-import { appelerModele, empreinte, ErreurRepli, extraireJson, journaliser, preflight, referentiels, reponseJson, rpcService, texteReferentiels, verifierQuota } from "../_partage/commun.ts";
+import { appelerModele, empreinte, ErreurRepli, extraireJson, journaliser, preflight, referentiels, reponseJson, rpcService, texteReferentiels, traduireLignes, verifierQuota } from "../_partage/commun.ts";
 import { lireEnLectureSeule } from "../_partage/base.ts";
-import { nombresAutorises, nombresNonTraces, signesIncoherents } from "../_partage/nombres.ts";
+import { attributionsIncoherentes, nombresAutorises, nombresNonTraces, signesIncoherents } from "../_partage/nombres.ts";
 import { LIMITE_LIGNES, sourcesCitees, validerSql } from "./garde-fous.ts";
 import { messageRedaction, promptCorrection, promptRedaction, promptSql } from "./prompts.ts";
 
@@ -161,7 +161,9 @@ Deno.serve(async (req: Request) => {
 
     let lecture;
     try {
-      lecture = await lireEnLectureSeule(sqlExecute);
+      const lue = await lireEnLectureSeule(sqlExecute);
+      // Codes traduits en libellés avant tout : le modèle recopie des noms, le navigateur affiche des noms.
+      lecture = { colonnes: lue.colonnes, lignes: traduireLignes(lue.lignes, refs) };
     } catch (erreur) {
       console.error("lecture", erreur instanceof Error ? erreur.message : erreur);
       await journaliser("analyste", emp, question, sql, "sql_erreur", cout, duree(), tokensEntree, tokensSortie);
@@ -192,13 +194,20 @@ Deno.serve(async (req: Request) => {
     // Les référentiels et la journée publiée sont versés en chiffres bruts : un numéro de département ou une année
     // cités dans la réponse sont des faits, pas des inventions ; un signe contraire aux lignes est un défaut.
     // Faits du référentiel transmis en prose au modèle : départements du périmètre, historique repris depuis janvier 2025.
-    const faitsReferentiels = { ...refs, departements_perimetre: ["16", "17", "79", "85", "24", "33", "47", "32", "40", "64", "59"], historique_depuis: "2025-01" };
+    // Les 96 codes de département n'en font pas partie (ils autoriseraient tous les nombres de 1 à 95) : seuls ceux du périmètre.
+    const { departements: _departements, ...refsSansDepartements } = refs;
+    const faitsReferentiels = { ...refsSansDepartements, departements_perimetre: ["16", "17", "79", "85", "24", "33", "47", "32", "40", "64", "59"], historique_depuis: "2025-01" };
     const autorises = nombresAutorises(lecture.lignes, question, lecture.lignes.length, faitsReferentiels);
+    const horsLignes = nombresAutorises([], question, lecture.lignes.length, faitsReferentiels);
     const nonTraces = [...nombresNonTraces(reponse, autorises), ...signesIncoherents(reponse, lecture.lignes)];
+    // Attribution : une phrase qui nomme une ligne ne cite que ses nombres (« Le Born (123 994 €) » avec la valeur du Marensin est rejeté).
+    const malAttribues = attributionsIncoherentes(reponse, lecture.lignes, horsLignes);
     let statut = "ok";
-    if (!reponse || nonTraces.length > 0) {
+    if (!reponse || nonTraces.length > 0 || malAttribues.length > 0) {
       statut = "ok_redaction_rejetee";
-      reponse = `Je ne peux pas répondre de façon fiable à cette question : la rédaction contenait ${nonTraces.length ? `un nombre absent des lignes ou au signe contraire (${nonTraces.slice(0, 3).join(", ")})` : "aucune phrase exploitable"}. Les lignes ci-dessous sont exactes et restent la réponse.`;
+      const motif = nonTraces.length ? `un nombre absent des lignes ou au signe contraire (${nonTraces.slice(0, 3).join(", ")})` : malAttribues.length ? `un nombre attribué à une autre ligne que la sienne (${malAttribues.slice(0, 3).join(", ")})` : "aucune phrase exploitable";
+      console.warn("analyste : rédaction rejetée", motif);
+      reponse = `Je ne peux pas répondre de façon fiable à cette question : la rédaction contenait ${motif}. Les lignes ci-dessous sont exactes et restent la réponse.`;
     }
     await journaliser("analyste", emp, question, sql, statut, cout, duree(), tokensEntree, tokensSortie);
     return reponseJson({ statut: "ok", sql, colonnes: lecture.colonnes, lignes: lecture.lignes, reponse, sources, nature, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, redaction_rejetee: statut !== "ok", budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });

@@ -1,6 +1,6 @@
 # IA · analyste et explications
 
-Règle fondatrice : le modèle ne produit jamais un chiffre. Les faits sont calculés en SQL et lui sont donnés ; il rédige. Chaque réponse montre la requête, les lignes, la prose et les sources. Une réponse dont un nombre n'est pas traçable aux lignes est rejetée et remplacée par « je ne peux pas répondre de façon fiable à cette question ».
+Règle fondatrice : le modèle ne produit jamais un chiffre. Les faits sont calculés en SQL et lui sont donnés ; il rédige. Chaque réponse montre la requête, les lignes, la prose et les sources. Une réponse dont un nombre n'est pas traçable aux lignes (en chiffres ou en lettres, signe compris), ou dont un nombre est cité avec une ligne qui ne le porte pas, est rejetée et remplacée par « je ne peux pas répondre de façon fiable à cette question » ; les lignes restent la réponse. Les codes (agences, canaux, produits, départements) sont traduits en libellés par le programme avant la rédaction : le modèle recopie des noms, il ne traduit pas.
 
 ## 1. Périmètre
 Répond : questions sur les indicateurs, agences, canaux, produits, périodes, écarts, délais, qualité, marché des territoires (vues `mart_`). Refuse avec un motif clair : conseil personnel ou stratégique (« faut-il ouvrir à Nantes ? » : « le démonstrateur lit le marché, il ne recommande pas d'implantation »), questions hors périmètre (météo, actualité), questions sur des données non couvertes (MaPrimeRénov' par commune, données réelles de Butagaz), demandes d'écriture ou de suppression.

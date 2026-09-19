@@ -147,3 +147,40 @@ export function signesIncoherents(texte: string, donnees: unknown): string[] {
   }
   return [...new Set(incoherents)];
 }
+
+function normaliserTexte(t: string): string {
+  return t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[-\u2011]/g, " ").toLowerCase();
+}
+
+function echapper(t: string): string {
+  return t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Libellés d'une ligne : valeurs texte d'au moins deux caractères qui ne sont ni des nombres ni des dates (bassin, canal, produit, département). */
+function libellesDeLigne(ligne: Record<string, unknown>): string[] {
+  return Object.values(ligne).filter((v): v is string => typeof v === "string" && v.trim().length >= 2 && !/^-?\d+([.,]\d+)?$/.test(v.trim()) && !/^\d{4}-\d{2}(-\d{2})?$/.test(v.trim()));
+}
+
+/**
+ * Attribution phrase par phrase : quand une phrase nomme une ou plusieurs lignes (par leur libellé), tout nombre de la
+ * phrase doit appartenir à l'une de ces lignes, ou aux nombres autorisés hors lignes (question, dénombrements,
+ * référentiels). « Le Born (123 994 €) » est rejeté si 123 994 est la valeur de la ligne Marensin. Une phrase qui ne
+ * nomme aucune ligne n'est pas jugée ici (le contrôle global des nombres s'applique déjà).
+ */
+export function attributionsIncoherentes(texte: string, lignes: readonly Record<string, unknown>[], autorisesHorsLignes: Set<string>): string[] {
+  const indexees = lignes.map((l) => {
+    const nombres = new Set<string>();
+    ajouterValeur(l, nombres);
+    return { libelles: libellesDeLigne(l).map(normaliserTexte), nombres };
+  });
+  const incoherents: string[] = [];
+  for (const phrase of texte.split(/(?<=[.!?;])\s+/)) {
+    const p = normaliserTexte(phrase);
+    const citees = indexees.filter((l) => l.libelles.some((lib) => new RegExp(`(?<![\\p{L}])${echapper(lib)}(?![\\p{L}])`, "u").test(p)));
+    if (citees.length === 0) continue;
+    const permis = new Set<string>(autorisesHorsLignes);
+    for (const l of citees) for (const n of l.nombres) permis.add(n);
+    for (const n of extraireNombres(phrase)) if (!permis.has(n)) incoherents.push(n);
+  }
+  return [...new Set(incoherents)];
+}
