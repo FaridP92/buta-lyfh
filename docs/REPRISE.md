@@ -38,6 +38,10 @@
 7. **Méthode et export Power BI** : livrés (`src/lib/powerbi.ts` lit les instantanés et zippe dix-neuf CSV + `modele_etoile.md`).
 8. Par écran : `disponible: true` dans `src/app/routes.ts`, revue DESIGN.md §9 et §11, captures 1280 et 375 (`docs/captures/lotN/`), e2e, `npm run deploiement`, journal, commit, push.
 
+## Contrôle final
+
+Le prompt complet du contrôle d'avant-gel (chaîne de qualité, données et RLS, n8n, Analyste et garde-fous, sécurité, onze écrans, vérité des chiffres, documentation, gel, préparation de mardi) est dans `docs/PROMPT_CONTROLE_FINAL.md` : à coller dans une nouvelle session lundi matin après 07 h 30.
+
 ## Commandes utiles
 
 `npm run dev` · `npm run check` · `npm run build` · `npm run revue -- --depuis 2026-08-17` (revues par règles) · `npm run n8n:wf3` (code du nœud WF3) · `npm run evaluer:analyste` (jeu de 24 questions) · `npm run e2e` (reconstruit puis teste ; `E2E_BASE=https://buta.lyfh.fr npx playwright test` contre la production) · Lighthouse : `CHROME_PATH="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser" npx lighthouse <url> --preset=desktop --chrome-flags="--headless=new"` (Chrome for Testing de Playwright ne peint pas) · `SUPABASE_DB_SSL_NON_VERIFIE=1 npm run test:sql` · `npm run instantane` · `npm run deploiement`.
