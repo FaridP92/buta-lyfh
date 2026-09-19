@@ -140,7 +140,7 @@ var revue = (() => {
       })
     };
   }
-  return __toCommonJS(revue_exports);
+  return { analyserTexte, deAgence, redigerRevue, versTexte };
 })();
 
 

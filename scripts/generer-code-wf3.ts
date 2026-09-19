@@ -13,8 +13,16 @@ const resultat = buildSync({
   bundle: true, write: false, format: "iife", globalName: "revue", platform: "node", target: "es2022", minifySyntax: true,
   alias: { "@": join(process.cwd(), "src") },
 });
-const bibliotheque = resultat.outputFiles[0]?.text ?? "";
-if (!bibliotheque) throw new Error("empaquetage vide");
+const empaquete = resultat.outputFiles[0]?.text ?? "";
+if (!empaquete) throw new Error("empaquetage vide");
+// Le bac à sable du nœud Code de n8n ne lit pas les accesseurs (`get`) que esbuild pose sur l'objet
+// d'exports (`__toCommonJS`) : « revue.redigerRevue is not a function » à l'exécution du 19 septembre.
+// On renvoie donc un objet ordinaire qui référence directement les fonctions.
+const exports_ = /__export\(revue_exports, \{([^}]*)\}\)/.exec(empaquete);
+if (!exports_) throw new Error("bloc d'exports introuvable dans l'empaquetage");
+const noms = (exports_[1] ?? "").split(",").map((l) => l.trim().split(":")[0]?.trim() ?? "").filter(Boolean);
+const bibliotheque = empaquete.replace(/return __toCommonJS\(revue_exports\);/, `return { ${noms.join(", ")} };`);
+if (bibliotheque === empaquete) throw new Error("retour __toCommonJS introuvable dans l'empaquetage");
 
 const usage = `
 // Faits de la semaine (RPC buta.faits_revue_hebdo, réponse complète : le JSON est dans body).

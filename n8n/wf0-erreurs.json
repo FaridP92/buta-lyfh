@@ -1,0 +1,261 @@
+{
+  "name": "Buta - Erreurs (journal et alerte)",
+  "description": "WF0 Buta.Lyfh : journalise en erreur tout échec de WF1, WF2, WF3 ou WF5 dans buta.automatisation_run et envoie un email Gmail à partir du troisième échec consécutif.",
+  "nodes": [
+    {
+      "id": "ab629601-d75c-4ead-a3f5-8d5d2cec4561",
+      "name": "Sticky Note ab629601",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -50,
+        150
+      ],
+      "parameters": {
+        "content": "## WF0 · Buta - Erreurs (journal et alerte)\n\n**Déclencheur** : Error Trigger, appelé par n8n quand WF1, WF2, WF3 ou WF5 échoue en production (réglage « Error workflow » de chacun).\n\n**Entrées** : nom du workflow en échec, dernier nœud exécuté, message d'erreur, lien de l'exécution.\n\n**Sorties** : une ligne `buta.automatisation_run` en statut `erreur` (RPC `journal_run`), puis un email Gmail à Frédéric à partir du troisième échec consécutif (RPC `echecs_consecutifs`).\n\n**Credentials** : « Supabase Buta (service role) », « Gmail account ». Aucun secret dans l'export.\n\n**Règles** : délai 30 s sur chaque appel HTTP ; pas de boucle ; données d'activité simulées.",
+        "color": 4,
+        "width": 1600,
+        "height": 300
+      }
+    },
+    {
+      "id": "a345e929-c24b-4391-b366-b1f304aa1bd3",
+      "name": "Erreur d'un workflow Buta",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "1b24e4b5-c416-4560-a41c-b8b81d3047e5",
+      "name": "Préparer le journal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const CODES = {\n  'Buta - Journée simulée (quotidien 06:00)': 'WF1',\n  'Buta - Contrôles qualité (quotidien 06:20)': 'WF2',\n  'Buta - Revue hebdomadaire (lundi 07:00)': 'WF3',\n  'Buta - Marché mensuel (1er du mois 03:00)': 'WF4',\n  'Buta - Santé (toutes les 6 h)': 'WF5',\n};\nconst e = $input.first().json;\nconst nom = (e.workflow && e.workflow.name) || 'inconnu';\nconst code = CODES[nom] || nom;\nconst erreur = (e.execution && e.execution.error && e.execution.error.message) || 'erreur sans message';\nconst noeud = (e.execution && e.execution.lastNodeExecuted) || 'nœud inconnu';\nconst message = (noeud + ' : ' + erreur).slice(0, 300);\nreturn [{ json: { workflow: code, nom, message, url: (e.execution && e.execution.url) || '', execution_id: (e.execution && e.execution.id) || '' } }];"
+      }
+    },
+    {
+      "id": "5d3086ab-88f1-4d3d-81f0-9cf11fc4fef2",
+      "name": "Journal (erreur)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        520,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/journal_run",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_workflow: $json.workflow, p_statut: \"erreur\", p_message: $json.message, p_lignes: null, p_debute_le: $now.toISO() }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "35414922-e087-4cfb-88d5-58d47ed5d2b6",
+      "name": "Échecs consécutifs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        780,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/echecs_consecutifs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_workflow: $(\"Préparer le journal\").item.json.workflow }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "8865523f-d1a0-42c5-939e-fdaf199c131e",
+      "name": "Trois échecs ou plus ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1040,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "trois-echecs",
+              "leftValue": "={{ $json.body }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "9efbbdba-2038-4f4a-806b-05e3e10fd10b",
+      "name": "Email à Frédéric",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        200
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "faridp@free.fr",
+        "subject": "=Buta.Lyfh : {{ $(\"Préparer le journal\").item.json.workflow }} en échec {{ $json.body }} fois de suite",
+        "emailType": "text",
+        "message": "=Le workflow {{ $(\"Préparer le journal\").item.json.nom }} ({{ $(\"Préparer le journal\").item.json.workflow }}) a échoué {{ $json.body }} fois de suite.\n\nDernière erreur : {{ $(\"Préparer le journal\").item.json.message }}\n\nExécution : {{ $(\"Préparer le journal\").item.json.url }}\n\nJournal : buta.automatisation_run (écran Automatisations). Démonstrateur personnel, données d'activité simulées.",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Buta.Lyfh"
+        }
+      },
+      "webhookId": "6aa3dd4a-7d26-4aef-b5cc-9417998dcf4b",
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Erreur d'un workflow Buta": {
+      "main": [
+        [
+          {
+            "node": "Préparer le journal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer le journal": {
+      "main": [
+        [
+          {
+            "node": "Journal (erreur)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Journal (erreur)": {
+      "main": [
+        [
+          {
+            "node": "Échecs consécutifs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Échecs consécutifs": {
+      "main": [
+        [
+          {
+            "node": "Trois échecs ou plus ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trois échecs ou plus ?": {
+      "main": [
+        [
+          {
+            "node": "Email à Frédéric",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "executionTimeout": 300
+  },
+  "tags": [
+    {
+      "name": "Buta"
+    }
+  ]
+}

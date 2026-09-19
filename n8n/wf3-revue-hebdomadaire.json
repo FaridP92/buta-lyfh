@@ -1,0 +1,431 @@
+{
+  "name": "Buta - Revue hebdomadaire (lundi 07:00)",
+  "description": "WF3 Buta.Lyfh : faits SQL de la semaine, rédaction par règles, lecture rédigée par Mistral et contrôlée (aucun nombre hors des faits), publication (buta.publier_revue), email, journal.",
+  "nodes": [
+    {
+      "id": "83739307-74c6-415a-8a13-5f1c5884cea1",
+      "name": "Sticky Note 83739307",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -50,
+        250
+      ],
+      "parameters": {
+        "content": "## WF3 · Buta - Revue hebdomadaire (lundi 07:00)\n\n**Déclencheur** : Schedule, chaque lundi à 07:00 Europe/Paris, pour la semaine qui vient de se terminer.\n\n**Étapes** : RPC `buta.faits_revue_hebdo(semaine)` (faits calculés en SQL) ; nœud Code « Rédiger par règles » (copie empaquetée de src/lib/revue.ts, `npm run n8n:wf3`) qui écrit faits et décisions et liste les nombres autorisés ; modèle Mistral Large qui rédige seulement les cinq phrases de lecture ; nœud Code qui vérifie que chaque nombre du modèle figure dans les faits (sinon repli sur la lecture par règles) et assemble le texte ; RPC `buta.publier_revue` (réponse en texte) ; email Gmail ; RPC `buta.journal_run`.\n\n**Sorties** : écran Plans d'action et rituels (bloc Revue), email, une ligne `buta.automatisation_run` (statut `ok`, ou `alerte` si le modèle a été remplacé par les règles).\n\n**Credentials** : « Supabase Buta (service role) », « Mistral Cloud account », « Gmail account ». Aucun secret dans l'export. Erreurs : workflow WF0.",
+        "color": 4,
+        "width": 2320,
+        "height": 200
+      }
+    },
+    {
+      "id": "373e2d68-68f0-4a4e-b7da-6225bfdcc9e9",
+      "name": "Chaque lundi à 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 7,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "16e1e23d-878d-445d-ace3-f14e0c696e40",
+      "name": "Paramètres",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "semaine",
+              "name": "semaine",
+              "value": "={{ $now.setZone(\"Europe/Paris\").minus({ days: 7 }).startOf(\"week\").toFormat(\"yyyy-MM-dd\") }}",
+              "type": "string"
+            },
+            {
+              "id": "debut",
+              "name": "debut",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "workflow",
+              "name": "workflow",
+              "value": "WF3",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "3e0ac04e-a9e2-4413-a85c-1292a1bcc9be",
+      "name": "Faits de la semaine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/faits_revue_hebdo",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_semaine: $json.semaine }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "753105d5-05c4-48cf-b2eb-b29447c30260",
+      "name": "Rédiger par règles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "var revue = (() => {\n  var __defProp = Object.defineProperty;\n  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;\n  var __getOwnPropNames = Object.getOwnPropertyNames;\n  var __hasOwnProp = Object.prototype.hasOwnProperty;\n  var __export = (target, all) => {\n    for (var name in all)\n      __defProp(target, name, { get: all[name], enumerable: !0 });\n  }, __copyProps = (to, from, except, desc) => {\n    if (from && typeof from == \"object\" || typeof from == \"function\")\n      for (let key of __getOwnPropNames(from))\n        !__hasOwnProp.call(to, key) && key !== except && __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });\n    return to;\n  };\n  var __toCommonJS = (mod) => __copyProps(__defProp({}, \"__esModule\", { value: !0 }), mod);\n\n  // src/lib/revue.ts\n  var revue_exports = {};\n  __export(revue_exports, {\n    analyserTexte: () => analyserTexte,\n    deAgence: () => deAgence,\n    redigerRevue: () => redigerRevue,\n    versTexte: () => versTexte\n  });\n\n  // src/lib/format.ts\n  function estVide(valeur) {\n    return valeur == null || Number.isNaN(valeur);\n  }\n  function formatNombreFr(valeur, decimales) {\n    return new Intl.NumberFormat(\"fr-FR\", {\n      minimumFractionDigits: decimales,\n      maximumFractionDigits: decimales\n    }).format(valeur).replace(/\\u202F/g, \"\\xA0\");\n  }\n  function formatMontant(valeur) {\n    if (estVide(valeur)) return \"n. d.\";\n    let abs = Math.abs(valeur);\n    return abs >= 1e6 ? `${formatNombreFr(valeur / 1e6, 1)}\\xA0M\\u20AC` : abs >= 1e4 ? `${formatNombreFr(valeur / 1e3, 1)}\\xA0k\\u20AC` : `${formatNombreFr(valeur, 0)}\\xA0\\u20AC`;\n  }\n  function formatTaux(valeur, decimales = 1) {\n    return estVide(valeur) ? \"n. d.\" : `${formatNombreFr(valeur, decimales)}\\xA0%`;\n  }\n  function formatNombre(valeur) {\n    return estVide(valeur) ? \"n. d.\" : formatNombreFr(valeur, 0);\n  }\n\n  // src/lib/periode.ts\n  function ecartPct(valeur, comparaison) {\n    return valeur === null || comparaison === null || !comparaison ? null : Math.round((valeur - comparaison) / Math.abs(comparaison) * 1e3) / 10;\n  }\n\n  // src/lib/revue.ts\n  var MOIS = [\"janvier\", \"f\\xE9vrier\", \"mars\", \"avril\", \"mai\", \"juin\", \"juillet\", \"ao\\xFBt\", \"septembre\", \"octobre\", \"novembre\", \"d\\xE9cembre\"];\n  function jourMois(date) {\n    return `${date.slice(8, 10)}/${date.slice(5, 7)}`;\n  }\n  function finDeSemaine(lundi) {\n    let d = /* @__PURE__ */ new Date(`${lundi.slice(0, 10)}T00:00:00Z`);\n    return d.setUTCDate(d.getUTCDate() + 6), d.toISOString().slice(0, 10);\n  }\n  function deAgence(nom) {\n    return nom === \"Nord\" || nom.startsWith(\"Bassin \") ? `du ${nom}` : /^[AEIOUYÉÈÊ]/i.test(nom) ? `d'${nom}` : `de ${nom}`;\n  }\n  function signe(v) {\n    return `${v > 0 ? \"+\" : \"\"}${formatTaux(v)}`;\n  }\n  function tendance(valeur, reference, nom, feminin = !1) {\n    let e = ecartPct(valeur, reference);\n    return e === null ? `${nom} : ${formatNombre(valeur)}, sans comparaison` : Math.abs(e) < 3 ? `${nom} stables sur une semaine (${formatNombre(valeur)} contre ${formatNombre(reference)})` : `${nom} ${e > 0 ? \"en hausse\" : \"en retrait\"} de ${formatTaux(Math.abs(e))} sur une semaine (${formatNombre(valeur)} contre ${formatNombre(reference)})`;\n  }\n  function redigerRevue(f) {\n    let r = f.reseau, lundi = f.semaine.slice(0, 10), dimanche = finDeSemaine(lundi), agences = [...f.agences].sort((a, b) => b.ca_signe - a.ca_signe), meilleure = agences[0], plusFaible = agences.at(-1), reseauEcart = f.ecarts_mois.find((e) => e.agence === \"RESEAU\" && e.comparaison_disponible && e.ca_comparaison), ecartsAgences = f.ecarts_mois.filter((e) => e.agence !== \"RESEAU\" && e.comparaison_disponible && e.ca_comparaison && e.ecart_total !== null).map((e) => ({ ...e, pct: ecartPct(e.ca_realise, e.ca_comparaison) ?? 0, nom: f.agences.find((a) => a.agence === e.agence)?.nom_bassin ?? e.agence })).sort((a, b) => a.pct - b.pct), moisLibelle = reseauEcart ? `${MOIS[Number(reseauEcart.mois.slice(5, 7)) - 1] ?? reseauEcart.mois}` : null, comparaisonLibelle = reseauEcart?.comparaison === \"n1\" ? \"N-1\" : \"l'objectif\", faits = [\n      `Semaine du ${jourMois(lundi)} au ${jourMois(dimanche)} : ${formatNombre(r.leads)} leads, ${formatNombre(r.rdv_tenus)} RDV tenus, ${formatNombre(r.signatures)} signatures pour ${formatMontant(r.ca_signe)} HT, ${formatNombre(r.poses)} poses, ${formatMontant(r.encaisse)} encaiss\\xE9s.`,\n      `Semaine pr\\xE9c\\xE9dente : ${formatNombre(r.leads_semaine_precedente)} leads, ${formatNombre(r.signatures_semaine_precedente)} signatures, ${formatMontant(r.ca_signe_semaine_precedente)} sign\\xE9s.`\n    ];\n    meilleure && plusFaible && meilleure !== plusFaible && faits.push(`Agences : ${meilleure.nom_bassin} signe le plus (${formatNombre(meilleure.signatures)} signatures, ${formatMontant(meilleure.ca_signe)}), ${plusFaible.nom_bassin} le moins (${formatNombre(plusFaible.signatures)}, ${formatMontant(plusFaible.ca_signe)}).`), reseauEcart && reseauEcart.ca_comparaison && reseauEcart.ecart_total !== null && faits.push(`${moisLibelle ? moisLibelle.charAt(0).toUpperCase() + moisLibelle.slice(1) : \"Mois\"} \\xE0 date : ${formatMontant(reseauEcart.ca_realise)} sign\\xE9s contre ${formatMontant(reseauEcart.ca_comparaison)} pour ${comparaisonLibelle} (${signe(ecartPct(reseauEcart.ca_realise, reseauEcart.ca_comparaison) ?? 0)}) ; effet volume ${formatMontant(reseauEcart.effet_volume ?? 0)}, mix ${formatMontant(reseauEcart.effet_mix ?? 0)}, prix ${formatMontant(reseauEcart.effet_prix ?? 0)}, remise ${formatMontant(reseauEcart.effet_remise ?? 0)}.`), faits.push(f.alertes.length === 0 ? \"Aucune alerte active \\xE0 la date de publication.\" : `${formatNombre(f.alertes.length)} alerte${f.alertes.length > 1 ? \"s\" : \"\"} active${f.alertes.length > 1 ? \"s\" : \"\"} : ${f.alertes.map((a) => a.texte).join(\" ; \")}.`);\n    let lecture = [];\n    lecture.push(`${tendance(r.leads, r.leads_semaine_precedente, \"Leads\")}.`);\n    let eSign = ecartPct(r.signatures, r.signatures_semaine_precedente), eCa = ecartPct(r.ca_signe, r.ca_signe_semaine_precedente);\n    if (eSign !== null && eCa !== null) {\n      let sens = eSign < -20 ? \"une semaine de conversion faible, \\xE0 lire sur deux semaines avant de conclure\" : eSign > 20 ? \"une bonne semaine de conversion, \\xE0 confirmer la semaine prochaine\" : \"une semaine dans la moyenne\";\n      lecture.push(`Signatures ${eSign >= 0 ? \"en hausse\" : \"en retrait\"} de ${formatTaux(Math.abs(eSign))} et CA sign\\xE9 ${eCa >= 0 ? \"en hausse\" : \"en retrait\"} de ${formatTaux(Math.abs(eCa))} : ${sens}.`);\n    } else\n      lecture.push(`Signatures : ${formatNombre(r.signatures)}, sans semaine de comparaison.`);\n    let sousObjectif = ecartsAgences.filter((e) => e.pct <= -20), auDessus = ecartsAgences.filter((e) => e.pct > 0);\n    if (ecartsAgences.length > 0 && (lecture.push(sousObjectif.length > 0 ? `${formatNombre(sousObjectif.length)} agence${sousObjectif.length > 1 ? \"s sont\" : \" est\"} \\xE0 plus de 20\\xA0% sous ${comparaisonLibelle} au prorata du mois : ${sousObjectif.map((e) => `${e.nom} (${signe(e.pct)})`).join(\", \")}.` : `Aucune agence n'est \\xE0 plus de 20\\xA0% sous ${comparaisonLibelle} au prorata du mois.`), lecture.push(auDessus.length > 0 ? `${auDessus.map((e) => `${e.nom} (${signe(e.pct)})`).join(\", \")} d\\xE9passe${auDessus.length > 1 ? \"nt\" : \"\"} ${comparaisonLibelle}.` : `Aucune agence ne d\\xE9passe ${comparaisonLibelle} ce mois-ci.`)), reseauEcart && reseauEcart.ecart_total) {\n      let effets = [\n        { nom: \"volume\", v: reseauEcart.effet_volume ?? 0 },\n        { nom: \"mix\", v: reseauEcart.effet_mix ?? 0 },\n        { nom: \"prix\", v: reseauEcart.effet_prix ?? 0 },\n        { nom: \"remise\", v: reseauEcart.effet_remise ?? 0 }\n      ].sort((a, b) => Math.abs(b.v) - Math.abs(a.v)), premier = effets[0], second = effets[1];\n      if (premier) {\n        let part = Math.round(100 * premier.v / reseauEcart.ecart_total);\n        lecture.push(`L'\\xE9cart du r\\xE9seau tient d'abord au ${premier.nom} (${formatMontant(premier.v)}, ${formatNombre(part)}\\xA0% de l'\\xE9cart)${second ? ` puis au ${second.nom} (${formatMontant(second.v)})` : \"\"}.`);\n      }\n    }\n    lecture.push(f.alertes.length === 0 ? \"Aucune alerte n'appelle de d\\xE9cision cette semaine.\" : `Les alertes du matin appellent une d\\xE9cision : ${f.alertes.map((a) => a.nom_bassin).join(\", \")}.`);\n    let decisions = [];\n    for (let a of f.alertes)\n      a.code === \"CPV_LEADS_ACHETES\" ? decisions.push({ texte: `Plafonner les leads achet\\xE9s ${deAgence(a.nom_bassin)} et ren\\xE9gocier le prix du lead ; revoir le co\\xFBt par vente dans quatre semaines.`, indicateur: \"CPV\" }) : a.code === \"DOSSIERS_A_QUALIFIER\" ? decisions.push({ texte: `Terminer l'alignement du r\\xE9f\\xE9rentiel ${deAgence(a.nom_bassin)} et qualifier les ${formatNombre(a.valeur ?? 0)} dossiers restants avant de comparer ses taux.`, indicateur: \"QUALITE\" }) : (a.code === \"CARNET_POSE\" || a.code === \"POSES_EN_RETARD\") && decisions.push({ texte: `Renfort de pose \\xE0 ${a.nom_bassin} jusqu'\\xE0 r\\xE9sorption du carnet, poses prioris\\xE9es par anciennet\\xE9 de signature.`, indicateur: \"CARNET\" });\n    let pire = sousObjectif[0];\n    pire && decisions.push({ texte: `Revue de pipe avec ${pire.nom} : ${signe(pire.pct)} sur le mois, devis en attente \\xE0 passer en revue cette semaine.`, indicateur: \"TX_SIGN\" }), eSign !== null && eSign < -20 && decisions.push({ texte: \"Passer en revue les devis de plus de 30 jours de toutes les agences et relancer sous 48 heures les leads sans rendez-vous planifi\\xE9.\", indicateur: \"ATTENTE48\" }), decisions.push({ texte: \"Confirmer la semaine prochaine que les leads sans rendez-vous \\xE0 48 heures reculent dans chaque agence.\", indicateur: \"ATTENTE48\" });\n    let uniques = [];\n    for (let d of decisions) uniques.some((u) => u.indicateur === d.indicateur) || uniques.push(d);\n    return { faits, lecture: lecture.slice(0, 5), decisions: uniques.slice(0, 3) };\n  }\n  function versTexte(r) {\n    return [\n      \"## Faits\",\n      ...r.faits.map((x) => `- ${x}`),\n      \"\",\n      \"## Lecture\",\n      ...r.lecture,\n      \"\",\n      \"## D\\xE9cisions propos\\xE9es\",\n      ...r.decisions.map((d) => `- ${d.texte} (indicateur : ${d.indicateur})`)\n    ].join(`\n`);\n  }\n  function analyserTexte(texte) {\n    let blocs = {}, courant = null;\n    for (let brute of texte.split(`\n`)) {\n      let ligne = brute.trim();\n      if (ligne.startsWith(\"## \")) {\n        courant = ligne.slice(3).trim().toLowerCase(), blocs[courant] = [];\n        continue;\n      }\n      !ligne || !courant || blocs[courant]?.push(ligne.startsWith(\"- \") ? ligne.slice(2).trim() : ligne);\n    }\n    let faits = blocs.faits, lecture = blocs.lecture, decisions = blocs[\"d\\xE9cisions propos\\xE9es\"] ?? blocs[\"decisions proposees\"] ?? blocs.d\\u00E9cisions;\n    return !faits || !lecture || !decisions ? null : {\n      faits,\n      lecture,\n      decisions: decisions.map((d) => {\n        let m = /\\(indicateur\\s*:\\s*([A-Z0-9_]+)\\)\\s*$/.exec(d);\n        return m ? { texte: d.slice(0, m.index).trim(), indicateur: m[1] } : { texte: d, indicateur: \"\" };\n      })\n    };\n  }\n  return { analyserTexte, deAgence, redigerRevue, versTexte };\n})();\n\n\n// Faits de la semaine (RPC buta.faits_revue_hebdo, réponse complète : le JSON est dans body).\nconst faits = $input.first().json.body;\nif (!faits || !faits.reseau) throw new Error(\"faits de la revue absents\");\nconst r = revue.redigerRevue(faits);\nconst texteRegles = revue.versTexte(r);\n// Nombres autorisés pour le modèle : ceux qui figurent dans la rédaction par règles (mêmes formats).\nconst jetons = (s) => (String(s).match(/\\d[\\d\\u202f\\u00a0 ]*(?:[.,]\\d+)?/g) || []).map((t) => t.replace(/[\\s\\u202f\\u00a0]/g, \"\").replace(/[.,]$/, \"\"));\nconst autorises = [...new Set(jetons(texteRegles))];\nreturn [{ json: {\n  semaine: faits.semaine,\n  faits: r.faits,\n  lecture_regles: r.lecture,\n  decisions: r.decisions,\n  texte_regles: texteRegles,\n  faits_texte: r.faits.map((f) => \"- \" + f).join(\"\\n\"),\n  autorises,\n} }];\n"
+      }
+    },
+    {
+      "id": "1176505f-03a0-4802-8c5e-beeb30ab6dd6",
+      "name": "Rédiger la lecture",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        960,
+        300
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=Faits de la semaine (réseau d'installateurs simulé, données d'activité simulées) :\n{{ $json.faits_texte }}\n\nRédige le bloc « Lecture » de la revue hebdomadaire : cinq phrases en français, une par ligne, sans titre, sans puce, sans numéro.",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "SystemMessagePromptTemplate",
+              "message": "Tu rédiges la lecture hebdomadaire d'un cockpit de pilotage d'un réseau d'installateurs (photovoltaïque, pompes à chaleur). Règles absolues : tu n'inventes aucun fait, aucun nom, aucun chiffre ; tout nombre que tu écris doit apparaître dans les faits, écrit exactement de la même façon (mêmes décimales, même unité) ; tu ne fais aucun calcul ; pas de superlatif, pas de recommandation stratégique, pas de tiret long (utilise la virgule, le deux-points ou le point) ; ton sobre et précis ; cinq phrases, une par ligne, rien d'autre."
+            }
+          ]
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "6ead6811-79bb-4830-b6c4-ad2598222f87",
+      "name": "Mistral Large",
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        960,
+        520
+      ],
+      "parameters": {
+        "model": "mistral-large-latest",
+        "options": {
+          "temperature": 0.2,
+          "maxTokens": 900,
+          "maxRetries": 2
+        }
+      },
+      "credentials": {
+        "mistralCloudApi": {
+          "name": "Mistral Cloud account"
+        }
+      }
+    },
+    {
+      "id": "1d75c77f-05a0-46ab-aa98-0c9808afb60b",
+      "name": "Contrôle des nombres et assemblage",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1240,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const prep = $('Rédiger par règles').first().json;\nconst sortie = $input.first().json || {};\nconst texteModele = String(sortie.text || sortie.output || \"\").trim();\nconst lignes = texteModele.split(\"\\n\").map((l) => l.replace(/^[-*•]\\s*|^\\d+[.)]\\s*/, \"\").trim()).filter((l) => l && !l.startsWith(\"#\"));\nconst jetons = (s) => (String(s).match(/\\d[\\d\\u202f\\u00a0 ]*(?:[.,]\\d+)?/g) || []).map((t) => t.replace(/[\\s\\u202f\\u00a0]/g, \"\").replace(/[.,]$/, \"\"));\nconst inconnus = [...new Set(jetons(texteModele).filter((t) => !prep.autorises.includes(t)))];\nconst tiretLong = /[\\u2013\\u2014\\u2015]/.test(texteModele);\nconst conforme = texteModele.length > 0 && inconnus.length === 0 && lignes.length >= 3 && lignes.length <= 7 && !tiretLong;\nconst lecture = conforme ? lignes.slice(0, 5) : prep.lecture_regles;\nconst texte = [\"## Faits\", ...prep.faits.map((f) => \"- \" + f), \"\", \"## Lecture\", ...lecture, \"\", \"## Décisions proposées\", ...prep.decisions.map((d) => \"- \" + d.texte + \" (indicateur : \" + d.indicateur + \")\")].join(\"\\n\");\nconst motif = !texteModele ? \"réponse vide\" : inconnus.length ? \"nombres absents des faits : \" + inconnus.slice(0, 5).join(\", \") : tiretLong ? \"tiret long\" : \"format inattendu (\" + lignes.length + \" lignes)\";\nconst modele = conforme ? \"mistral-large-latest\" : \"règles (repli du modèle : \" + motif + \")\";\n// Coût estimé (Mistral Large, environ 1,85 € par million de jetons en entrée et 5,5 € en sortie, 4 caractères par jeton).\nconst jetonsEntree = Math.round((prep.faits_texte.length + 1400) / 4);\nconst jetonsSortie = Math.round(texteModele.length / 4);\nconst cout = conforme ? Math.round((jetonsEntree * 1.85 + jetonsSortie * 5.5) / 1000000 * 10000) / 10000 : 0;\nreturn [{ json: { semaine: prep.semaine, texte, modele, cout, conforme, motif: conforme ? \"\" : motif, lignes_modele: lignes.length } }];"
+      }
+    },
+    {
+      "id": "fd868d2d-98d6-457b-936b-00776638f838",
+      "name": "Publier la revue",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1500,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/publier_revue",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_semaine: $json.semaine, p_texte: $json.texte, p_modele: $json.modele, p_cout: $json.cout }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text",
+              "outputPropertyName": "texte"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "83b2f6b4-ce12-4745-a02f-7d6c61665cc8",
+      "name": "Email de la revue",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1760,
+        300
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "faridp@free.fr",
+        "subject": "=Buta.Lyfh : revue hebdomadaire, semaine du {{ $(\"Contrôle des nombres et assemblage\").item.json.semaine.slice(8, 10) }}/{{ $(\"Contrôle des nombres et assemblage\").item.json.semaine.slice(5, 7) }}",
+        "emailType": "text",
+        "message": "={{ $(\"Contrôle des nombres et assemblage\").item.json.texte }}\n\nRédaction : {{ $(\"Contrôle des nombres et assemblage\").item.json.modele }}. Écran Plans d'action : https://buta.lyfh.fr/plans-action\nDémonstrateur personnel, données d'activité simulées.",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Buta.Lyfh"
+        }
+      },
+      "webhookId": "08e32f9f-692d-4d4a-930a-ca4a47fc53de",
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "dba6dd13-33e6-43f9-9e99-ade913e4a8ae",
+      "name": "Journal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2020,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/journal_run",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_workflow: $(\"Paramètres\").item.json.workflow, p_statut: $(\"Contrôle des nombres et assemblage\").item.json.conforme ? \"ok\" : \"alerte\", p_message: \"revue de la semaine du \" + $(\"Contrôle des nombres et assemblage\").item.json.semaine.slice(8, 10) + \"/\" + $(\"Contrôle des nombres et assemblage\").item.json.semaine.slice(5, 7) + \" publiée, rédaction \" + $(\"Contrôle des nombres et assemblage\").item.json.modele + \", email envoyé\", p_lignes: $(\"Contrôle des nombres et assemblage\").item.json.lignes_modele, p_debute_le: $(\"Paramètres\").item.json.debut }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Chaque lundi à 07:00": {
+      "main": [
+        [
+          {
+            "node": "Paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paramètres": {
+      "main": [
+        [
+          {
+            "node": "Faits de la semaine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Faits de la semaine": {
+      "main": [
+        [
+          {
+            "node": "Rédiger par règles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rédiger par règles": {
+      "main": [
+        [
+          {
+            "node": "Rédiger la lecture",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rédiger la lecture": {
+      "main": [
+        [
+          {
+            "node": "Contrôle des nombres et assemblage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contrôle des nombres et assemblage": {
+      "main": [
+        [
+          {
+            "node": "Publier la revue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publier la revue": {
+      "main": [
+        [
+          {
+            "node": "Email de la revue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email de la revue": {
+      "main": [
+        [
+          {
+            "node": "Journal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Large": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Rédiger la lecture",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "executionTimeout": 600,
+    "errorWorkflow": "AC7dqLMndvCXmjaM"
+  },
+  "tags": [
+    {
+      "name": "Buta"
+    }
+  ]
+}

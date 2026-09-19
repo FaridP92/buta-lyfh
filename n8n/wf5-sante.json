@@ -1,0 +1,416 @@
+{
+  "name": "Buta - Santé (toutes les 6 h)",
+  "description": "WF5 Buta.Lyfh : vérifie toutes les 6 heures que le site répond 200 avec « Buta.Lyfh » et que l'API Supabase renvoie mart_kpi_mensuel, journalise dans buta.automatisation_run, email au troisième échec consécutif.",
+  "nodes": [
+    {
+      "id": "75bc709d-32ac-4088-ab8d-cc3ec4cfeb81",
+      "name": "Sticky Note 75bc709d",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -50,
+        150
+      ],
+      "parameters": {
+        "content": "## WF5 · Buta - Santé (toutes les 6 h)\n\n**Déclencheur** : Schedule, toutes les 6 heures (à la minute 10).\n\n**Étapes** : HTTP `https://buta.lyfh.fr/` (attend 200 et « Buta.Lyfh » dans la page, délai 30 s, jamais en erreur), HTTP Supabase `mart_kpi_mensuel?limit=1` (attend 200 et au moins une ligne), nœud Code « Verdict » (statut `ok` ou `erreur`, message), RPC `buta.journal_run`, RPC `buta.echecs_consecutifs` puis email Gmail à Frédéric à partir du troisième échec consécutif.\n\n**Sorties** : une ligne `buta.automatisation_run` par contrôle (écran Automatisations).\n\n**Credentials** : « Supabase Buta (service role) », « Gmail account ». Aucun secret dans l'export. Erreurs du workflow lui-même : WF0.",
+        "color": 4,
+        "width": 2380,
+        "height": 300
+      }
+    },
+    {
+      "id": "bc9b81b4-825f-4130-a6f4-b747f4413ddf",
+      "name": "Toutes les 6 heures",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6,
+              "triggerAtMinute": 10
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "99eed671-58fd-4b24-a4b8-93737e6e76ee",
+      "name": "Paramètres",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        260,
+        300
+      ],
+      "parameters": {
+        "mode": "manual",
+        "includeOtherFields": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "debut",
+              "name": "debut",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            },
+            {
+              "id": "workflow",
+              "name": "workflow",
+              "value": "WF5",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "a929d8e7-7505-4fa4-a032-172c32467a15",
+      "name": "Site buta.lyfh.fr",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        520,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://buta.lyfh.fr/",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          }
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "2231bdb4-14d9-4d2d-b261-6154c4f795f3",
+      "name": "API Supabase (mart_kpi_mensuel)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        780,
+        300
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/mart_kpi_mensuel",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendQuery": true,
+        "specifyQuery": "keypair",
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "select",
+              "value": "mois,agence"
+            },
+            {
+              "name": "limit",
+              "value": "1"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "21f20408-30c2-44d2-83ca-5d0f261da172",
+      "name": "Verdict",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        300
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "language": "javaScript",
+        "jsCode": "const site = $('Site buta.lyfh.fr').first().json || {};\nconst api = $input.first().json || {};\nconst siteStatut = Number(site.statusCode || 0);\nconst siteOk = siteStatut === 200 && String(site.html || '').includes('Buta.Lyfh');\nconst apiStatut = Number(api.statusCode || 0);\nconst apiLignes = Array.isArray(api.body) ? api.body.length : 0;\nconst apiOk = apiStatut === 200 && apiLignes >= 1;\nconst ok = siteOk && apiOk;\nconst message = 'site ' + (siteStatut || 'injoignable') + (siteOk ? ' (Buta.Lyfh présent)' : ' (KO)') + ', API ' + (apiStatut || 'injoignable') + ' (' + apiLignes + ' ligne' + (apiLignes > 1 ? 's' : '') + (apiOk ? ')' : ', KO)');\nreturn [{ json: { ok, statut: ok ? 'ok' : 'erreur', message, site_ok: siteOk, api_ok: apiOk, site_statut: siteStatut, api_statut: apiStatut } }];"
+      }
+    },
+    {
+      "id": "6a67d373-d9a4-4e02-a89d-bda788ed385f",
+      "name": "Journal",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1300,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/journal_run",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_workflow: $(\"Paramètres\").item.json.workflow, p_statut: $json.statut, p_message: $json.message, p_lignes: null, p_debute_le: $(\"Paramètres\").item.json.debut }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "4ba0b598-92d3-494e-8926-8c0d2da605b2",
+      "name": "Échecs consécutifs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1560,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/echecs_consecutifs",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "specifyHeaders": "keypair",
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Profile",
+              "value": "buta"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ ({ p_workflow: $(\"Paramètres\").item.json.workflow }) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "credentials": {
+        "supabaseApi": {
+          "name": "Supabase Buta (service role)"
+        }
+      }
+    },
+    {
+      "id": "e791fad8-0548-4b66-9d43-d8f57f1f33e5",
+      "name": "Trois échecs ou plus ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1820,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "trois-echecs",
+              "leftValue": "={{ $json.body }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "6ccb2de2-35f9-4666-919c-cc649b245493",
+      "name": "Email à Frédéric",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2080,
+        200
+      ],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "faridp@free.fr",
+        "subject": "=Buta.Lyfh : santé en échec {{ $json.body }} fois de suite",
+        "emailType": "text",
+        "message": "=Le contrôle de santé de Buta.Lyfh échoue depuis {{ $json.body }} exécutions (une toutes les 6 heures).\n\nDernier verdict : {{ $(\"Verdict\").item.json.message }}\n\nÀ vérifier : le site https://buta.lyfh.fr/ (Plesk, nginx) et l'API Supabase du projet renovscope (schéma buta).\n\nJournal : buta.automatisation_run (écran Automatisations). Démonstrateur personnel, données d'activité simulées.",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Buta.Lyfh"
+        }
+      },
+      "webhookId": "c99dd6c3-f5b3-4e7f-b58e-300d0268d5b9",
+      "credentials": {
+        "gmailOAuth2": {
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Toutes les 6 heures": {
+      "main": [
+        [
+          {
+            "node": "Paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paramètres": {
+      "main": [
+        [
+          {
+            "node": "Site buta.lyfh.fr",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Site buta.lyfh.fr": {
+      "main": [
+        [
+          {
+            "node": "API Supabase (mart_kpi_mensuel)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API Supabase (mart_kpi_mensuel)": {
+      "main": [
+        [
+          {
+            "node": "Verdict",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verdict": {
+      "main": [
+        [
+          {
+            "node": "Journal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Journal": {
+      "main": [
+        [
+          {
+            "node": "Échecs consécutifs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Échecs consécutifs": {
+      "main": [
+        [
+          {
+            "node": "Trois échecs ou plus ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trois échecs ou plus ?": {
+      "main": [
+        [
+          {
+            "node": "Email à Frédéric",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Paris",
+    "executionTimeout": 600,
+    "errorWorkflow": "AC7dqLMndvCXmjaM"
+  },
+  "tags": [
+    {
+      "name": "Buta"
+    }
+  ]
+}
