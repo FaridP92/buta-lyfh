@@ -80,7 +80,7 @@ Pour chacun : Vue d'ensemble, Territoires, Funnel et leads, Ventes et marge, For
 - Thème clair : contraste des textes et des graphiques ; bascule persistante.
 - Téléphone : tiroir de navigation, compteurs empilés, aucun débordement horizontal, Sankey vertical.
 - Repli instantané : avec Playwright, bloque les requêtes vers Supabase (`route.abort`) et vérifie que chaque écran affiche l'instantané avec le badge « instantané », sans erreur.
-- Contenu : aucun superlatif, aucun anglicisme hors vocabulaire du métier admis, aucun tiret long, espace insécable avant % et unités, virgule décimale, dates à la française. Aucune mention « Lumélio » nulle part dans le site (`grep -rn` sur `src/` et `dist/`), aucun logo ou couleur Butagaz, agences nommées par bassins seulement.
+- Contenu : aucun superlatif, aucun anglicisme hors vocabulaire du métier admis, aucun tiret long, espace insécable avant % et unités, virgule décimale, dates à la française. Aucune mention de l'entité rachetée (retirée le 19 septembre) nulle part dans le site (`grep -rn` sur `src/` et `dist/`), aucun logo ou couleur Butagaz, agences nommées par bassins seulement.
 - Analyste : suggestions cliquables, réponse, tableau des lignes, requête repliée copiable, refus en une phrase avec renvoi, historique local, garde-fous affichés, coût du jour.
 - Automatisations : cinq cartes avec dernière et prochaine exécution, journal alimenté, exports JSON actifs, schéma du flux dessiné.
 - Méthode : liens externes tous en 200 (`curl -sI` sur chaque `href`), dates de vérification des sources exactes, export Power BI téléchargeable (zip qui s'ouvre, vingt et une tables, `modele_etoile.md`, `mesures.dax`, `LISEZMOI.md`).

@@ -73,7 +73,7 @@ insert into buta.dim_canal (code, libelle, cout_modele, mention_legale) values
   ('site_web', 'Site web', 'forfait 4 500 € par mois et par agence', null),
   ('appels_entrants', 'Appels entrants', 'aucun coût direct', null),
   ('parrainage', 'Parrainage', '300 € par vente', null),
-  ('partenaires', 'Partenaires (artisans, courtiers)', '8 % du chiffre d''affaires apporté', null),
+  ('partenaires', 'Partenaires (artisans, courtiers)', '8 % du chiffre d''affaires apporté', null),
   ('terrain', 'Prospection terrain', 'forfait 12 000 € par mois et par agence', null),
   ('salons', 'Salons', '6 000 € les mois de salon', null),
   ('leads_achetes', 'Leads achetés (plateformes)', '65 € par lead', null),

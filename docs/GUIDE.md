@@ -1,6 +1,6 @@
 # Guide de présentation · Buta.Lyfh
 
-Ce guide sert à présenter Buta.Lyfh de façon crédible : ce que c'est, à quoi ça sert, ce que chaque écran montre, d'où viennent les données, comment s'en servir, et surtout à quoi ressemble le quotidien d'un Responsable Performance avec un tel outil. Les chiffres cités sont ceux de la journée publiée du 17 septembre 2026 ; ils bougent chaque matin (voir §5.6), relire les écrans la veille de l'entretien.
+Ce guide sert à présenter Buta.Lyfh de façon crédible : ce que c'est, à quoi ça sert, ce que chaque écran montre, d'où viennent les données, comment s'en servir, et surtout à quoi ressemble le quotidien d'un Responsable Performance avec un tel outil. Les chiffres cités sont ceux de la journée publiée du 18 septembre 2026 (captures du 19 septembre) ; ils bougent chaque matin (voir §5.6), relire les écrans la veille de l'entretien.
 
 Adresse : https://buta.lyfh.fr (sur ordinateur ou téléphone, sans compte).
 
@@ -38,18 +38,18 @@ Convention commune : barre haute avec la période (mois, trimestre, année à da
 
 ### 3.1 Vue d'ensemble · « Le réseau ce mois-ci »
 La question : où en est le réseau ce mois-ci, où sont les écarts, que faire ce matin.
-- Quatre compteurs : ventes signées, CA signé HT, taux de marge brute, conversion lead vers vente de la dernière cohorte mûre (« cohorte de mai, à 90 jours »). Le mois en cours est comparé à l'objectif au prorata des jours publiés (17 jours sur 30 le 17 septembre), sinon toute comparaison serait fausse.
-- Atterrissage 2026 : réalisé à date, atterrissage central, bornes basse et haute, objectif, probabilité d'atteinte. Au 17 septembre : 24,8 M€ central pour 29,2 M€ d'objectif, soit -15 %, probabilité d'atteinte inférieure à 1 %. C'est voulu : l'objectif 2026 vaut le réalisé 2025 × 1,15 et l'écran montre un réseau qui ne l'atteindra pas, ce qui est exactement la situation où un Responsable Performance sert à quelque chose.
+- Quatre compteurs : ventes signées, CA signé HT, taux de marge brute, conversion lead vers vente de la dernière cohorte mûre (« cohorte de mai, à 90 jours »). Le mois en cours est comparé à l'objectif au prorata des jours publiés (18 jours sur 30 le 18 septembre), sinon toute comparaison serait fausse.
+- Atterrissage 2026 : réalisé à date, atterrissage central, bornes basse et haute, objectif, probabilité d'atteinte. Au 18 septembre : 116 ventes et 967,1 k€ signés sur le mois, 28,6 % sous l'objectif au prorata ; atterrissage central 24,9 M€ (24,4 à 25,4) pour 29,2 M€ d'objectif, soit -14,7 %, probabilité d'atteinte inférieure à 1 %. C'est voulu : l'objectif 2026 vaut le réalisé 2025 × 1,15 et l'écran montre un réseau qui ne l'atteindra pas, ce qui est exactement la situation où un Responsable Performance sert à quelque chose.
 - Funnel de la cohorte du mois, grisé tant que la cohorte a moins de 90 jours (« taux provisoires »).
 - Alertes du matin, calculées par règles et datées : coût par vente des leads achetés de Bordeaux Métropole +48 % vs premier trimestre, 123 dossiers à qualifier dans le Nord.
-- Tableau des agences (ventes, écart à l'objectif, marge, statut), carte miniature des neuf agences simulées, et « Ce que dit le mois » : trois phrases assemblées par règles à partir des faits SQL (l'explication par le modèle de langage arrive au palier B).
+- Tableau des agences (ventes, écart à l'objectif, marge, statut), carte miniature des neuf agences simulées, et « Ce que dit le mois » : trois phrases assemblées par règles à partir des faits SQL, et le bouton « Expliquer avec le modèle » : constat, causes, action et sources rédigés par le modèle à partir des faits SQL du mois, chaque nombre vérifié dans les faits, réponse gardée 24 heures, phrases par règles si le modèle ne répond pas.
 
 Ce qu'on dit : « en trente secondes je sais ce qui a bougé, où, et de combien ; chaque chiffre a sa fiche ».
 
 ### 3.2 Ventes et marge · « D'où vient l'écart de chiffre d'affaires »
 La question : pourquoi le CA n'est pas là où il devrait être, et qui gagne de l'argent.
 - Six KPI : CA signé, CA posé, taux de marge brute, panier moyen, remise moyenne, taux d'annulation à 60 jours (affiché « n. d. » tant que les signatures de la période n'ont pas 60 jours : sur le mois en cours, la carte le dit au lieu de montrer un taux tronqué).
-- Cascade de l'écart de CA contre l'objectif (ou N-1) : effet volume, effet mix, effet prix, effet remise, résiduel nul par construction (formule télescopique, écrite dans la fiche). L'axe est tronqué et l'écran le dit. Bouton « Expliquer » : constat, causes classées, action, sources, par règles.
+- Cascade de l'écart de CA contre l'objectif (ou N-1) : effet volume, effet mix, effet prix, effet remise, résiduel nul par construction (formule télescopique, écrite dans la fiche). L'axe est tronqué et l'écran le dit. Bouton « Expliquer » : constat, causes classées, action, sources, rédigés par le modèle à partir des faits SQL (phrases par règles en repli).
 - CA par produit sur douze mois avec le taux de marge en courbe (la saisonnalité se lit : photovoltaïque au printemps, chauffage à l'automne, août creux).
 - « Quelle agence gagne de l'argent » : CA, écarts, marge brute, marge après acquisition, résultat d'agence, ventes par commercial, remise, annulations. Des agences gagnantes et perdantes, comme dans un vrai réseau (sur un mois plein, le réseau gagne de 12 à 200 k€ avec une à cinq agences en perte ; en cours de mois, le résultat est souvent négatif parce que les coûts d'acquisition sont engagés à la création du lead alors que la marge n'arrive qu'à la signature, quelques semaines plus tard : c'est une chose à dire si la question vient).
 - Matrice agence × produit (taille = CA, couleur = marge), annulations à distance contre sur place, boîtes à moustaches des remises par agence.
@@ -59,8 +59,8 @@ Ce qu'on dit : « l'écart se décompose, la remise se mesure, la marge après a
 
 ### 3.3 Funnel et leads · « Où se perd la conversion »
 La question : à quelle étape on perd, quel canal vaut son coût, quels leads attendent.
-- Six KPI en cohortes (rattachées au mois de création du lead) : leads, taux de RDV, taux de devis, taux de signature, coût par lead, coût par vente. Les taux sont mesurés sur la dernière cohorte mûre (mai 2026 le 17 septembre : 41,8 % de RDV, 67,8 % de devis, 33,8 % de signature, 98 € par lead, 914 € par vente) ; les leads du mois en cours sont comparés à N-1 au prorata des jours publiés.
-- Sankey du lead à l'encaissement avec les branches sortantes (sans RDV, sans devis, devis non signés, annulations) ; sur une cohorte de moins de 90 jours, ces branches sont grises « à date » parce qu'un devis pas encore signé n'est pas un refus ; sélecteur de canal ; se redessine quand on change d'agence. La matrice canal × agence et la qualité des leads par canal se lisent sur la dernière cohorte close à 90 jours (mai 2026 au 17 septembre), le sous-titre le dit.
+- Six KPI en cohortes (rattachées au mois de création du lead) : leads, taux de RDV, taux de devis, taux de signature, coût par lead, coût par vente. Les taux sont mesurés sur la dernière cohorte mûre (mai 2026 le 18 septembre : 41,8 % de RDV, 67,8 % de devis, 33,8 % de signature, 55 € par lead, 914 € par vente) ; les leads du mois en cours sont comparés à N-1 au prorata des jours publiés.
+- Sankey du lead à l'encaissement avec les branches sortantes (sans RDV, sans devis, devis non signés, annulations) ; sur une cohorte de moins de 90 jours, ces branches sont grises « à date » parce qu'un devis pas encore signé n'est pas un refus ; sélecteur de canal ; se redessine quand on change d'agence. La matrice canal × agence et la qualité des leads par canal se lisent sur la dernière cohorte close à 90 jours (mai 2026 au 18 septembre), le sous-titre le dit.
 - Matrice canal × agence (conversion en couleur, volume en trait), vingt mois de leads par canal avec les ventes nettes en courbe, qualité des leads par canal (« à revoir » quand le coût par vente dépasse 1,3 fois la médiane des canaux à coût), leads sans rendez-vous planifié à 48 heures par agence et par cohorte.
 
 Ce qu'on dit : « la cohorte est la seule façon honnête de mesurer une conversion ; un lead de septembre n'a pas fini de convertir ».
@@ -85,7 +85,7 @@ Ce qu'on dit : « le marché est public ; les dix départements comptent 2,0 mil
 
 ### 3.6 Qualité et référentiels · « Peut-on faire confiance au chiffre »
 La question : la confiance dans le chiffre, rendue visible.
-- Score du jour (part pondérée des contrôles réussis, poids 3 pour un contrôle bloquant) et courbe des journées ; le 17 septembre le score est à 68 parce que deux contrôles bloquants sont en échec, et l'écran le dit au lieu de le masquer.
+- Score du jour (part pondérée des contrôles réussis, poids 3 pour un contrôle bloquant) et courbe des journées ; le 18 septembre le score est à 68 parce que deux contrôles bloquants sont en échec, et l'écran le dit au lieu de le masquer.
 - Douze contrôles de cohérence (dossier sans agence, dossier sans canal, statut incohérent avec les dates, dates non chronologiques, doublon probable, montant hors bornes, remise supérieure à 20 %, marge négative, libellé produit hors référentiel, objectif manquant, fraîcheur à 72 heures, funnel monotone par cohorte) avec la règle, le nombre de lignes, la tendance et un échantillon.
 - Fraîcheur des six sources (date de référence, ingestion, prochaine mise à jour), lignage des sources aux écrans, référentiels (agences, canaux, produits, statuts) et la réconciliation des libellés produits de l'agence Nord (« avant, après »).
 
@@ -95,7 +95,7 @@ Ce qu'on dit : « un chiffre auquel on ne peut pas faire confiance ne sert à ri
 La question : quel délai entre signature et pose, quelle charge pour les équipes, ce qui reste à encaisser.
 - Six KPI : délai signature vers pose (médiane), poses dans les délais (à moins de 60 jours), carnet de pose en jours ouvrés, encaissé, en attente d'encaissement, aides en attente (mandat financier, hypothèse de simulation).
 - Calendrier de charge semaine × agence : quatre semaines réalisées puis la semaine en cours et onze semaines planifiées, en part de la capacité (techniciens × 5 jours).
-- Délai de pose sur place contre à distance sur douze mois (H5 : 48 jours contre 74 au dernier mois), lecture du carnet par règles, tableau encaissement et carnet par agence.
+- Délai de pose sur place contre à distance sur douze mois (H5 : 48 jours contre 75 au dernier mois), lecture du carnet par règles, tableau encaissement et carnet par agence.
 
 Ce qu'on dit : « le CA signé ne vaut que s'il est posé et encaissé ; la distance et la capacité technique se lisent ici ».
 
@@ -160,7 +160,7 @@ Elles décrivent des situations classiques d'un réseau, jamais des faits réels
 Une suite de vingt tests SQL (un par histoire, plus des contrôles de cohérence des vues) vérifie que les sept histoires se retrouvent bien dans les vues (`npm run test:sql`).
 
 ### 4.4 Comment la vérité des chiffres est garantie
-- Calculs en SQL dans des vues `mart_` (vingt et une vues), chaque vue et chaque colonne commentée ; les calculs qui doivent vivre dans l'interface (agrégation d'une période, recalcul du forecast au curseur, pondération de l'indice) sont dans une bibliothèque testée (87 tests unitaires).
+- Calculs en SQL dans des vues `mart_` (vingt et une vues), chaque vue et chaque colonne commentée ; les calculs qui doivent vivre dans l'interface (agrégation d'une période, recalcul du forecast au curseur, pondération de l'indice) sont dans une bibliothèque testée (152 tests unitaires).
 - Chaque indicateur a une fiche : définition, formule, grain, unité, sens de lecture, source (bouton « i »).
 - Mois en cours comparé au prorata des jours publiés ; les taux de cohorte ne sont affichés que pour les cohortes mûres (90 jours) ; les axes tronqués sont annoncés ; les seconds axes sont expliqués.
 - Douze contrôles de cohérence exécutés chaque matin ; score et anomalies visibles.
@@ -169,7 +169,7 @@ Une suite de vingt tests SQL (un par histoire, plus des contrôles de cohérence
 ## 5. Comment l'utiliser
 
 ### 5.1 Navigation
-Rail à gauche (icônes, libellé au survol) : Vue d'ensemble, Territoires, Funnel, Ventes et marge, Forecast, Pose et encaissement, Plans d'action et rituels, Qualité, Automatisations, Méthode. Sur téléphone, un tiroir. Le monogramme en haut ramène à l'accueil. Un écran non fini n'apparaît nulle part.
+Rail à gauche (icônes, libellé au survol) : Vue d'ensemble, Territoires, Funnel, Ventes et marge, Forecast, Pose et encaissement, Plans d'action et rituels, Qualité, Automatisations, Analyste, Méthode. Sur téléphone, un tiroir. Le monogramme en haut ramène à l'accueil. Un écran non fini n'apparaît nulle part.
 
 ### 5.2 Filtres globaux, dans l'adresse
 Période (mois, trimestre, année à date), comparaison (objectif ou N-1), agence (toutes ou une). Les filtres vivent dans l'URL : un lien partagé montre la même vue (`?periode=2026-05&comparaison=n1&agence=SAI`). Le titre de chaque écran s'adapte à l'agence choisie.
@@ -184,7 +184,7 @@ Période (mois, trimestre, année à date), comparaison (objectif ou N-1), agenc
 - Page Méthode : export Power BI (zip de vingt et une tables CSV, `modele_etoile.md` qui décrit le modèle en étoile, `mesures.dax` avec quarante mesures et `LISEZMOI.md` pour l'import).
 
 ### 5.5 Thème et mobile
-Thème sombre par défaut, clair au bouton en haut à droite (les graphiques suivent). Tout se lit à 375 px sans zoom.
+Thème sombre par défaut, clair au bouton en haut à droite (les graphiques suivent), choix mémorisé. Identité depuis le 19 septembre : le logo fourni (monogramme dans le rail et les favicons), le mot-marque « BUTA.LYFH » en Montserrat, la menthe du logo comme couleur d'interaction ; l'ambre reste réservé au badge « simulé », aux alertes et aux paliers de charge. Tout se lit à 375 px sans zoom.
 
 ### 5.6 Fraîcheur et automatisation
 Le badge « journée du JJ/MM intégrée à HH:MM » dit quelle journée simulée est publiée et quand. Chaque matin à 06:00 un workflow n8n publie la veille et rafraîchit les vues ; à 06:20 un second exécute les douze contrôles et envoie une synthèse par email si un contrôle bloquant échoue ; toutes les six heures un troisième vérifie que le site et l'API répondent. Si la base ne répond pas, l'application bascule sur un instantané statique embarqué et le badge le dit (« instantané du JJ/MM »).
@@ -221,10 +221,10 @@ Les chiffres sont simulés ; les gestes sont ceux du poste.
 
 ## 7. Sous le capot, en langage simple
 - **Base** : Supabase (Postgres) avec un schéma dédié, vingt et une vues `mart_`, sécurité par rôle et par ligne : l'interface ne lit que des agrégats, jamais une ligne de dossier. Les clés secrètes ne quittent jamais le serveur.
-- **Interface** : application React statique, déployée sur un VPS, graphiques ECharts, tests de bout en bout Playwright sur chaque route en 1280 et 375 px, audit Lighthouse (performance, accessibilité, bonnes pratiques, SEO à 99 ou 100 sur l'écran Ventes).
-- **Automatisation** : n8n (journée simulée, contrôles qualité, santé, gestion des erreurs), chaque exécution journalisée en base ; email au troisième échec consécutif.
+- **Interface** : application React statique, déployée sur un VPS, graphiques ECharts, tests de bout en bout Playwright sur chaque route en 1280 et 375 px, audit Lighthouse (performance 97 à 100, accessibilité, bonnes pratiques et SEO à 100 sur les onze écrans, mesuré le 19 septembre).
+- **Automatisation** : n8n (journée simulée, contrôles qualité, revue hebdomadaire, santé, gestion des erreurs), cinq workflows publiés le 19 septembre, chaque exécution journalisée en base ; email au troisième échec consécutif.
 - **IA** (palier B) : un analyste qui répond aux questions en langage naturel en écrivant une requête SQL en lecture seule sur les vues autorisées, avec quotas et budget affiché ; une explication d'écart rédigée à partir des faits. Repli par règles si l'IA est indisponible.
-- **BI** : export Power BI en modèle en étoile ; les mesures DAX arrivent au palier B.
+- **BI** : export Power BI en modèle en étoile avec quarante mesures DAX (`mesures.dax`).
 - **Méthode de construction** : documentation écrite avant le code (brief, écrans, indicateurs, données, design, architecture, déploiement, automatisations, IA, backlog, vérification), journal des décisions et des écarts, un commit par lot, critères d'acceptation vérifiés.
 
 ## 8. Questions probables et réponses
@@ -249,7 +249,7 @@ Les chiffres sont simulés ; les gestes sont ceux du poste.
 
 **Et à l'échelle, ou si le fournisseur tombe ?** Une question coûte de un à trois centimes avec le cache du prompt (0,33 € les 24 questions du jeu d'évaluation) et prend six à douze secondes. À 300 utilisateurs posant chacun cinq questions par jour, environ 30 € par jour, à comparer au temps d'un analyste ; le budget quotidien est plafonné et affiché. Si le fournisseur ne répond pas, la fonction bascule sur Mistral quand sa clé est posée, sinon l'écran le dit et les autres écrans restent la source ; l'explication d'écart repasse sur des phrases par règles.
 
-**Et Power BI ?** L'export fournit les tables au format CSV et un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux) ; les mesures DAX suivent.
+**Et Power BI ?** L'export fournit les tables au format CSV et un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux) ; quarante mesures DAX sont livrées dans le zip (`mesures.dax`).
 
 **Combien ça coûte à faire tourner ?** Un VPS mutualisé, un projet Supabase, une instance n8n : quelques dizaines d'euros par mois, et un budget IA plafonné à 1,50 € par jour hors semaine de démonstration.
 
@@ -269,11 +269,12 @@ Les chiffres sont simulés ; les gestes sont ceux du poste.
 
 ## 10. Démonstration en trois minutes
 1. **Accueil (30 s)** : « Le réseau ce mois-ci : quatre compteurs contre l'objectif au prorata, l'atterrissage de l'année, les alertes du matin datées. Tout est simulé, sauf le marché. »
-2. **Ventes et marge (45 s)** : la cascade de l'écart (« -238 k€ de volume, -106 k€ de mix »), le tableau « quelle agence gagne de l'argent », la phrase sur les remises de Saintonge.
+2. **Ventes et marge (45 s)** : la cascade de l'écart (« -266 k€ de volume, -111 k€ de mix » contre l'objectif au 18 septembre), le tableau « quelle agence gagne de l'argent », la phrase sur les remises de Saintonge.
 3. **Funnel (30 s)** : le Sankey, changer d'agence pour le voir se redessiner, la matrice canal × agence, le canal « à revoir ».
 4. **Forecast (30 s)** : l'éventail, le curseur « taux de signature du pipe », la probabilité d'atteinte.
 5. **Qualité (20 s)** : les douze contrôles, les deux en échec, la réconciliation des libellés du Nord.
 6. **Territoires (20 s)** : la carte de France, l'indice, un clic vers les communes d'un département.
 7. **Méthode (5 s)** : « tout est écrit là : sources, hypothèses, ce que c'est, ce que ce n'est pas ».
+8. **Analyste (30 s, si le temps)** : une question de fait (« Quel est le CA signé du réseau en juin 2026 ? »), la requête, les lignes, la pastille « chaque nombre retrouvé dans sa ligne ».
 
 Puis une phrase : « c'est le poste tel que je le tiendrais ; les chiffres sont simulés, les gestes sont les bons ».

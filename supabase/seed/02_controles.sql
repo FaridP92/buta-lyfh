@@ -26,12 +26,12 @@ insert into buta.controle (code, ordre, libelle, regle, bloquant, requete) value
      join buta.fait_dossier b on b.empreinte_contact = a.empreinte_contact and b.produit = a.produit and b.id > a.id
        and abs(b.date_lead - a.date_lead) <= 30
      where a.publie and b.publie$q$),
-  ('C06', 6, 'Montant hors bornes du produit', 'Montant HT signé entre 60 % et 140 % du prix catalogue du produit.', false,
+  ('C06', 6, 'Montant hors bornes du produit', 'Montant HT signé entre 60 % et 140 % du prix catalogue du produit.', false,
    $q$select d.id, d.agence, d.produit, d.montant_ht, p.prix_catalogue from buta.fait_dossier d
      join buta.dim_produit p on p.code = d.produit
      where d.publie and d.montant_ht is not null
        and (d.montant_ht < p.prix_catalogue * 0.6 or d.montant_ht > p.prix_catalogue * 1.4)$q$),
-  ('C07', 7, 'Remise supérieure à 20 %', 'Aucune remise au-delà de 20 % du prix catalogue.', false,
+  ('C07', 7, 'Remise supérieure à 20 %', 'Aucune remise au-delà de 20 % du prix catalogue.', false,
    $q$select id, agence, taux_remise from buta.fait_dossier where publie and taux_remise > 0.20$q$),
   ('C08', 8, 'Marge négative', 'Montant HT moins coût matériel moins coût de pose reste positif.', false,
    $q$select id, agence, produit, montant_ht, cout_materiel, cout_pose from buta.fait_dossier

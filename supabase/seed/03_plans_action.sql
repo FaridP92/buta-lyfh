@@ -6,7 +6,7 @@ truncate buta.plan_action;
 insert into buta.plan_action (agence, levier, proprietaire_code, gain_attendu, statut, echeance, avancement, indicateur_code) values
   ('BDX', 'Plafonner les leads achetés à 60 par mois et renégocier le prix du lead', 'C-BDX-01', 9000, 'en cours', '2026-10-31', 40, 'CPV'),
   ('MAR', 'Rétablir le rituel hebdomadaire de qualification des RDV avant devis', 'C-MAR-01', 14000, 'en cours', '2026-10-15', 70, 'TX_DEVIS'),
-  ('SAI', 'Plafonner la remise à 6 % et réserver les remises au-delà à validation du responsable', 'C-SAI-01', 35000, 'planifié', '2026-11-30', 10, 'TX_MARGE'),
+  ('SAI', 'Plafonner la remise à 6 % et réserver les remises au-delà à validation du responsable', 'C-SAI-01', 35000, 'planifié', '2026-11-30', 10, 'TX_MARGE'),
   ('NOR', 'Aligner le référentiel produits et qualifier les dossiers restants', 'C-NOR-01', 0, 'en cours', '2026-09-30', 85, 'QUALITE'),
   ('ARC', 'Renfort de pose : deux jours-technicien par semaine en sous-traitance jusqu''à résorption du carnet', 'C-ARC-01', 380000, 'en cours', '2026-10-31', 55, 'CARNET'),
   (null, 'Relancer sous 48 heures tout lead sans RDV planifié (file d''attente partagée)', 'RP-RESEAU', 21000, 'en cours', '2026-10-31', 30, 'ATTENTE48'),
