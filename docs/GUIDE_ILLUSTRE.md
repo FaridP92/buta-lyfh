@@ -539,24 +539,24 @@ La question : que répond le cockpit quand on lui pose une question de fait en f
 - Ce que ça montre : les lignes exactes renvoyées par la base, avec les noms de colonnes tels que la requête les a écrits (en minuscules, police à chasse fixe : ce sont des alias SQL, pas des libellés), les codes d'agence, de canal, de produit et de département traduits en libellés par le programme (le modèle reçoit ces libellés et les recopie), triables et exportables comme tout tableau du site.
 - Comment le lire : c'est la matière première de la réponse ; en cas de doute sur une phrase, la ligne fait foi.
 
-![La requête SQL exécutée](captures/guide/analyste-05-la-requete-sql-executee.png)
+![La requête SQL exécutée](captures/guide/analyste-06-la-requete-sql-executee.png)
 
 **La requête SQL exécutée.**
 - Ce que ça montre : la requête telle qu'elle a été validée et exécutée, dans une carte repliée, mise en forme pour la lecture (une clause par ligne) et copiable telle quelle.
 - Comment le lire : un lecteur qui connaît SQL vérifie en quelques secondes le périmètre (agence, mois, canal), les filtres et le calcul ; c'est la transparence qui rend la réponse discutable en réunion.
 
-![Une question refusée](captures/guide/analyste-06-question-refusee.png)
+![Une question refusée](captures/guide/analyste-07-question-refusee.png)
 
 **Une question refusée.**
 - Ce que ça montre : le motif du refus, en une phrase, et un renvoi utile quand il existe (le marché d'un département se lit sur Territoires ; ce que le cockpit contient, sur Méthode). Quatre motifs existent : conseil (« faut-il ouvrir une agence à Niort ? » : le démonstrateur lit le marché, il ne recommande pas), hors périmètre (la météo), données non couvertes (chiffres réels d'une entreprise, résultats par personne, MaPrimeRénov' par commune), écriture (toute demande de modification ou de suppression).
 - Comment le lire : un refus n'est pas une panne, et il a coûté un seul appel court au modèle. Une limite atteinte (cinq questions par minute, vingt par jour, budget du jour) s'affiche à part, « Analyste en pause », sans être un refus.
 
-![Historique de la session](captures/guide/analyste-03-historique-de-la-session.png)
+![Historique de la session](captures/guide/analyste-04-historique-de-la-session.png)
 
 **Historique de la session.**
 - Ce que ça montre : les dix dernières questions posées dans ce navigateur, avec l'heure et le statut (répondu, lignes seules, refusé, en pause) ; un clic rouvre la réponse. L'historique visible n'existe que dans ce navigateur ; côté serveur, la question, sa requête et son statut sont journalisés avec une empreinte hachée de l'adresse et du navigateur, jamais l'adresse, et purgés après trente jours.
 
-![Garde-fous](captures/guide/analyste-04-garde-fous.png)
+![Garde-fous](captures/guide/analyste-05-garde-fous.png)
 
 **Garde-fous.**
 - Ce que ça montre : ce que l'analyste ne peut pas faire, par construction : lecture seule sur les vues, une seule requête SELECT validée avant exécution (mots interdits, vues hors liste, schémas système refusés), contrôle des nombres, refus explicites, quotas (cinq questions par minute et vingt par jour par adresse et navigateur hachés, quatre cents par jour au total) et, en dernière ligne, le budget du jour consommé, toutes fonctions IA confondues.
