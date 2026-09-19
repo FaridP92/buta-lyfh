@@ -15,6 +15,7 @@
  */
 import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { coordonneesHtml } from "./lib/auteur";
 import { pathToFileURL } from "node:url";
 
 const RACINE = process.cwd();
@@ -210,7 +211,7 @@ function rendreCorps(blocs: Bloc[], mode: Mode = "ecran"): { couverture: string;
   };
   blocs.forEach((bloc, index) => {
     if (!sectionOuverte && bloc.type !== "h2") {
-      if (bloc.type === "p" && !bloc.texte.startsWith("Sommaire")) introduction.push(`<p>${enLigne(bloc.texte)}</p>`);
+      if (bloc.type === "p" && !bloc.texte.startsWith("Sommaire") && !bloc.texte.startsWith("Auteur :")) introduction.push(`<p>${enLigne(bloc.texte)}</p>`);
       return;
     }
     switch (bloc.type) {
@@ -312,6 +313,9 @@ strong { font-weight: 600; }
 .couverture .objet { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; margin: 0 0 20px; color: var(--texte); text-wrap: balance; }
 .couverture .adresse { font-family: var(--mono); font-size: 15px; margin: 0; }
 .couverture .adresse a { text-decoration: none; border-bottom: 1px solid var(--marque-menthe); }
+.couverture .coordonnees { font-family: var(--mono); font-size: 13px; color: var(--texte-2); margin: 10px 0 0; }
+.couverture .coordonnees a { text-decoration: none; border-bottom: 1px solid var(--bordure); }
+.pied .coordonnees { font-family: var(--mono); }
 .couverture .intro p { margin: 0 0 12px; color: var(--texte-2); }
 .couverture .intro p:last-child { margin-bottom: 0; }
 .mention { font-size: 13px; color: var(--texte-3); margin: 0; border-left: 2px solid var(--marque-menthe); padding-left: 12px; }
@@ -444,6 +448,7 @@ function assembler(blocs: Bloc[]): string {
     <h1>Buta<span class="point">.</span>Lyfh</h1>
     <p class="objet">Le cockpit d'un Responsable Performance, du lead à l'encaissement, sur un réseau d'installateurs simulé posé sur le marché réel.</p>
     <p class="adresse"><a href="https://buta.lyfh.fr">buta.lyfh.fr</a></p>
+    <p class="coordonnees">${coordonneesHtml()}</p>
   </div>
   <div class="intro">
     ${couverture}
@@ -462,6 +467,7 @@ ${sommaire}
 ${corps}
 <footer class="pied">
   <p>Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées.</p>
+  <p class="coordonnees">${coordonneesHtml()}</p>
   <p>Fiche générée depuis le guide illustré du dépôt (docs/GUIDE_ILLUSTRE.md) ; captures du site en ligne prises le 19 septembre 2026 (journée publiée du 18 septembre).</p>
 </footer>
 </main>
@@ -502,7 +508,8 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--fond-doux)
 .couverture h1 { font-family: "Montserrat", var(--sans); font-weight: 800; text-transform: uppercase; font-size: 40pt; line-height: 1; letter-spacing: 0.04em; color: var(--titre); margin: 0 0 8mm; }
 .couverture h1 .point { color: var(--menthe); }
 .couverture .objet { font-family: var(--serif); font-size: 19pt; line-height: 1.25; color: var(--encre); margin: 0 0 6mm; max-width: 130mm; }
-.couverture .adresse { font-family: var(--mono); font-size: 10.5pt; color: var(--bleu); margin: 0 0 12mm; }
+.couverture .adresse { font-family: var(--mono); font-size: 10.5pt; color: var(--bleu); margin: 0 0 2mm; }
+.couverture .coordonnees { font-family: var(--mono); font-size: 9pt; color: var(--encre-2); margin: 0 0 12mm; }
 .couverture .intro { max-width: 132mm; color: var(--encre-2); font-size: 9.5pt; }
 .couverture .intro p { margin-bottom: 2.6mm; }
 .en-bref { list-style: none; margin: auto 0 0; padding: 8mm 0 0; border-top: 1px solid var(--filet); display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm 8mm; }
@@ -572,6 +579,7 @@ td:first-child { font-weight: 600; }
 .fin h2 { border: 0; font-family: "Montserrat", var(--sans); font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; font-size: 18pt; margin-bottom: 5mm; padding: 0; }
 .fin p { max-width: 130mm; color: var(--encre-2); }
 .fin .adresse { font-family: var(--mono); color: var(--bleu); }
+.fin .coordonnees { font-family: var(--mono); font-size: 9pt; color: var(--encre-2); }
 `;
 
 /** Sommaire d'impression : chaque entrée porte un guide pointillé et le numéro de page calculé par Paged.js. */
@@ -607,6 +615,7 @@ function assemblerImpression(blocs: Bloc[]): string {
   <h1>Buta<span class="point">.</span>Lyfh</h1>
   <p class="objet">Le cockpit d'un Responsable Performance, du lead à l'encaissement, sur un réseau d'installateurs simulé posé sur le marché réel.</p>
   <p class="adresse">buta.lyfh.fr</p>
+  <p class="coordonnees">${coordonneesHtml()}</p>
   <div class="intro">${couverture}</div>
   <ul class="en-bref" aria-label="En bref">
     <li><span class="valeur">11</span><span class="libelle">écrans</span></li>
@@ -624,6 +633,7 @@ ${corps}
   <img class="logo" src="logo/monogramme.png" alt="">
   <h2>Buta<span style="color: var(--menthe)">.</span>Lyfh</h2>
   <p class="adresse">https://buta.lyfh.fr</p>
+  <p class="coordonnees">${coordonneesHtml()}</p>
   <p>Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées.</p>
   <p>Fiche générée depuis le guide illustré du dépôt ; captures du site en ligne prises le 19 septembre 2026 (journée publiée du 18 septembre).</p>
 </footer>
