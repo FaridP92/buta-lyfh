@@ -178,8 +178,7 @@ export function EcranMethode() {
         <h2 className={TITRE_SECTION}>Le contexte public</h2>
         <p className={PARAGRAPHE}>
           Butagaz Eco-énergie publie sur son site dix départements (16, 17, 79, 85, 24, 33, 47, 32, 40,
-          64) et huit agences ; le rachat de Lumélio (Douaisis) a été annoncé en mai 2026. C'est le seul
-          endroit de ce démonstrateur où ces faits publics sont cités. Le maillage simulé de Buta.Lyfh
+          64) et huit agences. C'est le seul endroit de ce démonstrateur où ces faits publics sont cités. Le maillage simulé de Buta.Lyfh
           reprend ces bassins géographiques, jamais ces agences : les neuf agences de la simulation
           portent des noms de bassins et ne correspondent à aucune agence réelle de Butagaz Eco-énergie.
         </p>

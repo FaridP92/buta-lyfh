@@ -124,7 +124,7 @@ La question : que répond le cockpit quand on lui pose une question de fait en f
 Ce qu'on dit : « le modèle ne produit jamais un chiffre : il écrit la requête, la base répond, il commente ; si un nombre de sa phrase n'est pas dans les lignes, ou pas dans la ligne que la phrase nomme, la phrase est rejetée et les lignes restent la réponse. La requête et les lignes sont toujours affichées : c'est la matière de la réponse, pas une annexe ».
 
 ### 3.11 Méthode et auteur
-Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture, l'export Power BI (zip de vingt et une tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).
+Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise), l'architecture, l'export Power BI (zip de vingt et une tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).
 
 ## 4. D'où viennent les données
 

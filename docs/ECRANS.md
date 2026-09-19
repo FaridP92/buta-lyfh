@@ -88,7 +88,7 @@ Histoire : H4.
 - Ce que c'est, ce que ce n'est pas (disclaimer complet).
 - Les sources réelles avec liens, licences, dates.
 - Le modèle de simulation : agences nommées par bassin (jamais celles d'un réseau réel), effectifs codés, canaux, produits, règles, ordres de grandeur à vérifier, les sept histoires listées explicitement (le recruteur peut vérifier qu'il les a vues), et la phrase : « aucune agence, personne ou entité réelle n'est associée à une performance simulée ».
-- Le contexte public, cité une seule fois : les dix départements et huit agences publiés par Butagaz Eco-énergie sur son site, le rachat de Lumélio annoncé en mai 2026 ; le maillage simulé reprend ces bassins, pas ces agences.
+- Le contexte public, cité une seule fois : les dix départements et huit agences publiés par Butagaz Eco-énergie sur son site (aucun rachat réel n'est cité depuis le 19 septembre) ; le maillage simulé reprend ces bassins, pas ces agences.
 - L'architecture en un schéma, les outils (Supabase, n8n, Edge Functions, Claude ou Mistral, React, ECharts), le principe « faits SQL, prose modèle ».
 - L'auteur : trois lignes, lien LinkedIn, lien CV PDF, lien RenovScope et CoPilote Atelier, adresse de contact.
 - Export Power BI : bouton zip (CSV des vues mart et `modele_etoile.md` au palier A ; `mesures.dax` et `LISEZMOI.md` ajoutés au palier B).

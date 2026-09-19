@@ -433,7 +433,7 @@ La question : la confiance dans le chiffre, rendue visible.
 
 **Score de qualité du jour et courbe des journées publiées.**
 - Ce que ça montre : un score de 0 à 100, part pondérée des contrôles réussis (poids 3 pour un contrôle bloquant), et son historique sur les journées publiées.
-- Comment le lire : 68 le 17 septembre, parce que deux contrôles bloquants sont en échec ; l'écran le dit au lieu de le masquer.
+- Comment le lire : 68 le 17 septembre, parce que deux contrôles bloquants sont en échec ; l'écran le dit au lieu de le masquer. L'historique remonte à mai 2026 : 100 avant l'intégration de l'agence Nord, 73 dès le 1er juin (premiers dossiers sans statut cohérent et libellés hors référentiel), 68 depuis le 17 juin (premiers doublons probables) ; le nombre de lignes en défaut monte de 2 à 83 au fil de l'été, parce que le référentiel n'est pas encore aligné (plan d'action à 40 %).
 
 ![Les douze contrôles](captures/guide/qualite-02-les-douze-controles.png)
 
@@ -567,7 +567,7 @@ La question : que répond le cockpit quand on lui pose une question de fait en f
 
 ![Méthode, page entière](captures/guide/methode.png)
 
-La page qui dit tout : ce que c'est et ce que ce n'est pas, les sources réelles avec liens et licences, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture en langage simple, l'export Power BI (vingt et une tables CSV, un modèle en étoile documenté, quarante mesures DAX et un mode d'emploi), l'auteur et ses liens.
+La page qui dit tout : ce que c'est et ce que ce n'est pas, les sources réelles avec liens et licences, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise), l'architecture en langage simple, l'export Power BI (vingt et une tables CSV, un modèle en étoile documenté, quarante mesures DAX et un mode d'emploi), l'auteur et ses liens.
 
 ![Le modèle de simulation](captures/guide/methode-03-le-modele-de-simulation.png)
 

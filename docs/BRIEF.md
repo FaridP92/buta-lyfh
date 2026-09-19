@@ -28,7 +28,7 @@ Et l'export « pour Power BI » : un zip avec les tables au format CSV, un modè
 Ce qui n'est pas dans le palier A est retiré de la navigation avant mardi, jamais laissé « à venir ».
 
 ## 5. Ce qui est vrai et ce qui est simulé (à afficher tel quel)
-- Vrai : le marché (Insee 2022, ADEME RGE, RTE registre, ADEME DPE). Cités une seule fois, sur la page Méthode, comme contexte public : les dix départements et huit agences publiés par Butagaz Eco-énergie sur son site, et le rachat de Lumélio annoncé en mai 2026.
+- Vrai : le marché (Insee 2022, ADEME RGE, RTE registre, ADEME DPE). Cités une seule fois, sur la page Méthode, comme contexte public : les dix départements et huit agences publiés par Butagaz Eco-énergie sur son site (le rachat annoncé en mai 2026 n'est plus cité depuis le 19 septembre).
 - Simulé : tout ce qui est activité (leads, rendez-vous, devis, ventes, poses, encaissements, coûts, charges, objectifs, effectifs, plans d'action). Les neuf agences simulées portent des noms de bassins, jamais ceux d'agences réelles ; les effectifs sont des codes ; aucune agence, personne ou entité réelle n'est associée à une performance simulée. Générateur déterministe, hypothèses écrites dans `DONNEES.md` et sur la page Méthode. Le mot « simulé » apparaît sur chaque écran d'activité, dans un badge discret mais constant.
 - Jamais : un logo, une couleur, un chiffre présenté comme celui de Butagaz ; une recommandation d'implantation (« vous devriez ouvrir à ») ; un superlatif.
 
