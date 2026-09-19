@@ -52,7 +52,7 @@ Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond
 - US-051 Relecture par workflow de réfutation (mode ultracode, trois lentilles : faits contre DONNEES.md et INDICATEURS.md, forme et typographie, recruteur Butagaz simulé), corrections.
 - US-052 Retrait de la navigation de tout écran non fini ; test téléphone 4G ; gel à 20 h ; journal final ; commit ; déploiement.
 - US-053 Fiche de présentation illustrée pour un lecteur étranger au projet : `npm run fiche` génère `docs/FICHE.html` et `docs/FICHE.pdf` depuis `docs/GUIDE_ILLUSTRE.md` seul (couverture, repères, sommaire, chaque visuel avec sa capture et sa lecture, notice) ; la page est aussi publiée comme lien partageable. Fait le 19 septembre.
-- US-054 Signaux animés des cartes KPI (demande de Frédéric du 19 septembre) : éclats et secousse à -20 % ou -5 points, gerbe à +10 % ou +3 points, règle testée dans `src/lib/signaux.ts`, canvas `SignalCarte`, une fois par période, rien en mouvement réduit. Fait le 19 septembre.
+- US-054 Signaux animés des cartes KPI (demande de Frédéric du 19 septembre) : carte qui s'enflamme à -20 % ou -5 points (éclats et secousse du premier essai remplacés le jour même), gerbe à +10 % ou +3 points, règle testée dans `src/lib/signaux.ts`, canvas `SignalCarte`, une fois par période, rien en mouvement réduit. Fait le 19 septembre.
 - US-055 Logo fourni par Frédéric (19 septembre) : monogramme détouré dans le rail et les favicons, couverture et en-tête de la fiche de présentation, thème du document aux couleurs du logo (bleu et menthe). Fait le 19 septembre.
 
 ## Palier C (après l'entretien)

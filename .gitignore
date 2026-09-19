@@ -18,3 +18,4 @@ n8n/*.export.json
 !.omc/skills/
 .cache/
 /Logo.jpeg
+docs/FICHE-impression.html

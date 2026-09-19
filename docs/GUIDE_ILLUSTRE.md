@@ -142,7 +142,7 @@ Chaque compteur se lit ainsi :
 - la **mini courbe** des douze derniers mois, le point ambre marquant la dernière valeur ;
 - le bouton **i** qui ouvre la fiche de l'indicateur.
 
-Quand l'écart franchit un seuil, la carte le signale une fois, après son compteur : à -20 % (ou -5 points pour un taux), elle tremble, rougit et projette des éclats ; à +10 % (ou +3 points), elle verdit et lance une gerbe de couleurs. Un indicateur où « plus bas = mieux » inverse le sens. Rien ne bouge si le système demande un mouvement réduit.
+Quand l'écart franchit un seuil, la carte le signale une fois, après son compteur : à -20 % (ou -5 points pour un taux), elle s'enflamme (bordure chaude, flammes qui montent du bord bas, braises) ; à +10 % (ou +3 points), elle verdit et lance une gerbe de couleurs. Un indicateur où « plus bas = mieux » inverse le sens. Rien ne bouge si le système demande un mouvement réduit.
 
 ### 4.5 La fiche d'un indicateur
 
@@ -692,7 +692,7 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 
 ### 9.2 Les captures et la fiche
 
-Ce guide existe aussi sous forme de fiche mise en page, générée depuis ce fichier par `npm run fiche` : `docs/FICHE.html` (à ouvrir dans un navigateur, thème clair ou sombre) et `docs/FICHE.pdf` (A4, à imprimer ou à envoyer). Toute correction se fait ici, puis la fiche est regénérée.
+Ce guide existe aussi sous forme de fiche mise en page, générée depuis ce fichier par `npm run fiche` : `docs/FICHE.html` (à ouvrir dans un navigateur, thème clair ou sombre) et `docs/FICHE.pdf` (A4 mis en pages pour l'impression : couverture, sommaire paginé, un chapitre par page, figures numérotées). Toute correction se fait ici, puis la fiche est regénérée.
 
 Toutes les captures de ce guide sont dans `docs/captures/guide/` : une page entière par écran, une image par carte, les éléments communs (barre haute, fiche, palette, export, thème clair) et quatre vues téléphone. Celles de l'écran Analyste ont été prises le 19 septembre 2026 après sa mise en navigation, journée publiée du 18 septembre. Elles ont été prises sur le site en ligne le 18 septembre 2026 au soir, journée publiée du 17 septembre.
 
