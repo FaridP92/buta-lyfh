@@ -515,51 +515,51 @@ La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a ma
 **Le flux.**
 - Ce que ça montre : de l'outil d'automatisation aux écrans : les workflows appellent des fonctions SQL avec une clé serveur, les vues recalculent, l'application lit ; les alertes partent par email ; aucun secret ne circule dans le navigateur.
 
-### 5.10 Analyste : « Posez la question au cockpit »
+### 5.10 Analyste : « Vérifier un chiffre avant de décider »
 
 ![Analyste, page entière](captures/guide/analyste.png)
 
-La question : que répond le cockpit quand on lui pose une question en français, et peut-on lui faire confiance. L'écran est entré dans la navigation le 19 septembre 2026, après un jeu d'évaluation de vingt-quatre questions réussi à 100 % (le seuil de mise en ligne était de 90 %).
+La question : que répond le cockpit quand on lui pose une question de fait en français, et peut-on lui faire confiance. L'écran est entré dans la navigation le 19 septembre 2026, après un jeu d'évaluation de vingt-quatre questions réussi à 100 % (le seuil de mise en ligne était de 90 %). Ce que le jeu vérifie : le statut attendu (réponse ou refus), l'absence de tout nombre hors des lignes, et la présence dans la phrase du modèle de la valeur attendue pour les onze questions dont la valeur ne bouge pas d'un jour à l'autre. Ce qu'il ne vérifie pas : qu'un chiffre exact est attribué à la bonne agence ; c'est pour cela que les lignes et la requête sont toujours affichées.
 
 ![L'écran avant toute question](captures/guide/analyste-00-avant-question.png)
 
 **Le formulaire et les suggestions.**
-- Ce que ça montre : un champ de question libre (500 caractères au plus), le bouton « Demander », six suggestions qui correspondent aux histoires plantées dans la simulation et au marché réel. En haut à droite, le coût du jour et le nombre d'appels, avec le budget quotidien dès qu'une réponse l'a transmis.
-- Comment le lire : une question porte sur les indicateurs, les agences, les canaux, les produits, les périodes, les délais, la qualité ou le marché des territoires. Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (cinq secondes, deux cents lignes), puis le modèle rédige à partir des lignes renvoyées, sans jamais calculer.
+- Ce que ça montre : un champ de question libre (500 caractères au plus), le bouton « Demander », six suggestions qui correspondent aux histoires plantées dans la simulation et au marché réel, et la règle du jeu en une ligne : la question se suffit, les filtres de la barre haute ne s'appliquent pas ici.
+- Comment le lire : une question de fait porte sur les indicateurs, les agences, les canaux, les produits, les périodes, les délais, la qualité ou le marché des territoires ; le pourquoi d'un écart, lui, se demande au bouton Expliquer de Ventes et marge. Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (cinq secondes, deux cents lignes), puis le modèle rédige à partir des lignes renvoyées, sans jamais calculer.
 
 ![La réponse](captures/guide/analyste-01-la-reponse.png)
 
 **La réponse.**
-- Ce que ça montre : trois à six phrases en français, la période et le périmètre rappelés, les codes traduits en bassins, puis les sources (vues utilisées, période, « données d'activité simulées » ou « marché réel »), le modèle, la durée et le coût de la question.
-- Comment le lire : la pastille verte « chaque nombre vérifié dans les lignes » dit que tous les nombres de la prose ont été retrouvés dans les lignes renvoyées par la base. Si un nombre ne s'y trouve pas, la rédaction est rejetée, la pastille passe en orange et une phrase explique que les lignes ci-dessous restent la réponse.
+- Ce que ça montre : trois à six phrases en français, la période et le périmètre rappelés, les codes traduits en bassins, puis les sources, calculées par le programme et non par le modèle (vues lues par la requête, période des lignes bornée à la journée publiée, nature des données), le modèle, la durée en secondes et le coût de la question. Le badge « simulé » ou « marché réel » vient lui aussi des vues citées par la requête validée.
+- Comment le lire : la pastille verte « aucun nombre hors des lignes » dit que tous les nombres de la prose, en chiffres ou en lettres et avec leur signe, ont été retrouvés dans les lignes renvoyées par la base. Si un nombre ne s'y trouve pas, la rédaction est rejetée, la pastille passe en orange et une phrase explique que les lignes ci-dessous restent la réponse. Ce que la pastille ne dit pas : que chaque chiffre est attribué à la bonne ligne ; en cas de doute, le tableau fait foi.
 
 ![Les chiffres](captures/guide/analyste-02-les-chiffres.png)
 
 **Les chiffres.**
-- Ce que ça montre : les lignes exactes renvoyées par la base, avec les noms de colonnes choisis par le modèle, triables et exportables comme tout tableau du site.
+- Ce que ça montre : les lignes exactes renvoyées par la base, avec les noms de colonnes tels que la requête les a écrits (en minuscules, police à chasse fixe : ce sont des alias SQL, pas des libellés), les codes d'agence, de canal et de produit traduits en libellés, triables et exportables comme tout tableau du site.
 - Comment le lire : c'est la matière première de la réponse ; en cas de doute sur une phrase, la ligne fait foi.
 
 ![La requête SQL exécutée](captures/guide/analyste-05-la-requete-sql-executee.png)
 
 **La requête SQL exécutée.**
-- Ce que ça montre : la requête telle qu'elle a été validée et exécutée, dépliable et copiable.
+- Ce que ça montre : la requête telle qu'elle a été validée et exécutée, dans une carte repliée, mise en forme pour la lecture (une clause par ligne) et copiable telle quelle.
 - Comment le lire : un lecteur qui connaît SQL vérifie en quelques secondes le périmètre (agence, mois, canal), les filtres et le calcul ; c'est la transparence qui rend la réponse discutable en réunion.
 
 ![Une question refusée](captures/guide/analyste-06-question-refusee.png)
 
 **Une question refusée.**
-- Ce que ça montre : le motif du refus, en clair. Quatre motifs existent : conseil (« faut-il ouvrir une agence à Niort ? » : le démonstrateur lit le marché, il ne recommande pas), hors périmètre (la météo), données non couvertes (chiffres réels d'une entreprise, résultats par personne, MaPrimeRénov' par commune), écriture (toute demande de modification ou de suppression).
-- Comment le lire : un refus n'est pas une panne. Le refus a coûté un seul appel court au modèle.
+- Ce que ça montre : le motif du refus, en une phrase, et un renvoi utile quand il existe (le marché d'un département se lit sur Territoires ; ce que le cockpit contient, sur Méthode). Quatre motifs existent : conseil (« faut-il ouvrir une agence à Niort ? » : le démonstrateur lit le marché, il ne recommande pas), hors périmètre (la météo), données non couvertes (chiffres réels d'une entreprise, résultats par personne, MaPrimeRénov' par commune), écriture (toute demande de modification ou de suppression).
+- Comment le lire : un refus n'est pas une panne, et il a coûté un seul appel court au modèle. Une limite atteinte (cinq questions par minute, vingt par jour, budget du jour) s'affiche à part, « Analyste en pause », sans être un refus.
 
 ![Historique de la session](captures/guide/analyste-03-historique-de-la-session.png)
 
 **Historique de la session.**
-- Ce que ça montre : les dix dernières questions posées dans ce navigateur, avec leur statut (répondu, refusé) ; un clic rouvre la réponse. Rien n'est conservé ailleurs que dans le navigateur.
+- Ce que ça montre : les dix dernières questions posées dans ce navigateur, avec l'heure et le statut (répondu, lignes seules, refusé, en pause) ; un clic rouvre la réponse. L'historique visible n'existe que dans ce navigateur ; côté serveur, la question, sa requête et son statut sont journalisés avec une empreinte hachée de l'adresse et du navigateur, jamais l'adresse, et purgés après trente jours.
 
 ![Garde-fous](captures/guide/analyste-04-garde-fous.png)
 
 **Garde-fous.**
-- Ce que ça montre : ce que l'analyste ne peut pas faire, par construction : lecture seule sur les vues, une seule requête SELECT validée avant exécution (mots interdits, vues hors liste, schémas système refusés), contrôle des nombres, refus explicites, quotas (cinq questions par minute et vingt par jour par adresse hachée, quatre cents par jour au total) et budget quotidien en euros.
+- Ce que ça montre : ce que l'analyste ne peut pas faire, par construction : lecture seule sur les vues, une seule requête SELECT validée avant exécution (mots interdits, vues hors liste, schémas système refusés), contrôle des nombres, refus explicites, quotas (cinq questions par minute et vingt par jour par adresse et navigateur hachés, quatre cents par jour au total) et, en dernière ligne, le budget du jour consommé, toutes fonctions IA confondues.
 
 ### 5.11 Méthode et auteur
 
@@ -663,7 +663,7 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 
 **Que fait le modèle de langage ?** Il rédige à partir de faits calculés en SQL et ne calcule jamais ; un contrôle refuse toute phrase contenant un nombre absent des faits. Sans clé configurée, tout est rédigé par règles et l'écran le dit.
 
-**L'analyste peut-il se tromper ?** Il peut mal choisir une vue ou un filtre, comme un analyste humain pressé : c'est pourquoi la requête et les lignes sont toujours affichées avec la réponse. Ce qu'il ne peut pas faire, c'est inventer un chiffre : tout nombre de sa phrase absent des lignes fait rejeter la phrase. Le jeu d'évaluation de vingt-quatre questions (dont quatre refus attendus) est rejoué avant chaque mise en ligne de l'écran.
+**L'analyste peut-il se tromper ?** Il peut mal choisir une vue ou un filtre, ou prêter le chiffre d'une agence à une autre, comme un analyste humain pressé : c'est pourquoi la requête et les lignes sont toujours affichées avec la réponse. Ce qu'il ne peut pas faire, c'est inventer un chiffre : tout nombre de sa phrase absent des lignes, en chiffres ou en lettres, ou au signe contraire, fait rejeter la phrase. Le jeu d'évaluation de vingt-quatre questions (dont six refus attendus) est rejoué avant chaque mise en ligne de l'écran.
 
 **Et Power BI ?** L'export de la page Méthode fournit les tables en CSV, un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux), quarante mesures DAX et un mode d'emploi.
 

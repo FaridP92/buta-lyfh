@@ -114,14 +114,14 @@ La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a ma
 
 Ce qu'on dit : « le cockpit vit sans moi le matin ; si quelque chose casse, je le sais avant les autres ».
 
-### 3.10 Analyste · « Posez la question au cockpit »
-La question : que répond le cockpit quand on lui pose une question en français, et peut-on lui faire confiance.
-- Une question libre (500 caractères au plus) ou une des six suggestions (les histoires du jeu simulé et le marché réel). Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (5 secondes, 200 lignes), le modèle rédige à partir des lignes sans jamais calculer, et chaque nombre de la réponse est vérifié dans les lignes ; sinon la rédaction est rejetée et les lignes restent la réponse.
-- La carte « La réponse » (prose et sources, modèle, durée, coût), la carte « Les chiffres » (les lignes exactes, exportables), la requête SQL exécutée (dépliable, copiable), l'historique de la session et les garde-fous.
-- Refus explicites avec leur motif : conseil (« faut-il ouvrir une agence à Niort ? »), hors périmètre (la météo), données non couvertes (chiffres réels, personnes, MaPrimeRénov' par commune), écriture. Quotas par adresse hachée, budget quotidien affiché.
-- Mise en navigation le 19 septembre après le jeu d'évaluation de 24 questions (IA.md §5) : 23 réussites sur 24 (96 %), seuil de 90 % ; le score du jour est dans le journal.
+### 3.10 Analyste · « Vérifier un chiffre avant de décider »
+La question : que répond le cockpit quand on lui pose une question de fait en français, et peut-on lui faire confiance.
+- Une question libre (500 caractères au plus) ou une des six suggestions (les histoires du jeu simulé et le marché réel). Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (5 secondes, 200 lignes imposées par une sous-requête), le modèle rédige à partir des lignes sans jamais calculer, et tout nombre de la réponse, en chiffres, en lettres et signe compris, est retrouvé dans les lignes ; sinon la rédaction est rejetée et les lignes restent la réponse. La question se suffit : les filtres de la barre haute ne sont pas transmis.
+- La carte « La réponse » (prose, badge simulé ou marché réel et sources calculés par le programme depuis les vues citées, période bornée à la journée publiée, modèle, durée, coût), la carte « Les chiffres » (les lignes exactes, codes traduits, exportables), la requête SQL exécutée (carte repliée, copiable), l'historique de la session et les garde-fous avec le budget du jour.
+- Refus explicites avec leur motif : conseil (« faut-il ouvrir une agence à Niort ? », renvoi vers Territoires), hors périmètre (la météo), données non couvertes (chiffres réels, personnes, MaPrimeRénov' par commune, renvoi vers Méthode), écriture. Quotas par adresse et navigateur hachés, budget quotidien.
+- Mise en navigation le 19 septembre après le jeu d'évaluation de 24 questions (IA.md §5) : 24 réussites sur 24 à 2 h 40, seuil de 90 %. Le critère vérifie le statut attendu, l'absence de nombre hors des lignes et la présence de la valeur attendue dans la prose pour les 11 questions dont la valeur est stable (les autres suivent la journée publiée). La relecture à trois lentilles du 19 septembre a ensuite revu les prompts de rédaction (journée publiée transmise, aucun dénombrement, signe recopié) et la passe de contrôle est consignée dans le journal.
 
-Ce qu'on dit : « le modèle ne produit jamais un chiffre : il écrit la requête, la base répond, il commente ; si un nombre de sa phrase n'est pas dans les lignes, la phrase est rejetée ».
+Ce qu'on dit : « le modèle ne produit jamais un chiffre : il écrit la requête, la base répond, il commente ; si un nombre de sa phrase n'est pas dans les lignes, la phrase est rejetée. Ce que le contrôle ne garantit pas, c'est l'attribution : c'est pour cela que les lignes et la requête sont toujours affichées ».
 
 ### 3.11 Méthode et auteur
 Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture, l'export Power BI (zip de vingt et une tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).
@@ -243,7 +243,11 @@ Les chiffres sont simulés ; les gestes sont ceux du poste.
 
 **Pourquoi ce nom ?** Un choix personnel qui reprend la racine de la marque ; il est isolé dans une constante et un sous-domaine, un renommage prend dix minutes, et à la première réserve exprimée le lien est retiré dans l'heure.
 
-**L'IA calcule quoi ?** Rien. Elle commente des faits calculés en SQL qui lui sont transmis ; un contrôle refuse toute réponse qui contiendrait un nombre absent des faits. Elle est au palier B, avec quotas et budget affiché.
+**L'IA calcule quoi ?** Rien. Elle commente des faits calculés en SQL qui lui sont transmis ; un contrôle refuse toute réponse qui contiendrait un nombre absent des faits, en chiffres ou en lettres, signe compris. Elle est au palier B, avec quotas et budget affiché. Ce que le contrôle ne voit pas, c'est une mauvaise attribution (le chiffre d'une agence prêté à une autre) : la requête et les lignes sont toujours affichées pour cette raison.
+
+**Que part-il chez le fournisseur du modèle, et que reste-t-il ici ?** Le catalogue des vues (noms de colonnes et commentaires), la question, la requête SQL et au plus 60 lignes d'agrégats des vues `mart_` : jamais une ligne de dossier, jamais un nom de personne, jamais l'adresse du visiteur. Le journal côté serveur garde la question, la requête, le statut et une empreinte hachée de l'adresse et du navigateur, purgée après 30 jours ; l'historique visible n'existe que dans le navigateur.
+
+**Et à l'échelle, ou si le fournisseur tombe ?** Une question coûte de un à trois centimes avec le cache du prompt (0,33 € les 24 questions du jeu d'évaluation) et prend six à douze secondes. À 300 utilisateurs posant chacun cinq questions par jour, environ 30 € par jour, à comparer au temps d'un analyste ; le budget quotidien est plafonné et affiché. Si le fournisseur ne répond pas, la fonction bascule sur Mistral quand sa clé est posée, sinon l'écran le dit et les autres écrans restent la source ; l'explication d'écart repasse sur des phrases par règles.
 
 **Et Power BI ?** L'export fournit les tables au format CSV et un modèle en étoile documenté (grain, clés, mesures à recalculer depuis les sommes, jamais des moyennes de taux) ; les mesures DAX suivent.
 

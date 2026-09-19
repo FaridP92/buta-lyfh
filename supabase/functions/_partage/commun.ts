@@ -241,7 +241,9 @@ export async function referentiels(): Promise<Referentiels> {
 
 export function texteReferentiels(r: Referentiels): string {
   return [
-    `Agences (code : bassin, département principal, ouverture) : ${r.agences.map((a) => `${a.code} : ${a.nom_bassin}, ${a.departement}, ${a.ouverture.slice(0, 4)}`).join(" ; ")}. RESEAU = total du réseau.`,
+    // L'année d'entrée dans le réseau n'est pas la première année de données : l'agence intégrée en 2026 (H4) a
+    // un historique repris depuis janvier 2025, comme les autres ; le modèle ne doit pas la dire « ouverte en 2026 ».
+    `Agences (code : bassin, département principal, dans le réseau depuis) : ${r.agences.map((a) => `${a.code} : ${a.nom_bassin}, ${a.departement}, ${a.ouverture.slice(0, 4)}${a.ouverture >= "2026-01-01" ? " (agence simulée intégrée au réseau en juin 2026, historique repris depuis janvier 2025 : mêmes mois de données que les autres)" : ""}`).join(" ; ")}. RESEAU = total du réseau. Toutes les agences ont des données depuis janvier 2025.`,
     `Canaux (code : libellé) : ${r.canaux.map((c) => `${c.code} : ${c.libelle}`).join(" ; ")}. TOUS = tous canaux.`,
     `Produits (code : libellé, famille) : ${r.produits.map((p) => `${p.code} : ${p.libelle}, ${p.famille}`).join(" ; ")}. TOUS = tous produits.`,
     `Départements du périmètre : 16, 17, 79, 85, 24, 33, 47, 32, 40, 64 (Sud-Ouest) et 59 (Nord) ; ceux sans agence (79, 85, 24, 47, 32, 64) sont couverts à distance.`,

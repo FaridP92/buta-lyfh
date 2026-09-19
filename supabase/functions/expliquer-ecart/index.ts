@@ -5,7 +5,7 @@
  * Repli (statut « repli ») : le front affiche les phrases par règles (src/lib/phrases.ts).
  */
 import { appelerModele, budgetJour, ecrireTable, empreinte, ErreurRepli, extraireJson, journaliser, lireVue, preflight, referentiels, reponseJson, rpcService, texteReferentiels } from "../_partage/commun.ts";
-import { nombresAutorises, nombresNonTraces } from "../_partage/nombres.ts";
+import { nombresAutorises, nombresNonTraces, signesIncoherents } from "../_partage/nombres.ts";
 import { messageExplication, promptExplication } from "./prompts.ts";
 
 interface Cause {
@@ -98,7 +98,7 @@ Deno.serve(async (req: Request) => {
     };
     const texteComplet = [explication.constat, ...explication.causes.map((c) => `${c.texte} ${c.fait}`), explication.action].join("\n");
     // Les référentiels (départements, années d'ouverture) et la journée publiée font partie des faits transmis au modèle.
-    const nonTraces = nombresNonTraces(texteComplet, nombresAutorises({ faits, referentiels: refs }, `${mois}`));
+    const nonTraces = [...nombresNonTraces(texteComplet, nombresAutorises(faits, `${mois}`, null, refs)), ...signesIncoherents(texteComplet, faits)];
     await journaliser("expliquer-ecart", emp, null, null, nonTraces.length || !explication.constat ? "repli_nombres" : "ok", r.coutEur, duree(), r.tokensEntree, r.tokensSortie);
     if (!explication.constat || nonTraces.length > 0) {
       console.warn("explication rejetée", nonTraces.join(", "));

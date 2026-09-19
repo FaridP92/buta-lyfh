@@ -20,7 +20,7 @@ test("aucun écran « à venir » n'est visible et un écran non fini renvoie à
   await page.goto("/analyste");
   const url = new URL(page.url());
   if (url.pathname === "/analyste") {
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("Posez la question");
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Vérifier un chiffre");
   } else {
     expect(url.pathname).toBe("/");
   }

@@ -79,9 +79,10 @@ Histoire : H4.
 - Schéma du flux : n8n vers Supabase (RPC) vers vues vers application, Edge Functions pour l'IA.
 
 ## 10. Analyste (`/analyste`) (palier B)
-- Zone de question avec six suggestions cliquables ; réponse en trois zones : la requête SQL exécutée (repliable), les chiffres (tableau), la réponse en français avec les sources (vues utilisées, période), et le coût de l'appel.
-- Historique de session (local), bouton « Copier la requête », garde-fous affichés (lecture seule, vues autorisées, 5 secondes, 200 lignes).
-- Refus explicites : hors périmètre, question de conseil, données non couvertes.
+- Titre « Vérifier un chiffre avant de décider ». Sous-titre : ce qu'on peut demander (questions de fait sur les indicateurs, agences, canaux, produits, périodes, qualité, marché des territoires) et où va le pourquoi d'un écart (bouton Expliquer de Ventes et marge). La question se suffit : les filtres de la barre haute ne sont pas transmis.
+- Zone de question avec six suggestions cliquables ; réponse en trois cartes, dans cet ordre : la réponse en français (badge simulé ou marché réel calculé depuis les vues citées, pastille « aucun nombre hors des lignes », sources calculées par le programme : vues, période bornée à la journée publiée, nature des données, puis modèle, durée en secondes, coût), les chiffres (tableau des lignes exactes, en-têtes en alias SQL, codes traduits en libellés), la requête SQL exécutée (carte repliée, mise en forme d'affichage, bouton « Copier la requête »).
+- Historique de session (local, heure et statut), garde-fous affichés (mécanisme, lecture seule, SELECT validé, contrôle des nombres en chiffres, en lettres et en signe, refus, quotas) avec le budget du jour en dernière ligne.
+- Refus explicites, motif fixe seul : conseil (renvoi vers Territoires), hors périmètre, données non couvertes (renvoi vers Méthode), écriture. Statut « quota » à part (« Analyste en pause »), repli (« Analyste indisponible »), erreur (« Pas de réponse »).
 
 ## 11. Méthode et auteur (`/methode`)
 - Ce que c'est, ce que ce n'est pas (disclaimer complet).

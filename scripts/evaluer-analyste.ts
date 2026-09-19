@@ -1,6 +1,6 @@
 /**
  * Évaluation de l'analyste (IA.md §5) : joue les questions de supabase/functions/analyste/eval.md contre la
- * fonction déployée avec la clé anon, vérifie le statut attendu et les termes attendus, imprime le taux de réussite.
+ * fonction déployée avec la clé anon, vérifie le statut attendu et les termes attendus dans la prose, imprime le taux de réussite.
  * `npm run evaluer:analyste` ; sortie non nulle sous 90 %. Chaque question porte un agent utilisateur distinct
  * pour ne pas déclencher le quota par empreinte (cinq par minute), et les appels sont espacés de deux secondes.
  */
@@ -35,7 +35,10 @@ async function principal(): Promise<void> {
   const url = process.env["VITE_SUPABASE_URL"];
   const cle = process.env["VITE_SUPABASE_ANON_KEY"];
   if (!url || !cle) throw new Error("VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY requis");
-  const cas = lireCas();
+  // `npm run evaluer:analyste -- --questions 4,5,7` rejoue une partie du jeu (mise au point) ; le taux ne vaut alors que pour ces questions.
+  const argQuestions = process.argv.find((a) => a.startsWith("--questions=")) ?? (process.argv.includes("--questions") ? `--questions=${process.argv[process.argv.indexOf("--questions") + 1] ?? ""}` : null);
+  const numeros = argQuestions ? new Set(argQuestions.slice("--questions=".length).split(",").map((n) => Number(n.trim())).filter((n) => Number.isFinite(n))) : null;
+  const cas = lireCas().filter((c) => !numeros || numeros.has(c.n));
   let reussites = 0;
   let coutTotal = 0;
   for (const c of cas) {
@@ -49,7 +52,9 @@ async function principal(): Promise<void> {
     const corps = (await r.json()) as { statut: string; reponse?: string; lignes?: unknown[]; motif_refus?: string; message?: string; cout_eur?: number; sql?: string; redaction_rejetee?: boolean };
     coutTotal += corps.cout_eur ?? 0;
     const statutOk = corps.statut === c.statut && (c.statut !== "ok" || ((corps.lignes?.length ?? 0) > 0 && !corps.redaction_rejetee));
-    const texte = normaliser(`${corps.reponse ?? ""} ${JSON.stringify(corps.lignes ?? [])}`);
+    // Depuis le 19 septembre, les termes attendus sont cherchés dans la prose du modèle seulement : une valeur présente
+    // dans les lignes mais absente de la réponse ne prouve pas que la réponse est juste.
+    const texte = normaliser(corps.reponse ?? "");
     const manquants = c.contient.filter((t) => !texte.includes(normaliser(t)));
     const ok = statutOk && manquants.length === 0;
     if (ok) reussites += 1;

@@ -47,6 +47,9 @@ export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommande
       ...(r.disponible ? {} : { detail: `palier ${r.palier}` }),
       executer: () => { navigate(r.chemin); fermer(); },
     }));
+    if (ROUTES.some((r) => r.chemin === "/analyste" && r.disponible)) {
+      ecrans.push({ cle: "ecran:question", groupe: "Écrans", libelle: "Poser une question à l'analyste", detail: "vérifier un chiffre", cible: normaliser("poser une question analyste verifier un chiffre"), cibleSecondaire: "", executer: () => { navigate("/analyste"); fermer(); } });
+    }
     const agences: Commande[] = [
       { cle: "agence:toutes", groupe: "Agences", libelle: "Toutes les agences", detail: "réseau entier", cible: "toutes les agences reseau", cibleSecondaire: "", executer: () => { filtres.definir("agence", "toutes"); fermer(); } },
       ...AGENCES.map((a) => ({

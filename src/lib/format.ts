@@ -138,3 +138,10 @@ export function formatDateHeure(date: string | Date): string {
   const minutes = d.getMinutes().toString().padStart(2, "0");
   return `${jour}/${mois} ${heures}:${minutes}`;
 }
+
+/** Durée en secondes à une décimale (« 8,9 s »), espace insécable avant l'unité ; sous 100 ms, « < 0,1 s ». */
+export function formatDuree(ms: number | null | undefined): string {
+  if (estVide(ms)) return "n. d.";
+  if (ms < 100) return `<${ESPACE_FINE}0,1${ESPACE_FINE}s`;
+  return `${formatNombreFr(ms / 1000, 1)}${ESPACE_FINE}s`;
+}

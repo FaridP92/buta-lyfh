@@ -8,13 +8,20 @@ import { supabase } from "./client";
 const Cause = z.object({ texte: z.string(), fait: z.string().optional(), source: z.string().optional() });
 
 export const SchemaReponseIa = z.object({
-  statut: z.enum(["ok", "refus", "repli", "erreur"]),
+  statut: z.enum(["ok", "refus", "quota", "repli", "erreur"]),
   sql: z.string().nullable().optional(),
   colonnes: z.array(z.string()).optional(),
   lignes: z.array(z.record(z.string(), z.unknown())).optional(),
   reponse: z.string().nullable().optional(),
   sources: z.array(z.string()).optional(),
   explication: z.object({ constat: z.string(), causes: z.array(Cause), action: z.string() }).optional(),
+  /** Phrase du modèle accompagnant un refus de l'analyste (journalisée, non affichée). */
+  explication_courte: z.string().nullable().optional(),
+  /** Nature des données lues par la requête validée : simulées, marché réel, ou les deux (calculée par la fonction). */
+  nature: z.enum(["simule", "reel", "mixte"]).optional(),
+  /** Code du motif de refus (conseil, hors_perimetre, non_couvert, ecriture). */
+  motif: z.string().optional(),
+  cout_jour: z.number().optional(),
   cout_eur: z.number().optional(),
   duree_ms: z.number().optional(),
   motif_refus: z.string().nullable().optional(),
@@ -25,11 +32,6 @@ export const SchemaReponseIa = z.object({
   budget_jour: z.number().optional(),
 });
 export type ReponseIa = z.infer<typeof SchemaReponseIa>;
-
-export interface ContexteAnalyste {
-  periode?: string;
-  agence?: string;
-}
 
 async function appeler(nom: "analyste" | "expliquer-ecart", corps: Record<string, unknown>): Promise<ReponseIa> {
   if (!supabase) return { statut: "repli", motif_refus: "Supabase non configuré" };
@@ -49,8 +51,9 @@ async function appeler(nom: "analyste" | "expliquer-ecart", corps: Record<string
   return SchemaReponseIa.parse(data);
 }
 
-export function poserQuestion(question: string, contexte: ContexteAnalyste): Promise<ReponseIa> {
-  return appeler("analyste", { question, contexte });
+/** La question se suffit : les filtres de la barre haute ne sont pas transmis (relecture du 19 septembre). */
+export function poserQuestion(question: string): Promise<ReponseIa> {
+  return appeler("analyste", { question });
 }
 
 export function expliquerEcartIa(perimetre: string, mois: string, indicateur: "CA" | "MARGE" | "CONVERSION"): Promise<ReponseIa> {

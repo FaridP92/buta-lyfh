@@ -18,6 +18,8 @@ export interface Colonne<L> {
   secondaire?: boolean;
   /** Masquée sous ce point de rupture (colonne de détail d'un tableau logé dans une carte étroite). */
   masquerSous?: "xl" | "2xl";
+  /** En-tête affiché tel quel en mono minuscule (alias d'une requête SQL), sans capitales espacées. */
+  enTeteBrut?: boolean;
 }
 
 const CLASSES_MASQUAGE = { xl: "max-xl:hidden", "2xl": "max-2xl:hidden" } as const;
@@ -80,11 +82,14 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
   }
 
   const hauteurLigne = compact ? "h-9" : "h-10";
+  // Largeur minimale (défilement horizontal sur téléphone) seulement quand les colonnes sont nombreuses : deux ou trois
+  // colonnes tiennent dans une carte de 343 px, une colonne numérique ne doit pas sortir de l'écran.
+  const large = colonnes.length > 3;
 
   return (
     <div className="flex min-w-0 flex-col gap-[var(--esp-2)]">
       <div className="overflow-x-auto [scrollbar-width:thin]">
-        <table className="w-full min-w-[560px] border-collapse text-[15px] max-md:text-[13px]">
+        <table className={cn("w-full border-collapse text-[15px] max-md:text-[13px]", large && "min-w-[560px]")}>
           <thead className="sticky top-0 z-[1] bg-surface">
             <tr className="border-b border-bordure">
               {colonnes.map((c) => {
@@ -98,11 +103,11 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
                     className={cn("px-[var(--esp-2)] py-[var(--esp-2)] text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3", c.numerique ? "text-right" : "text-left", classesVisibilite(c))}
                   >
                     {triable ? (
-                      <button type="button" onClick={() => basculerTri(c.cle)} className={cn("inline-flex items-center gap-1 uppercase tracking-[0.08em] hover:text-texte", c.numerique && "flex-row-reverse", actif && "text-texte")} aria-label={`Trier par ${c.libelle}`}>
+                      <button type="button" onClick={() => basculerTri(c.cle)} className={cn("inline-flex items-center gap-1 hover:text-texte", c.enTeteBrut ? "font-mono font-normal normal-case tracking-normal" : "uppercase tracking-[0.08em]", c.numerique && "flex-row-reverse", actif && "text-texte")} aria-label={`Trier par ${c.libelle}`}>
                         {c.libelle}
                         {actif ? (tri.sens === "desc" ? <ArrowDown size={11} strokeWidth={1.5} aria-hidden="true" /> : <ArrowUp size={11} strokeWidth={1.5} aria-hidden="true" />) : <ArrowUpDown size={11} strokeWidth={1.5} className="opacity-40" aria-hidden="true" />}
                       </button>
-                    ) : c.libelle}
+                    ) : c.enTeteBrut ? <span className="font-mono font-normal normal-case tracking-normal">{c.libelle}</span> : c.libelle}
                   </th>
                 );
               })}
@@ -142,7 +147,7 @@ export function Tableau<L>({ colonnes, lignes, cleLigne, triInitial, estActive, 
         </table>
       </div>
       <div className="flex items-center justify-between gap-[var(--esp-2)]">
-        <p className="text-[11px] text-texte-3 md:hidden">Faire défiler horizontalement pour les autres colonnes.</p>
+        {large && <p className="text-[11px] text-texte-3 md:hidden">Faire défiler horizontalement pour les autres colonnes.</p>}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
             <button type="button" className="ml-auto inline-flex h-8 items-center gap-[6px] rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte">

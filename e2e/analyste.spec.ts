@@ -8,15 +8,15 @@ import { expect, test } from "@playwright/test";
 test("l'écran Analyste est en navigation et répond à une question", async ({ page }) => {
   await page.goto("/analyste");
   await expect(page).toHaveURL(/\/analyste$/);
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Posez la question au cockpit");
-  const champ = page.getByPlaceholder("Quelle agence a le pire coût par vente en août 2026 ?");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Vérifier un chiffre avant de décider");
+  const champ = page.getByPlaceholder("Quel canal a le coût par vente le plus élevé sur les cohortes de mars à mai 2026 ?");
   await expect(champ).toBeVisible();
   const demander = page.getByRole("button", { name: "Demander" });
   await expect(demander).toBeDisabled();
   await champ.fill("Quel temps fera-t-il demain à Bordeaux ?");
   await expect(demander).toBeEnabled();
   await demander.click();
-  const carte = page.getByRole("heading", { name: /^(La réponse|Question refusée|Pas de réponse|Analyste en repli)$/ });
+  const carte = page.getByRole("heading", { name: /^(La réponse|Question refusée|Pas de réponse|Analyste en pause|Analyste indisponible)$/ });
   await expect(carte).toBeVisible({ timeout: 60_000 });
   await expect(page.getByRole("main")).toContainText("« Quel temps fera-t-il demain à Bordeaux ? »");
   const historique = page.getByRole("button", { name: "Quel temps fera-t-il demain à Bordeaux ?" });

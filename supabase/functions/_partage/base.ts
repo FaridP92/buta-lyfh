@@ -41,13 +41,17 @@ async function connexion(): Promise<Client> {
   throw new Error(`connexion à la base impossible : ${derniere instanceof Error ? derniere.message : String(derniere)}`);
 }
 
-function valeurLisible(v: unknown): unknown {
+/** OID PostgreSQL des types numériques (int2, int4, int8, oid, float4, float8, numeric) : seuls ces types sont convertis en nombre. */
+const TYPES_NUMERIQUES = new Set([20, 21, 23, 26, 700, 701, 1700]);
+
+/** Valeur telle que le navigateur la reçoit : dates en AAAA-MM-JJ, numériques en nombre ; un code Insee ou un département restent du texte. */
+function valeurLisible(v: unknown, numerique: boolean): unknown {
   if (v instanceof Date) {
     const iso = v.toISOString();
     return iso.endsWith("T00:00:00.000Z") ? iso.slice(0, 10) : iso;
   }
   if (typeof v === "bigint") return Number(v);
-  if (typeof v === "string" && /^-?\d+(\.\d+)?$/.test(v)) return Number(v);
+  if (numerique && typeof v === "string" && /^-?\d+(\.\d+)?$/.test(v)) return Number(v);
   return v;
 }
 
@@ -65,7 +69,8 @@ export async function lireEnLectureSeule(sql: string): Promise<Lecture> {
     await tx.unsafe("set local search_path = buta");
     const resultat = await tx.unsafe(sql);
     const colonnes = (resultat.columns ?? []).map((col) => col.name);
-    const lignes = resultat.map((ligne) => Object.fromEntries(Object.entries(ligne as Record<string, unknown>).map(([k, v]) => [k, valeurLisible(v)])));
+    const numeriques = new Set((resultat.columns ?? []).filter((col) => TYPES_NUMERIQUES.has(Number(col.type))).map((col) => col.name));
+    const lignes = resultat.map((ligne) => Object.fromEntries(Object.entries(ligne as Record<string, unknown>).map(([k, v]) => [k, valeurLisible(v, numeriques.has(k))])));
     return { colonnes: colonnes.length ? colonnes : Object.keys(lignes[0] ?? {}), lignes };
   }) as Lecture;
 }

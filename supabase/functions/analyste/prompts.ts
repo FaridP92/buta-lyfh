@@ -13,7 +13,7 @@ export function promptSql(catalogue: string, referentiels: string, journee: stri
     "- Tous les calculs se font en SQL (sommes, ratios, classements, différences) : la réponse sera rédigée à partir des lignes renvoyées et rien ne sera recalculé ensuite. Si la question demande une part ou un écart, calcule-le dans la requête et nomme la colonne.",
     "- Termine par LIMIT (200 au plus). Nomme les colonnes clairement, en français sans accents (ca_signe_total, taux_marge_pct). Arrondis les ratios à une décimale (round(..., 1)) ; les colonnes double precision (médianes de délais, probabilité d'atteinte) se convertissent d'abord : round(x::numeric, 1).",
     "- Les colonnes « mois » sont des dates au premier jour du mois : compare avec date '2026-08-01' ; « semaine » est un lundi ; « jour » une date. Pour N-1, joins sur mois - interval '1 year'.",
-    "- Les lignes RESEAU (agence), TOUS (canal, produit, departement) sont des totaux : ne les additionne jamais avec les lignes détaillées ; utilise-les pour le total du réseau.",
+    "- Les lignes RESEAU (colonne agence) et TOUS (colonnes canal, produit, departement) sont des totaux : ne les additionne jamais avec les lignes détaillées ; utilise-les pour le total du réseau. Il n'existe pas de ligne agence = 'TOUS' : le total d'un département ou d'un canal sur tout le réseau se lit avec agence = 'RESEAU'.",
     "- Les taux des vues sont déjà en pourcentage (23,4 signifie 23,4 %). Les montants sont en euros HT.",
     "- Deux familles ne se mélangent pas : mesures d'événement (mois de signature, de pose, d'encaissement : mart_kpi_mensuel, mart_ventes_produit, mart_ecarts, mart_pose, mart_encaissement, mart_delais) et mesures de cohorte (mois de création du lead : mart_funnel, mart_couts_acquisition). Une cohorte de moins de 90 jours n'a pas fini de convertir (colonne cohorte_mature).",
     "- Le mois en cours se compare à l'objectif au prorata des jours publiés (colonnes prorata, jours_publies, objectif_ca_prorata, ecart_objectif_pct de mart_kpi_mensuel).",
@@ -42,16 +42,19 @@ export function promptCorrection(sqlPrecedent: string, motif: string): string {
   return `La requête précédente a été refusée par les garde-fous (${motif}) :\n${sqlPrecedent}\n\nCorrige-la en respectant les règles et réponds avec le même format JSON.`;
 }
 
-export function promptRedaction(referentiels: string): string {
+export function promptRedaction(referentiels: string, journee: string | null): string {
   return [
     "Tu rédiges la réponse d'un analyste à partir de la question, de la requête SQL exécutée et des lignes renvoyées (au plus 200 ; si elles ont été tronquées pour toi, c'est indiqué).",
     "Règles absolues :",
-    "- Tu n'inventes aucun chiffre et tu ne calcules rien : tout nombre écrit doit figurer dans les lignes, à la reformulation d'unité près (371 500 € peut s'écrire 371,5 k€ ; un taux 23,4 s'écrit 23,4 %). Aucune somme, moyenne, différence, part ou classement que les lignes ne donnent pas déjà. Si une valeur manque, dis « non disponible ».",
-    "- Trois à six phrases en français, chiffres formatés à la française (virgule décimale, espace entre les milliers, espace avant %), sans superlatif, sans tiret long, sans recommandation stratégique.",
-    "- Rappelle la période et le périmètre. Traduis les codes en libellés (agences par bassin, canaux, produits) avec les référentiels ci-dessous ; jamais de nom de personne.",
+    "- Tu n'inventes aucun chiffre et tu ne calcules rien : tout nombre écrit doit figurer dans les lignes, à la reformulation d'unité près (371 500 € peut s'écrire 371,5 k€ ; un taux 23,4 s'écrit 23,4 %). Aucune somme, moyenne, différence, part, dénombrement ou classement que les lignes ne donnent pas déjà : n'écris pas « quatre agences sont en perte », cite les agences ; ne moyenne jamais des médianes. Si une valeur manque, dis « non disponible ». Recopie le signe des valeurs négatives.",
+    "- Si la question contient un nombre (un seuil, une hypothèse), ne le confirme pas sans citer la valeur des lignes qui le vérifie ou le contredit.",
+    `- Journée publiée (dernier jour de données) : ${journee ?? "inconnue"}. Aucune période citée ne la dépasse : la borne d'un filtre SQL (« mois < 2027-01-01 ») n'est pas la période des données. Pour une année ou un mois en cours, écris « à date » ou « jusqu'au ${journee ?? "jour publié"} », dis que le mois en cours est partiel, et n'écris jamais qu'une agence « termine » une année qui n'est pas finie. Les dates s'écrivent en français (18 septembre 2026), jamais en AAAA-MM-JJ.`,
+    "- Si les lignes portent cohorte_mature à faux, ou une cohorte de moins de 90 jours, dis que la conversion n'est pas terminée et que les taux sont provisoires.",
+    "- Trois à six phrases en français, chiffres formatés à la française (virgule décimale, espace entre les milliers, espace avant %), sans superlatif ni adverbe d'appréciation (« nettement », « largement »), sans tiret long, sans recommandation stratégique.",
+    "- Rappelle la période et le périmètre. Traduis les codes en libellés (agences par bassin, canaux, produits) avec les référentiels ci-dessous, sans répéter le code entre parenthèses ; jamais de nom de personne ; ne mentionne pas les lignes de total exclues par la requête (RESEAU, TOUS).",
+    "- Ne qualifie pas l'ancienneté, l'ouverture, la taille ou la situation d'une agence si aucune ligne ne la donne.",
     "- Si les lignes sont vides, dis simplement qu'aucune donnée ne correspond.",
-    "- Termine par la liste des sources : vues utilisées, période, et « données d'activité simulées » ou « marché réel (Insee 2022, ADEME, RTE) » selon la vue.",
-    "Réponds uniquement par un objet JSON : {\"reponse\": \"...\", \"sources\": [\"...\"]}.",
+    "Réponds uniquement par un objet JSON : {\"reponse\": \"...\"}. Les sources sont ajoutées par le programme, ne les écris pas.",
     "",
     "## Référentiels",
     referentiels,

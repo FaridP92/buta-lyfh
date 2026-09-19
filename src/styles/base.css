@@ -109,6 +109,7 @@
   --color-attention: var(--attention);
   --color-ambre-texte: var(--ambre-texte);
   --color-menthe-texte: var(--menthe-texte);
+  --color-primaire-texte: var(--primaire-texte);
 }
 
 * {
@@ -160,6 +161,37 @@ body::before {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+}
+
+/* JetBrains Mono ligature « <> » et « >= » : une requête SQL doit se lire telle qu'elle a été exécutée (DESIGN.md §9). */
+.chiffre,
+pre,
+code,
+.font-mono {
+  font-variant-ligatures: none;
+  font-feature-settings: "tnum", "calt" 0, "liga" 0;
+}
+
+/* Curseur main sur ce qui est cliquable seulement (DESIGN.md §9) : Tailwind 4 ne le pose plus sur les boutons. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+summary {
+  cursor: pointer;
+}
+
+/* Bouton primaire (DESIGN.md §3) : ambre, texte contrasté sur les deux thèmes, état désactivé dessiné plutôt qu'estompé. */
+.bouton-primaire {
+  background: var(--ambre);
+  color: var(--primaire-texte);
+  border: 1px solid transparent;
+}
+.bouton-primaire:hover:not(:disabled) {
+  opacity: 0.92;
+}
+.bouton-primaire:disabled {
+  background: var(--surface-2);
+  color: var(--texte-3);
+  border-color: var(--bordure);
 }
 
 @keyframes buta-point {

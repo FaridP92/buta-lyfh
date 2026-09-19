@@ -4,7 +4,7 @@ import {
   Gauge,
   ListChecks,
   Map as MapIcon,
-  MessageSquare,
+  TextSearch,
   ShieldCheck,
   Truck,
   TrendingUp,
@@ -114,11 +114,11 @@ export const ROUTES: DefinitionRoute[] = [
   {
     chemin: "/analyste",
     libelle: "Analyste",
-    icone: MessageSquare,
+    icone: TextSearch,
     disponible: true,
     palier: "B",
     lot: "4b",
-    objectif: "Poser une question en français sur les indicateurs, avec la requête SQL et les sources.",
+    objectif: "Vérifier un chiffre par une question en français : requête SQL, lignes exactes, réponse contrôlée.",
   },
   {
     chemin: "/methode",
