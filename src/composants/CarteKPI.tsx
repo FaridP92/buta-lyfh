@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { BoutonFiche } from "@/composants/FicheIndicateur";
+import { SignalCarte } from "@/composants/SignalCarte";
 import { formatDelaiJours, formatMontant, formatNombre, formatTaux, formatVariationPoints } from "@/lib/format";
 import { cn } from "@/lib/cn";
+import { type Signal, signalVariation } from "@/lib/signaux";
 
 export type FormatKpi = "eur" | "pct" | "nombre" | "jours";
 
@@ -38,10 +40,13 @@ function formater(valeur: number, format: FormatKpi): string {
 }
 
 const compteursJoues = new Set<string>();
+const signauxJoues = new Set<string>();
 
 /**
  * Carte KPI (DESIGN.md §3 et §4) : libellé, valeur mono, variation sémantique, mini courbe
  * douze mois, bouton « i », hauteur fixe 132 px ; compteur 700 ms ease-out une seule fois par période.
+ * Signal (DESIGN.md §11, `src/lib/signaux.ts`) : après le compteur, une carte très sous sa comparaison
+ * éclate, une carte très au-dessus lance une gerbe ; une seule fois par période, jamais en mouvement réduit.
  */
 export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, serie, code, clePeriode, decalageMs = 0, grise = false, motifNd }: CarteKPIProps) {
   const cle = `${code}|${clePeriode}`;
@@ -75,13 +80,27 @@ export function CarteKPI({ libelle, sousLibelle, valeur, format, variation, seri
   }, [valeur, cle, decalageMs]);
 
   const nd = valeur === null || valeur === undefined;
+  const signal = nd ? null : signalVariation(variation);
+  const [signalActif, setSignalActif] = useState<Signal | null>(null);
+
+  useEffect(() => {
+    if (!signal) return;
+    const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduit || signauxJoues.has(cle)) return;
+    signauxJoues.add(cle);
+    // Le signal part quand le compteur s'est posé (700 ms), avec le même décalage que lui.
+    const minuteur = window.setTimeout(() => setSignalActif(signal), decalageMs + 600);
+    return () => window.clearTimeout(minuteur);
+  }, [signal, cle, decalageMs]);
+
   const tendance = variation?.valeur === null || variation?.valeur === undefined ? null : variation.valeur;
   // Une variation qui s'affiche 0,0 n'a pas de sens : ni flèche, ni couleur.
   const nulle = tendance !== null && Math.abs(tendance) < 0.05;
   const favorable = tendance === null || nulle ? null : variation?.plusBasMieux ? tendance <= 0 : tendance >= 0;
 
   return (
-    <article className={cn("relative flex min-h-[132px] flex-col justify-between gap-[var(--esp-2)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)] shadow-[var(--ombre-carte)]", grise && "opacity-70")}>
+    <article className={cn("relative flex min-h-[132px] flex-col justify-between gap-[var(--esp-2)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)] shadow-[var(--ombre-carte)]", grise && "opacity-70", signalActif === "alarme" && "carte-alarme", signalActif === "celebration" && "carte-celebration")}>
+      {signalActif && <SignalCarte signal={signalActif} onFin={() => setSignalActif(null)} />}
       <div className="flex items-start justify-between gap-[var(--esp-2)]">
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-texte-3">{libelle}</p>

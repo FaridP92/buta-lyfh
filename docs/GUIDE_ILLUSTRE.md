@@ -142,6 +142,8 @@ Chaque compteur se lit ainsi :
 - la **mini courbe** des douze derniers mois, le point ambre marquant la dernière valeur ;
 - le bouton **i** qui ouvre la fiche de l'indicateur.
 
+Quand l'écart franchit un seuil, la carte le signale une fois, après son compteur : à -20 % (ou -5 points pour un taux), elle tremble, rougit et projette des éclats ; à +10 % (ou +3 points), elle verdit et lance une gerbe de couleurs. Un indicateur où « plus bas = mieux » inverse le sens. Rien ne bouge si le système demande un mouvement réduit.
+
 ### 4.5 La fiche d'un indicateur
 
 ![Fiche de l'indicateur CA signé](captures/guide/commun-fiche-indicateur.png)

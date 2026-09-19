@@ -23,7 +23,7 @@ export function Rail() {
     >
       <InfoBulle contenu="Buta.Lyfh" delaiMs={300} cote="right">
         <NavLink to="/" aria-label="Aller à la vue d'ensemble" className="flex items-center justify-center">
-          <Monogramme taille={32} />
+          <Monogramme taille={38} />
         </NavLink>
       </InfoBulle>
 

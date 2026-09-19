@@ -72,6 +72,7 @@ Détails qui font la différence : chiffres tabulaires partout ; séparateurs d'
 - Animation d'ouverture, 700 ms, une seule fois par session : le point s'allume (échelle 0 à 1 avec un léger dépassement), puis le mot apparaît lettre par lettre en fondu de gauche à droite ; le rail glisse depuis la gauche pendant les 300 dernières millisecondes. Désactivée avec `prefers-reduced-motion`.
 - Le point ambre est le motif de l'application : il marque la sélection dans le rail, le périmètre sur la carte, l'agence active dans les tableaux, et pulse doucement (2 s) sur le badge de fraîcheur pendant les 10 secondes qui suivent une mise à jour.
 - Interdits : flamme, goutte, éclair, bleu Butagaz, dégradé dans le logo, ombre portée. Rien qui puisse ressembler à l'identité d'un énergéticien.
+- Décision du 19 septembre (Frédéric) : le monogramme ambre en SVG est remplacé, dans le rail et les favicons, par le logo fourni (`Logo.jpeg`, hors dépôt) : un monogramme « BL » fléché, dégradé bleu vers menthe, détouré en PNG dans `public/logo/` (512 et 96 px) et repris sur la couverture de la fiche de présentation. La marque-mot serif « Buta.Lyfh » au point ambre reste ; la tagline anglaise du visuel n'est pas reprise (§8). Le dégradé est admis pour ce seul élément.
 
 ## 11. Animations signature (une par écran, réglées à la main, 60 images par seconde, sans décalage de mise en page)
 - Vue d'ensemble : les quatre compteurs montent avec un décalage de 80 ms, la jauge d'atterrissage se remplit de gauche à droite en 900 ms, la ligne « aujourd'hui » se pose ensuite.
@@ -80,6 +81,7 @@ Détails qui font la différence : chiffres tabulaires partout ; séparateurs d'
 - Ventes et marge : les barres de la cascade tombent l'une après l'autre (120 ms d'écart), le résiduel en dernier ; la mini courbe de marge se dessine.
 - Forecast : l'éventail pousse depuis la ligne « aujourd'hui » vers décembre en 1 000 ms, le central d'abord, puis les bornes.
 - Qualité : le score s'affiche en compteur, les douze contrôles se cochent en cascade (60 ms d'écart).
+- Cartes KPI, signaux (19 septembre, `src/lib/signaux.ts`) : quand le compteur s'est posé, une carte dont l'écart atteint -20 % (ou -5 points de taux) tremble 380 ms, rougit et projette une trentaine d'éclats rouges et une onde depuis la valeur (900 ms) ; une carte à +10 % (ou +3 points) verdit et lance trois gerbes de particules aux couleurs des séries (1 400 ms). Un indicateur « plus bas = mieux » inverse. Une seule fois par carte et par période, canvas posé au-dessus de la carte sans effet sur la mise en page, rien en mouvement réduit.
 - Transitions de route : le contenu sortant s'efface en 120 ms, l'entrant arrive en 220 ms, le rail et la barre haute ne bougent jamais.
 Tout est désactivé avec `prefers-reduced-motion`, et rien ne rejoue en boucle.
 

@@ -13,7 +13,7 @@
  *
  * Usage : tsx scripts/generer-fiche.ts [--pdf]
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -21,6 +21,9 @@ const RACINE = process.cwd();
 const SOURCE = join(RACINE, "docs", "GUIDE_ILLUSTRE.md");
 const SORTIE_HTML = join(RACINE, "docs", "FICHE.html");
 const SORTIE_PDF = join(RACINE, "docs", "FICHE.pdf");
+const LOGO_SOURCE = join(RACINE, "public", "logo", "monogramme.png");
+const LOGO_PETIT = join(RACINE, "public", "logo", "monogramme-96.png");
+const LOGO_DOCS = join(RACINE, "docs", "logo", "monogramme.png");
 
 const LABELS_DEFINITION = ["Ce que ça montre", "Comment le lire", "Ce qu'on en fait"];
 
@@ -183,9 +186,12 @@ function rendreSommaire(blocs: Bloc[]): string {
   }
   const lien = (e: { numero: string; texte: string }) =>
     `<a href="#${ancre(e.numero)}"><span class="num">${e.numero}</span>${enLigne(e.texte)}</a>`;
-  return `<nav class="sommaire" aria-label="Sommaire"><h2>Sommaire</h2><ol>${sections
-    .map((s) => `<li>${lien(s)}${s.sous.length ? `<ol>${s.sous.map((x) => `<li>${lien(x)}</li>`).join("")}</ol>` : ""}</li>`)
-    .join("")}</ol></nav>`;
+  const entree = (s: EntreeSommaire) => `<li>${lien(s)}${s.sous.length ? `<ol>${s.sous.map((x) => `<li>${lien(x)}</li>`).join("")}</ol>` : ""}</li>`;
+  // Deux colonnes explicites (sections 1 à 4, puis 5 à 9) : équilibrées à l'écran et paginables à l'impression.
+  const coupure = Math.min(4, sections.length);
+  const gauche = sections.slice(0, coupure).map(entree).join("");
+  const droite = sections.slice(coupure).map(entree).join("");
+  return `<nav class="sommaire" aria-label="Sommaire"><h2>Sommaire</h2><div class="colonnes"><ol>${gauche}</ol><ol start="${coupure + 1}">${droite}</ol></div></nav>`;
 }
 
 function rendreCorps(blocs: Bloc[]): { couverture: string; corps: string } {
@@ -258,6 +264,7 @@ const STYLE = `
   --texte: #0f172a; --texte-2: #475569; --texte-3: #5b677d;
   --ambre: #a67c00; --ambre-doux: rgba(166, 124, 0, 0.10); --menthe: #127a70; --succes: #157a55; --alerte: #c42d47;
   --nuit: #0b0f17; --ombre: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 10px rgba(15, 23, 42, 0.06);
+  --titre: #14306b; --marque-bleu: #1e5fcf; --marque-menthe: #12b5a5;
   --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
   --sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
   --mono: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, monospace;
@@ -267,12 +274,14 @@ const STYLE = `
     --fond: #0b0f17; --surface: #111827; --surface-2: #161f2e; --bordure: rgba(255, 255, 255, 0.08);
     --texte: #e6eaf2; --texte-2: #9aa4b8; --texte-3: #808a9d;
     --ambre: #f5b700; --ambre-doux: rgba(245, 183, 0, 0.12); --menthe: #2dd4bf; --succes: #34d399; --alerte: #fb7185; --ombre: none;
+    --titre: #e6eaf2; --marque-bleu: #7fb0ff; --marque-menthe: #2ee0c9;
   }
 }
 :root[data-theme="dark"] {
   --fond: #0b0f17; --surface: #111827; --surface-2: #161f2e; --bordure: rgba(255, 255, 255, 0.08);
   --texte: #e6eaf2; --texte-2: #9aa4b8; --texte-3: #808a9d;
   --ambre: #f5b700; --ambre-doux: rgba(245, 183, 0, 0.12); --menthe: #2dd4bf; --succes: #34d399; --alerte: #fb7185; --ombre: none;
+  --titre: #e6eaf2; --marque-bleu: #7fb0ff; --marque-menthe: #2ee0c9;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -282,29 +291,30 @@ body {
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
 .page { max-width: 1080px; margin: 0 auto; padding-block: 32px 80px; padding-inline: 24px; }
-a { color: inherit; text-decoration-color: var(--ambre); text-underline-offset: 3px; }
-a:hover { color: var(--ambre); }
-:focus-visible { outline: 2px solid var(--ambre); outline-offset: 3px; border-radius: 4px; }
+a { color: inherit; text-decoration-color: var(--marque-bleu); text-underline-offset: 3px; }
+a:hover { color: var(--marque-bleu); }
+:focus-visible { outline: 2px solid var(--marque-bleu); outline-offset: 3px; border-radius: 4px; }
 code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2); border: 1px solid var(--bordure); border-radius: 6px; padding: 1px 5px; white-space: nowrap; }
 strong { font-weight: 600; }
-.num { font-family: var(--mono); font-weight: 500; color: var(--ambre); font-variant-numeric: tabular-nums; margin-right: 0.6em; font-size: 0.8em; letter-spacing: 0.02em; }
+.num { font-family: var(--mono); font-weight: 500; color: var(--marque-bleu); font-variant-numeric: tabular-nums; margin-right: 0.6em; font-size: 0.8em; letter-spacing: 0.02em; }
 
 /* Couverture */
 .couverture { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 52px; align-items: end; padding-block: 20px 52px; border-bottom: 1px solid var(--bordure); }
+.couverture .logo { display: block; width: 132px; height: auto; margin: 0 0 20px; }
 .couverture .sur-titre { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); margin: 0 0 12px; }
-.couverture h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 9vw, 104px); line-height: 0.95; letter-spacing: -0.01em; margin: 0 0 20px; text-wrap: balance; }
-.couverture h1 .point { color: var(--ambre); font-size: 1.12em; line-height: 0; }
+.couverture h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(56px, 9vw, 104px); line-height: 0.95; letter-spacing: -0.01em; margin: 0 0 20px; color: var(--titre); text-wrap: balance; }
+.couverture h1 .point { color: var(--marque-menthe); font-size: 1.12em; line-height: 0; }
 .couverture .objet { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 30px); line-height: 1.25; margin: 0 0 20px; color: var(--texte); text-wrap: balance; }
 .couverture .adresse { font-family: var(--mono); font-size: 15px; margin: 0; }
-.couverture .adresse a { text-decoration: none; border-bottom: 1px solid var(--ambre); }
+.couverture .adresse a { text-decoration: none; border-bottom: 1px solid var(--marque-menthe); }
 .couverture .intro p { margin: 0 0 12px; color: var(--texte-2); }
 .couverture .intro p:last-child { margin-bottom: 0; }
-.mention { font-size: 13px; color: var(--texte-3); margin: 0; border-left: 2px solid var(--ambre); padding-left: 12px; }
+.mention { font-size: 13px; color: var(--texte-3); margin: 0; border-left: 2px solid var(--marque-menthe); padding-left: 12px; }
 
 /* En bref */
 .en-bref { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 32px 0 0; padding: 0; list-style: none; }
 .en-bref li { background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; padding: 14px 16px 12px; box-shadow: var(--ombre); }
-.en-bref .valeur { display: block; font-family: var(--mono); font-size: 26px; font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.en-bref .valeur { display: block; font-family: var(--mono); color: var(--titre); font-size: 26px; font-weight: 500; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; line-height: 1.1; }
 .en-bref .valeur small { font-size: 15px; color: var(--texte-2); font-weight: 400; }
 .en-bref .libelle { display: block; margin-top: 6px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); }
 
@@ -312,9 +322,9 @@ strong { font-weight: 600; }
 .sommaire { margin: 40px 0 12px; padding: 24px 24px 20px; background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; box-shadow: var(--ombre); }
 .sommaire h2 { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--texte-3); font-weight: 500; margin: 0 0 14px; }
 .sommaire ol { list-style: none; margin: 0; padding: 0; }
-.sommaire > ol { columns: 2; column-gap: 40px; }
-.sommaire > ol > li { break-inside: avoid; margin-bottom: 10px; }
-.sommaire > ol > li > a { font-family: var(--serif); font-size: 20px; text-decoration: none; }
+.sommaire .colonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; align-items: start; }
+.sommaire .colonnes > ol > li { margin-bottom: 10px; }
+.sommaire .colonnes > ol > li > a { font-family: var(--serif); font-size: 20px; text-decoration: none; }
 .sommaire ol ol { margin: 4px 0 0 1.6em; }
 .sommaire ol ol li { font-size: 14px; color: var(--texte-2); line-height: 1.5; }
 .sommaire ol ol a { text-decoration: none; }
@@ -325,23 +335,23 @@ section { padding-block: 52px 12px; border-top: 1px solid var(--bordure); margin
 section:first-of-type { border-top: 0; margin-top: 8px; }
 section > * { max-width: 760px; }
 section > .figures, section > .figure-seule, section > .tableau { max-width: none; }
-h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 46px); line-height: 1.05; margin: 0 0 24px; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(34px, 4.4vw, 46px); line-height: 1.05; margin: 0 0 24px; letter-spacing: -0.01em; color: var(--titre); text-wrap: balance; }
 h2 .num { font-size: 0.5em; vertical-align: 0.5em; }
-h3 { font-family: var(--serif); font-weight: 400; font-size: 27px; line-height: 1.15; margin: 44px 0 14px; text-wrap: balance; }
+h3 { font-family: var(--serif); font-weight: 400; font-size: 27px; line-height: 1.15; margin: 44px 0 14px; color: var(--titre); text-wrap: balance; }
 h3 .num { font-size: 0.55em; vertical-align: 0.45em; }
 h4 { font-family: var(--sans); font-weight: 600; font-size: 17px; margin: 0 0 6px; }
 p { margin: 0 0 14px; }
 p.legende { color: var(--texte-3); font-size: 14px; margin-top: -4px; }
 ul, ol { margin: 0 0 14px; padding-left: 1.3em; }
 li { margin-bottom: 5px; }
-li::marker { color: var(--ambre); }
+li::marker { color: var(--marque-menthe); }
 
 .visuel { background: var(--surface); border: 1px solid var(--bordure); border-radius: 14px; padding: 18px 20px 8px; margin: 12px 0 28px; box-shadow: var(--ombre); }
 .visuel > p:first-of-type { color: var(--texte-2); }
 .visuel ul { margin-bottom: 10px; }
 .lecture { margin: 8px 0 12px; display: grid; gap: 10px; }
 .lecture div { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 12px; align-items: start; }
-.lecture dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ambre); padding-top: 4px; }
+.lecture dt { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--marque-bleu); padding-top: 4px; }
 .lecture dd { margin: 0; }
 
 /* Figures */
@@ -368,7 +378,7 @@ td:first-child { font-weight: 600; white-space: nowrap; }
 @media (max-width: 760px) {
   .page { padding-inline: 16px; padding-block: 20px 56px; }
   .couverture { grid-template-columns: 1fr; gap: 20px; }
-  .sommaire > ol { columns: 1; }
+  .sommaire .colonnes { grid-template-columns: 1fr; }
   .lecture div { grid-template-columns: 1fr; gap: 2px; }
   td:first-child { white-space: normal; }
   figure.tel { max-width: none; }
@@ -379,16 +389,20 @@ td:first-child { font-weight: 600; white-space: nowrap; }
   :root, :root:not([data-theme="light"]), :root[data-theme="dark"] {
     --fond: #ffffff; --surface: #ffffff; --surface-2: #f1f3f8; --bordure: rgba(15, 23, 42, 0.14);
     --texte: #0f172a; --texte-2: #475569; --texte-3: #5b677d; --ambre: #a67c00; --ambre-doux: rgba(166, 124, 0, 0.10); --ombre: none;
+    --titre: #14306b; --marque-bleu: #1e5fcf; --marque-menthe: #12b5a5;
   }
   body { font-size: 10.5pt; line-height: 1.45; }
   .page { max-width: none; padding: 0; }
   a { text-decoration: none; }
-  .couverture { padding-block: 24mm 16mm; min-height: 0; grid-template-columns: 1fr; gap: 12mm; border-bottom: 0; }
+  .couverture { padding-block: 10mm 16mm; min-height: 0; grid-template-columns: 1fr; gap: 12mm; border-bottom: 0; }
+  .couverture .logo { width: 42mm; margin-bottom: 8mm; }
   .couverture h1 { font-size: 64pt; }
   .couverture .objet { font-size: 18pt; }
   .en-bref { margin-top: 10mm; break-after: page; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .sommaire { break-after: page; box-shadow: none; margin-top: 0; }
-  .sommaire > ol { columns: 2; }
+  .sommaire .colonnes { gap: 0 10mm; }
+  .sommaire .colonnes > ol > li > a { font-size: 13pt; }
+  .sommaire ol ol li { font-size: 8.5pt; line-height: 1.4; }
   .lecture div { grid-template-columns: 120px minmax(0, 1fr); gap: 8px; }
   section { break-before: page; border-top: 0; margin-top: 0; padding-top: 0; }
   section > * { max-width: none; }
@@ -417,6 +431,7 @@ function assembler(blocs: Bloc[]): string {
 <main class="page">
 <header class="couverture">
   <div>
+    <img class="logo" src="logo/monogramme.png" alt="Monogramme Buta.Lyfh" width="512" height="449">
     <p class="sur-titre">Fiche de présentation illustrée</p>
     <h1>Buta<span class="point">.</span>Lyfh</h1>
     <p class="objet">Le cockpit d'un Responsable Performance, du lead à l'encaissement, sur un réseau d'installateurs simulé posé sur le marché réel.</p>
@@ -453,17 +468,21 @@ async function exporterPdf(): Promise<void> {
     await page.goto(pathToFileURL(SORTIE_HTML).href, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
     await page.emulateMedia({ media: "print" });
+    const logo = `data:image/png;base64,${readFileSync(LOGO_PETIT).toString("base64")}`;
     await page.pdf({
       path: SORTIE_PDF,
       format: "A4",
       printBackground: true,
       preferCSSPageSize: false,
-      margin: { top: "14mm", bottom: "16mm", left: "14mm", right: "14mm" },
+      margin: { top: "18mm", bottom: "16mm", left: "14mm", right: "14mm" },
       displayHeaderFooter: true,
-      headerTemplate: "<span></span>",
+      headerTemplate:
+        '<div style="font-family: Helvetica, Arial, sans-serif; font-size: 8px; color: #5b677d; width: 100%; padding: 4mm 14mm 0; display: flex; align-items: center; gap: 6px;">' +
+        `<img src="${logo}" style="width: 14px; height: auto;" alt="">` +
+        "<span>Buta.Lyfh · fiche de présentation illustrée</span></div>",
       footerTemplate:
         '<div style="font-family: Helvetica, Arial, sans-serif; font-size: 8px; color: #5b677d; width: 100%; padding: 0 14mm; display: flex; justify-content: space-between;">' +
-        "<span>Buta.Lyfh · fiche de présentation illustrée · données d'activité simulées</span>" +
+        "<span>Démonstrateur personnel de Frédéric Poissonnier · sans lien avec Butagaz · données d'activité simulées</span>" +
         '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>',
     });
   } finally {
@@ -472,6 +491,8 @@ async function exporterPdf(): Promise<void> {
 }
 
 async function principal(): Promise<void> {
+  mkdirSync(join(RACINE, "docs", "logo"), { recursive: true });
+  cpSync(LOGO_SOURCE, LOGO_DOCS);
   const markdown = readFileSync(SOURCE, "utf8");
   const blocs = decouper(markdown);
   const html = assembler(blocs);

@@ -248,6 +248,35 @@ summary {
   }
 }
 
+/* Signaux des cartes KPI (DESIGN.md §11) : la carte en alarme tremble et rougit le temps des éclats,
+   la carte en célébration verdit le temps de la gerbe ; aucune boucle, aucun décalage de mise en page. */
+.carte-alarme {
+  border-color: var(--alerte);
+  animation: buta-secousse 380ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+.carte-celebration {
+  border-color: var(--succes);
+}
+@keyframes buta-secousse {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-3px);
+  }
+  40%,
+  60% {
+    transform: translateX(3px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

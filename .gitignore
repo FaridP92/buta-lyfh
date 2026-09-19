@@ -17,3 +17,4 @@ n8n/*.export.json
 .omc/*
 !.omc/skills/
 .cache/
+/Logo.jpeg
