@@ -129,3 +129,74 @@ Passe Playwright contre la production (scripts `ecrans.mjs` et `ecrans2.mjs` du 
 | `docs/INDICATEURS.md` | `verif:sources` : 21 vues documentées | ok |
 | `n8n/LISEZMOI.md` | cinq fichiers, déclencheurs et rattachement de WF0 (WF1, WF2, WF3, WF5) conformes à l'instance | ok |
 | `TODO`, `.skip(`, `.only(` | `grep -rn` sur `src`, `tests`, `e2e`, `scripts`, `supabase/functions` : aucun | ok |
+
+## 9. Gel : répétition complète le vendredi soir (le tag reste pour lundi)
+
+| Étape | Preuve | Statut |
+| --- | --- | --- |
+| 1. `npm run publier -- --jusqua 2026-09-25` (avec `NODE_EXTRA_CA_CERTS`, TLS vérifié) | « publie jusqu'au 2026-09-25 : 0 dossier(s) nouvellement publie(s) » ; `mart_fraicheur.ingere_le` passé à 18:10:44 UTC (20 h 10 Paris) : le contrôle 11 (fraîcheur à 72 h) reste vert jusqu'au 22 au soir même sans WF1 | ok |
+| 2. `npm run instantane`, `npm run check`, `npm run deploiement`, e2e production | `deploiement.sh` : check vert (0 erreur, 152 tests, tirets, sources), instantané 21 vues (base au repos), build 553 Ko gzip, rsync et bascule atomique, accueil et `/territoires` en 200, **« En ligne : Sat Sep 19 20:11:29 CEST 2026 »**. Instantané servi : `genere_le` 2026-09-19T18:11:20Z, libellés des contrôles avec espace insécable. E2E production : première passe 41/42 (voir ci-dessous), seconde passe **42/42 en 29,2 s** | ok |
+| Le test rouge de la première passe | un `expect(locator).toBeVisible()` en échec pendant que Lighthouse tournait sur la même machine ; au même instant `buta.analyste_question` enregistre les deux questions de la suite (ids 178 et 179, 20 h 12) en statut `erreur`, 23,2 s et 17,5 s, coût 0 : l'appel au modèle a échoué (exception avant toute réponse : HTTP du fournisseur ou réponse non JSON après essais), comme les deux questions de la passe e2e locale de 19 h 27 (ids 166 et 167, 17,0 s et 16,8 s, coût 0). Dans les deux cas, la passe suivante réussit (19 h 30 et 20 h 13 : refus en 15 à 18 s, cache du prompt réécrit à 0,063 €). Les quatre échecs sont des appels « à froid » (cache du prompt expiré après cinq minutes d'inactivité). Cause exacte non lue : l'API des journaux Supabase a répondu « Backend error » à toutes les tentatives ce soir | compris comme incident passager du fournisseur, à relire lundi matin dans le tableau de bord Supabase (Edge Functions, analyste, journaux du 19/09 à 17:27 et 18:12 UTC) |
+| 3. Lighthouse après le dernier déploiement | accueil 99 / 100 / 100 / 100 (LCP 0,6 s, CLS 0,06), Analyste 100 / 100 / 100 / 100 (LCP 0,6 s, CLS 0,00) | ok |
+| 4. Sauvegarde de sûreté | `~/Desktop/buta-lyfh-sauvegardes/buta-2026-09-19-2013.sql.gz` (pg_dump 18.6 de Homebrew, pooler de session 5432, `sslmode=verify-full` avec la racine Supabase : 27 tables, 22 vues, 17 fonctions, 27 `COPY`, 72 261 lignes de `fait_dossier`, 13,6 Mo en clair, 2,0 Mo compressé) et `dist-2026-09-19-2013.tar.gz` (87 fichiers, 3,1 Mo). Retour arrière : `tar -xzf dist-<date>.tar.gz` puis `rsync -az --delete dist/ $VPS_HOTE:$VPS_RACINE.nouveau/` et la bascule par renommage de `scripts/deploiement.sh` ; le serveur garde aussi la version précédente dans `buta.lyfh.fr.ancien` (un `mv` suffit). Pour la base : `psql "$URL_SESSION" -f buta-<date>.sql` sur un projet vide, ou `npm run generer:activite` puis `npm run publier` pour le jeu simulé (graine fixe) | ok |
+| 5. Commit, push, tag | commits `7755dc0` (documents, référentiels) et le commit final de cette passe, poussés sur `origin/main` ; le commit « chore: gel avant l'entretien du 22 septembre » et le tag `gel-entretien-2026-09-22` sont réservés au lundi après les contrôles des exécutions planifiées | différé à lundi |
+| 6. Journal, REPRISE, rapport | entrée du journal, REPRISE à jour (état, feuille de route de mardi), ce rapport | ok |
+
+Lundi 21 septembre avant 20 h, dans cet ordre (une heure) : (1) vérifier dans `buta.automatisation_run` et sur n8n les exécutions planifiées de WF1 (06:00) et WF2 (06:20) de samedi, dimanche et lundi, de WF5 (toutes les six heures) et de WF3 (lundi 07:00, revue de la semaine du 14/09) ; si tout est en succès, `select cron.unschedule('buta_rafraichir_marts'); select cron.unschedule('buta_controles');` (la purge reste) ; (2) `npm run evaluer:analyste` si ce n'est pas fait samedi (24/24 attendus, 0,35 €) ; (3) relire les journaux Edge du 19/09 (deux paires d'erreurs) ; (4) rejouer les étapes 1 à 4 ci-dessus ; (5) `git commit -m "chore: gel avant l'entretien du 22 septembre"`, `git push`, `git tag gel-entretien-2026-09-22 && git push origin gel-entretien-2026-09-22` ; (6) entrée finale du journal.
+
+## 10. Préparation de mardi matin
+
+**Checklist de 09 h 30.**
+1. https://buta.lyfh.fr répond 200 (ordinateur et téléphone) ; badge « Journée du 21/09 intégrée à 06:0x » (WF1 de 06:00) ; si le badge dit « Instantané du 21/09 », Supabase ne répond pas : plan C.
+2. Supabase : projet `renovscope` ACTIVE_HEALTHY (tableau de bord), deux projets actifs au plus.
+3. n8n : exécutions du matin de WF1 et WF2 en succès (n8n.lyfh.fr, ou écran Automatisations : « Dernière » du jour, badge « journal en direct ») ; email de WF2 reçu (score attendu 68, deux bloquants C03 et C09).
+4. Écran Qualité : score du jour affiché pour le 21/09 ; écran Plans d'action : revue de la semaine du 14/09 rédigée lundi à 07:00.
+5. `docs/FICHE.pdf` ouvert, page partageable https://claude.ai/artifact/5E4wJCwbLGc3QSGFAy8aNe ouverte, `docs/GUIDE.md` §10 sous les yeux, téléphone avec le site ouvert.
+6. Budget IA du jour : compteur en bas de l'écran Analyste (remis à zéro à minuit, plafond 5 €).
+
+**Parcours de démonstration en cinq minutes** (ordre du §10 de GUIDE.md, phrase clé de chaque écran) :
+1. Vue d'ensemble (45 s) : « Le réseau ce mois-ci : quatre compteurs contre l'objectif au prorata, l'atterrissage de l'année, les alertes du matin datées. Tout est simulé, sauf le marché. » Montrer le bouton « i » d'un compteur et « Expliquer avec le modèle ».
+2. Ventes et marge (60 s) : la cascade (« -266 k€ de volume, -111 k€ de mix »), « quelle agence gagne de l'argent », la phrase sur les remises de Saintonge. « L'écart se décompose, la remise se mesure, la marge après acquisition dit qui gagne vraiment. »
+3. Funnel (45 s) : Sankey, changer d'agence à la palette (Cmd K, « Marensin »), matrice canal × agence, canal « à revoir ». « La cohorte est la seule façon honnête de mesurer une conversion. »
+4. Forecast (45 s) : l'éventail, le curseur « taux de signature du pipe », la probabilité d'atteinte. « Un forecast, c'est une formule visible, des hypothèses écrites et un intervalle. »
+5. Qualité (30 s) : les douze contrôles, les deux en échec, la réconciliation des libellés du Nord, la courbe depuis mai. « Un chiffre auquel on ne peut pas faire confiance ne sert à rien. »
+6. Automatisations (20 s) : les cinq workflows, la dernière exécution du matin, le journal. « Le cockpit vit sans moi le matin. »
+7. Analyste (45 s) : « Quel est le CA signé du réseau en juin 2026 ? », la requête, les lignes, la pastille. « Le modèle ne produit jamais un chiffre : il écrit la requête, la base répond, il commente. »
+8. Territoires puis Méthode (30 s) : la carte de France et l'indice ; « tout est écrit là : sources, hypothèses, ce que c'est, ce que ce n'est pas ». Conclure : « c'est le poste tel que je le tiendrais ; les chiffres sont simulés, les gestes sont les bons ».
+
+**Plan B** (le site ne répond pas) : `docs/FICHE.pdf` (80 pages, chaque écran capturé et commenté) et la page partageable ; les 86 captures de `docs/captures/guide/`. **Plan C** (Supabase ne répond pas) : le site bascule seul sur l'instantané statique embarqué (journée du 21/09 si le déploiement de lundi soir a été fait après WF1, sinon du 20/09), badge « Instantané du JJ/MM » ; les chiffres restent ceux du dernier déploiement ; l'Analyste et « Expliquer » affichent leur carte d'indisponibilité ou les phrases par règles. **Plan D** (n8n n'a pas tourné) : les journées sont publiées d'avance jusqu'au 25/09 et les deux tâches pg_cron de secours rafraîchissent les vues et les contrôles à 06:05 et 06:15 (heure de Paris) tant qu'elles ne sont pas retirées ; seul le badge garderait l'heure de la dernière intégration.
+
+**Limites à dire soi-même si la question vient** : données d'activité simulées (marché réel sourcé) ; « n. d. » assumés (annulation à 60 jours du mois en cours, N-1 de 2025, cohortes immatures) ; WF4 marché mensuel non construit (rejeu par script) ; deux tâches pg_cron de secours (retirées lundi si n8n a tourné trois matins) ; budget IA plafonné à 5 € par jour (1,50 € ensuite), quotas par visiteur ; jeu d'évaluation de 24 questions (100 % au seuil de 90 %) ; trois vues au-dessus de la seconde à froid (proposition de matérialisation) ; décalage de mise en page mobile de 0,14 sur deux écrans.
+
+**Réponses préparées aux questions difficiles** (GUIDE.md §8 et relectures à trois lentilles du journal) :
+- Attribution des nombres : chaque nombre écrit par le modèle, en chiffres ou en lettres, signe compris, est retrouvé dans les lignes SQL et dans la ligne que la phrase nomme ; sinon la phrase est rejetée et les lignes restent la réponse. Vérifié à l'écran (pastille « chaque nombre retrouvé dans sa ligne ») et par 24 questions d'évaluation.
+- Coût à l'échelle : une question coûte un à sept centimes (cache du prompt lu 0,006 €, réécrit 0,063 € après cinq minutes d'inactivité), six à vingt secondes ; à 300 utilisateurs et cinq questions par jour, une trentaine d'euros par jour, plafond quotidien et quotas ; si le fournisseur tombe, l'écran le dit, les autres écrans restent la source, l'explication d'écart repasse aux règles (vu ce soir : deux appels en erreur, la minute suivante en succès).
+- Données réelles : le modèle de données est celui d'un CRM d'installateur ; on remplace le générateur par l'ingestion, les vues et les écrans restent ; les contrôles et les référentiels sont faits pour absorber plusieurs entités (l'histoire du Nord).
+- Sécurité des clés : la clé Anthropic et la clé service Supabase ne quittent jamais le serveur (Edge Functions, n8n) ; le front n'embarque que l'URL et la clé anon, bornée par la RLS (vérifié ce soir rôle par rôle) ; l'analyste lit sous un rôle en lecture seule limité aux vues, 5 secondes, 200 lignes.
+- Avec un vrai CRM : ingestion quotidienne à la place de WF1, mêmes vues, mêmes contrôles ; les référentiels communs et la réconciliation des libellés sont la première semaine de travail ; les objectifs et les charges viennent du contrôle de gestion.
+
+## Synthèse en dix lignes
+
+1. Chaîne de code verte : check (152 tests), build sous budget, e2e 42/42 en local et en production (deux passes), zéro erreur console sur 22 combinaisons, Lighthouse 97 à 100 en performance et 100 ailleurs sur les onze écrans.
+2. Données : 20/20 tests SQL avec TLS vérifié, journée publiée au 18/09, trois vues matérialisées identiques au recalcul direct, chiffres identiques entre vues, écrans et guide.
+3. Sécurité : RLS et droits vérifiés rôle par rôle, fonctions figées, aucun secret dans le bundle, le dépôt ni les exports, CSP et en-têtes présents, certificat valide jusqu'au 16 décembre, aucune ressource externe.
+4. n8n : cinq workflows publiés, WF0 en workflow d'erreur, exports fidèles, journal alimenté ; les exécutions planifiées de samedi, dimanche et lundi restent à constater lundi avant de retirer les deux tâches pg_cron.
+5. Analyste : garde-fous refusent écriture, injection, hors liste, conseil et donnée non couverte sans exécuter de requête ; quota de cinq par minute vérifié (sixième en pause) ; pastille des nombres, requête et historique à l'écran ; explications en cache.
+6. Corrigé : espace insécable avant % dans les référentiels de la base et les seeds, guide de présentation aligné sur la journée du 18/09 et l'état réel, nom de l'entité rachetée retiré des trois derniers documents, fiche documentée dans l'architecture, temps de réponse réels dans REPRISE.
+7. À décider : matérialiser `mart_alertes`, `mart_ecarts` (et `mart_couts_acquisition`) ; CLS mobile 0,14 ; CORS ouvert et HSTS absent ; texte de WF0 et normalisation des % dans WF3 ; racine TLS versée au dépôt ; test Analyste tolérant à l'indisponibilité.
+8. Différé à lundi : jeu d'évaluation complet (budget du jour à 4,91 € sur 5 ce soir), retrait des tâches pg_cron, WF3 du lundi, commit de gel et tag.
+9. Répétition du gel faite : publication d'avance idempotente, déploiement à 20 h 11, sauvegardes hors dépôt (base et dist), Lighthouse après déploiement.
+10. Aucun bloquant.
+
+## Points renvoyés à Frédéric
+
+1. **Vues lentes** (à décider) : proposer une migration 0034 qui matérialise `mart_alertes`, `mart_ecarts` et `mart_couts_acquisition` et les ajoute à `rafraichir_marts()` (WF1 06:00 et pg_cron 04:05 UTC) ; gain : accueil et Ventes servis en moins de 0,1 s au lieu de 1,2 à 1,9 s, plus de bascule sur l'instantané sous charge ; coût : fraîcheur liée au rafraîchissement du matin (déjà le cas pour funnel, ventes et forecast). À faire après l'entretien, ou lundi matin seulement si Frédéric le demande.
+2. **Jeu d'évaluation** (différé) : `npm run evaluer:analyste` après minuit (samedi) ou lundi matin, 24/24 attendus pour 0,35 €.
+3. **Journaux Edge** (différé) : relire les erreurs de 17:27 et 18:12 UTC du 19/09 dans le tableau de bord Supabase (l'API des journaux était en erreur ce soir).
+4. **CORS et en-têtes** (à décider) : restreindre `Access-Control-Allow-Origin` à https://buta.lyfh.fr (redéploiement des deux fonctions) ; ajouter `Strict-Transport-Security` et retirer `x-powered-by` dans les directives nginx de Plesk. Aucun des deux n'est nécessaire pour mardi.
+5. **n8n** (à décider) : corriger la note et la description de WF0 (« WF1, WF2, WF3 ou WF5 ») ; dans le nœud « Contrôle des nombres et assemblage » de WF3, remplacer l'espace ordinaire avant % par une espace insécable dans les phrases du modèle (deux lignes de code), puis réexporter dans `n8n/`.
+6. **Test e2e Analyste** (à décider) : quand la fonction répond « erreur », l'écran affiche « Analyste indisponible » mais le test attend aussi l'entrée d'historique ; soit accepter ce cas dans le test, soit décider que l'historique garde aussi les questions sans réponse.
+7. **Racine TLS** (à décider) : verser `supabase/ca/supabase-root-2021.pem` (certificat public) et documenter `NODE_EXTRA_CA_CERTS` pour remplacer `SUPABASE_DB_SSL_NON_VERIFIE=1` dans REPRISE, ARCHITECTURE et `.env.example`.
+8. **CLS mobile** (connu) : 0,14 sur l'accueil et Ventes, attribué à la grille des KPI, non reproduit au traceur ; après mardi.
+9. **LinkedIn** : le lien de la page Méthode ne se vérifie pas en robot (405 et 999) ; l'ouvrir une fois à la main.
+10. **Lundi** : la liste ordonnée de la section 9.
