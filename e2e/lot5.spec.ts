@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const ROUTES_VISIBLES = ["/", "/territoires", "/funnel", "/ventes", "/forecast", "/pose", "/plans-action", "/qualite", "/automatisations", "/methode"];
+const ROUTES_VISIBLES = ["/", "/territoires", "/funnel", "/ventes", "/forecast", "/pose", "/plans-action", "/qualite", "/automatisations", "/analyste", "/methode"];
 
 test("les filtres de l'URL pilotent l'écran (période, comparaison, agence)", async ({ page }) => {
   await page.goto("/ventes?periode=2026-06&comparaison=n1&agence=SAI");

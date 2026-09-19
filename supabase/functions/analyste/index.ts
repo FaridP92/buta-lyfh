@@ -37,6 +37,7 @@ const MOTIFS: Record<string, string> = {
   conseil: "Le démonstrateur lit le marché et l'activité simulée, il ne recommande pas : cette question relève d'un conseil.",
   hors_perimetre: "Cette question sort du périmètre du cockpit (pilotage du réseau simulé et marché des territoires).",
   non_couvert: "Ces données ne sont pas couvertes : le cockpit ne contient ni chiffre réel d'entreprise, ni donnée par personne, ni MaPrimeRénov' par commune.",
+  ecriture: "Le cockpit est en lecture seule : aucune écriture, suppression ou modification n'est possible.",
 };
 
 Deno.serve(async (req: Request) => {
@@ -83,7 +84,7 @@ Deno.serve(async (req: Request) => {
 
     let sortie: SortieSql;
     try {
-      const r = await appelerModele(systemeSql, messageQuestion, 900);
+      const r = await appelerModele(systemeSql, messageQuestion, 3000);
       cumuler(r);
       try {
         sortie = extraireJson(r.texte) as SortieSql;
@@ -108,7 +109,7 @@ Deno.serve(async (req: Request) => {
     // Garde-fous, avec une seule correction possible par le modèle.
     let validation = validerSql(sortie.sql, cat.vues);
     if (!validation.ok) {
-      const r = await appelerModele(systemeSql, `${messageQuestion}\n\n${promptCorrection(sortie.sql, validation.motif ?? "refus")}`, 900);
+      const r = await appelerModele(systemeSql, `${messageQuestion}\n\n${promptCorrection(sortie.sql, validation.motif ?? "refus")}`, 3000);
       cumuler(r);
       const corrigee = extraireJson(r.texte) as SortieSql;
       if (typeof corrigee.sql === "string") validation = validerSql(corrigee.sql, cat.vues);
@@ -128,7 +129,7 @@ Deno.serve(async (req: Request) => {
       return reponseJson({ statut: "erreur", message: "La requête n'a pas pu être exécutée (délai de 5 secondes, vue non autorisée ou erreur de syntaxe). Reformulez la question.", sql, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise });
     }
 
-    const r2 = await appelerModele(promptRedaction(refsTexte), messageRedaction(question, sql, lecture.lignes, lecture.lignes.length), 1000);
+    const r2 = await appelerModele(promptRedaction(refsTexte), messageRedaction(question, sql, lecture.lignes, lecture.lignes.length), 2500);
     cumuler(r2);
     let redaction: { reponse?: unknown; sources?: unknown };
     try {
@@ -139,7 +140,9 @@ Deno.serve(async (req: Request) => {
     }
     let reponse = typeof redaction.reponse === "string" ? redaction.reponse : "";
     const sources = Array.isArray(redaction.sources) ? redaction.sources.filter((s): s is string => typeof s === "string") : [];
-    const autorises = nombresAutorises(lecture.lignes, question, lecture.lignes.length);
+    // Les référentiels et la journée publiée sont transmis au modèle : un numéro de département, une année
+    // d'ouverture ou la date de la journée cités dans la réponse sont des faits, pas des inventions.
+    const autorises = nombresAutorises({ lignes: lecture.lignes, referentiels: refs }, question, lecture.lignes.length);
     const nonTraces = nombresNonTraces(reponse, autorises);
     let statut = "ok";
     if (!reponse || nonTraces.length > 0) {

@@ -114,8 +114,14 @@ La question : qu'est-ce qui se fait sans personne, quand, et est-ce que ça a ma
 
 Ce qu'on dit : « le cockpit vit sans moi le matin ; si quelque chose casse, je le sais avant les autres ».
 
-### 3.10 Analyste (disponible seulement si l'évaluation passe 90 %)
-Question en langage naturel ; le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base répond, le modèle rédige sans calculer, chaque nombre de la réponse est vérifié dans les lignes. Refus explicites (conseil, hors périmètre, non couvert), quotas, budget visible. Tant que la clé du modèle n'est pas posée, l'écran est retiré de la navigation.
+### 3.10 Analyste · « Posez la question au cockpit »
+La question : que répond le cockpit quand on lui pose une question en français, et peut-on lui faire confiance.
+- Une question libre (500 caractères au plus) ou une des six suggestions (les histoires du jeu simulé et le marché réel). Le modèle écrit une requête SQL en lecture seule sur les vues autorisées, la base l'exécute sous un rôle limité (5 secondes, 200 lignes), le modèle rédige à partir des lignes sans jamais calculer, et chaque nombre de la réponse est vérifié dans les lignes ; sinon la rédaction est rejetée et les lignes restent la réponse.
+- La carte « La réponse » (prose et sources, modèle, durée, coût), la carte « Les chiffres » (les lignes exactes, exportables), la requête SQL exécutée (dépliable, copiable), l'historique de la session et les garde-fous.
+- Refus explicites avec leur motif : conseil (« faut-il ouvrir une agence à Niort ? »), hors périmètre (la météo), données non couvertes (chiffres réels, personnes, MaPrimeRénov' par commune), écriture. Quotas par adresse hachée, budget quotidien affiché.
+- Mise en navigation le 19 septembre après le jeu d'évaluation de 24 questions (IA.md §5) : 23 réussites sur 24 (96 %), seuil de 90 % ; le score du jour est dans le journal.
+
+Ce qu'on dit : « le modèle ne produit jamais un chiffre : il écrit la requête, la base répond, il commente ; si un nombre de sa phrase n'est pas dans les lignes, la phrase est rejetée ».
 
 ### 3.11 Méthode et auteur
 Ce que c'est et ce que ce n'est pas, les sources réelles avec liens, licences et dates, le modèle de simulation et les sept histoires, le contexte public cité une seule fois (dix départements et huit agences publiés par l'entreprise, rachat de Lumélio annoncé en mai 2026), l'architecture, l'export Power BI (zip de vingt et une tables CSV et modèle en étoile documenté), l'auteur et les liens (LinkedIn, CV, Courant, CoPilote Atelier).

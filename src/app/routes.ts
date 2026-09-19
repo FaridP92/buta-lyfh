@@ -115,7 +115,7 @@ export const ROUTES: DefinitionRoute[] = [
     chemin: "/analyste",
     libelle: "Analyste",
     icone: MessageSquare,
-    disponible: false,
+    disponible: true,
     palier: "B",
     lot: "4b",
     objectif: "Poser une question en français sur les indicateurs, avec la requête SQL et les sources.",

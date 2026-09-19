@@ -92,29 +92,71 @@ const TARIFS: Record<string, { entree: number; sortie: number }> = {
   "mistral-large-latest": { entree: 1.85, sortie: 5.5 },
 };
 
-export function coutEur(modele: string, tokensEntree: number, tokensSortie: number): number {
+export function coutEur(modele: string, tokensEntree: number, tokensSortie: number, cacheEcrit = 0, cacheLu = 0): number {
   const t = TARIFS[modele] ?? { entree: 3, sortie: 15 };
-  return Math.round(((tokensEntree * t.entree + tokensSortie * t.sortie) / 1_000_000) * 1_000_000) / 1_000_000;
+  // Cache de prompt Anthropic : écriture facturée 1,25 fois l'entrée, lecture 0,1 fois.
+  const entree = tokensEntree * t.entree + cacheEcrit * t.entree * 1.25 + cacheLu * t.entree * 0.1;
+  return Math.round(((entree + tokensSortie * t.sortie) / 1_000_000) * 1_000_000) / 1_000_000;
 }
 
-/** Appelle le modèle (réponse JSON attendue) : Anthropic si ANTHROPIC_API_KEY existe, sinon Mistral si MISTRAL_API_KEY, sinon ErreurRepli. */
+interface ReponseAnthropic {
+  content: { type: string; text?: string }[];
+  stop_reason?: string;
+  usage: { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number };
+}
+
+/**
+ * Appelle le modèle (réponse JSON attendue) : Anthropic si ANTHROPIC_API_KEY existe, sinon Mistral si MISTRAL_API_KEY, sinon ErreurRepli.
+ * Anthropic : le prompt système (catalogue et référentiels, stable dix minutes) est mis en cache ; la génération
+ * Claude 5 réfléchit d'elle-même avant de répondre et ces jetons comptent dans max_tokens, d'où des budgets larges
+ * et, si la réflexion a tout consommé sans produire de texte, un second appel sans réflexion.
+ */
 export async function appelerModele(systeme: string, utilisateur: string, maxTokens = 1200): Promise<ResultatModele> {
   const cleAnthropic = env("ANTHROPIC_API_KEY");
   if (cleAnthropic) {
     const modele = env("IA_MODELE") ?? "claude-sonnet-5";
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "x-api-key": cleAnthropic, "anthropic-version": "2023-06-01", "content-type": "application/json" },
-      // Pas de `temperature` : l'API la refuse pour cette génération de modèles (HTTP 400 « deprecated for this model »).
-      body: JSON.stringify({ model: modele, max_tokens: maxTokens, system: systeme, messages: [{ role: "user", content: utilisateur }] }),
-      signal: AbortSignal.timeout(45_000),
-    });
-    if (!r.ok) throw new Error(`Anthropic : HTTP ${r.status} ${(await r.text()).slice(0, 200)}`);
-    const j = (await r.json()) as { content: { type: string; text?: string }[]; stop_reason?: string; usage: { input_tokens: number; output_tokens: number } };
-    const texte = j.content.filter((c) => c.type === "text").map((c) => c.text ?? "").join("\n");
-    // Réponse sans texte (arrêt sur max_tokens, refus, bloc d'un autre type) : on trace la forme brute pour comprendre.
-    if (!texte.trim()) console.error("modèle : réponse sans texte", JSON.stringify({ stop_reason: j.stop_reason, blocs: j.content.map((c) => c.type), usage: j.usage }).slice(0, 400));
-    return { texte, tokensEntree: j.usage.input_tokens, tokensSortie: j.usage.output_tokens, coutEur: coutEur(modele, j.usage.input_tokens, j.usage.output_tokens), modele };
+    const effort = env("IA_EFFORT");
+    const appel = async (sansReflexion: boolean, max: number): Promise<ReponseAnthropic> => {
+      const r = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "x-api-key": cleAnthropic, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+        // Pas de `temperature` : l'API la refuse pour cette génération de modèles (HTTP 400 « deprecated for this model »).
+        body: JSON.stringify({
+          model: modele,
+          max_tokens: max,
+          system: [{ type: "text", text: systeme, cache_control: { type: "ephemeral" } }],
+          messages: [{ role: "user", content: utilisateur }],
+          ...(effort ? { output_config: { effort } } : {}),
+          ...(sansReflexion ? { thinking: { type: "disabled" } } : {}),
+        }),
+        signal: AbortSignal.timeout(45_000),
+      });
+      if (!r.ok) throw new Error(`Anthropic : HTTP ${r.status} ${(await r.text()).slice(0, 200)}`);
+      return (await r.json()) as ReponseAnthropic;
+    };
+    const texteDe = (j: ReponseAnthropic) => j.content.filter((c) => c.type === "text").map((c) => c.text ?? "").join("\n");
+    const appels: ReponseAnthropic[] = [await appel(false, maxTokens)];
+    let texte = texteDe(appels[0]!);
+    if (!texte.trim()) {
+      // Réponse sans texte : on trace la forme brute, puis, si la réflexion a épuisé le budget, on rejoue sans réflexion
+      // (même budget) ; si l'API refuse ce réglage, avec un budget doublé.
+      console.error("modèle : réponse sans texte", JSON.stringify({ stop_reason: appels[0]!.stop_reason, blocs: appels[0]!.content.map((c) => c.type), usage: appels[0]!.usage }).slice(0, 400));
+      if (appels[0]!.stop_reason === "max_tokens") {
+        try {
+          appels.push(await appel(true, maxTokens));
+        } catch (erreur) {
+          console.error("modèle : rejeu sans réflexion refusé", erreur instanceof Error ? erreur.message : erreur);
+          appels.push(await appel(false, maxTokens * 2));
+        }
+        texte = texteDe(appels[appels.length - 1]!);
+      }
+    }
+    const somme = (f: (u: ReponseAnthropic["usage"]) => number) => appels.reduce((acc, j) => acc + f(j.usage), 0);
+    const entree = somme((u) => u.input_tokens);
+    const sortie = somme((u) => u.output_tokens);
+    const cacheEcrit = somme((u) => u.cache_creation_input_tokens ?? 0);
+    const cacheLu = somme((u) => u.cache_read_input_tokens ?? 0);
+    return { texte, tokensEntree: entree + cacheEcrit + cacheLu, tokensSortie: sortie, coutEur: coutEur(modele, entree, sortie, cacheEcrit, cacheLu), modele };
   }
   const cleMistral = env("MISTRAL_API_KEY");
   if (cleMistral) {
@@ -133,17 +175,25 @@ export async function appelerModele(systeme: string, utilisateur: string, maxTok
   throw new ErreurRepli("aucune clé de modèle configurée");
 }
 
-/** Extrait l'objet JSON d'une réponse de modèle (clôtures ``` tolérées). */
+/**
+ * Extrait l'objet JSON d'une réponse de modèle : clôtures ``` tolérées, texte autour toléré, et retours à la ligne
+ * bruts à l'intérieur des chaînes tolérés (le modèle écrit volontiers une requête SQL sur plusieurs lignes, ce que
+ * JSON interdit ; remplacer tous les retours à la ligne par des espaces ne change ni le SQL ni la prose).
+ */
 export function extraireJson(texte: string): unknown {
   const sans = texte.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/, "").trim();
-  try {
-    return JSON.parse(sans);
-  } catch {
-    const debut = sans.indexOf("{");
-    const fin = sans.lastIndexOf("}");
-    if (debut >= 0 && fin > debut) return JSON.parse(sans.slice(debut, fin + 1));
-    throw new Error("réponse du modèle non JSON");
+  const candidats = [sans, sans.replace(/[\r\n\t]+/g, " ")];
+  const debut = sans.indexOf("{");
+  const fin = sans.lastIndexOf("}");
+  if (debut >= 0 && fin > debut) candidats.push(sans.slice(debut, fin + 1), sans.slice(debut, fin + 1).replace(/[\r\n\t]+/g, " "));
+  for (const c of candidats) {
+    try {
+      return JSON.parse(c);
+    } catch {
+      // essai suivant
+    }
   }
+  throw new Error("réponse du modèle non JSON");
 }
 
 export interface Quota {

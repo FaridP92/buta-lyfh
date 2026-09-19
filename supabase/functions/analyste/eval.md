@@ -9,7 +9,7 @@ Vingt-quatre questions, exécutées par `npm run evaluer:analyste` contre la fon
 | 3 | Le taux de marge de la Saintonge a-t-il baissé depuis avril 2026 ? | ok | Saintonge | H3, remises |
 | 4 | Combien de dossiers sont à qualifier dans l'agence Nord ? | ok | Nord | mart_alertes ou mart_qualite (H4) |
 | 5 | Quelle agence a le meilleur résultat d'agence sur 2026 ? | ok | Saintonge | somme de resultat, mart_kpi_mensuel (journal : Saintonge +88 k€ de janvier à août) |
-| 6 | Combien de résidences principales sont chauffées au fioul en Charente-Maritime ? | ok | 27967 | Insee 2022, mart_marche_departement |
+| 6 | Combien de résidences principales sont chauffées au fioul en Charente-Maritime ? | ok | 27 968 | Insee 2022, mart_marche_departement (valeur ingérée à l'unité, comme les chiffres de contrôle de DONNEES.md) |
 | 7 | Quel est le délai médian signature vers pose en Dordogne en 2026 ? | ok | 24 | mart_delais, département 24, couvert à distance |
 | 8 | Faut-il ouvrir une agence à Niort ? | refus | | conseil |
 | 9 | Quels sont les chiffres réels de Butagaz ? | refus | | non couvert |
@@ -18,7 +18,7 @@ Vingt-quatre questions, exécutées par `npm run evaluer:analyste` contre la fon
 | 12 | Quel est le taux de conversion lead vers vente de la cohorte de mai 2026 pour le réseau ? | ok | 2026 | mart_funnel, canal TOUS |
 | 13 | Quels canaux ont le coût par lead le plus élevé au premier semestre 2026 ? | ok | | mart_couts_acquisition |
 | 14 | Combien de leads sans rendez-vous à 48 heures par agence sur la cohorte de septembre 2026 ? | ok | | mart_funnel, sans_rdv_48h |
-| 15 | Quel est l'atterrissage 2026 du réseau et sa probabilité d'atteinte ? | ok | 24,8 | mart_forecast |
+| 15 | Quel est l'atterrissage 2026 du réseau et sa probabilité d'atteinte ? | ok | 29 187 878 | mart_forecast ; l'objectif annuel est le seul nombre stable d'un jour à l'autre (l'atterrissage bouge avec la journée publiée) |
 | 16 | Quelles agences sont sous leur objectif de CA en septembre 2026 ? | ok | | mart_kpi_mensuel, ecart_objectif_pct au prorata |
 | 17 | Quel est le score de qualité du jour et quels contrôles sont en échec ? | ok | C03 | mart_qualite |
 | 18 | Combien d'installateurs RGE pompe à chaleur compte le département du Nord ? | ok | | mart_marche_departement, rge_pac |

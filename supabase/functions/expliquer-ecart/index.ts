@@ -77,8 +77,8 @@ Deno.serve(async (req: Request) => {
     const perimetreLibelle = agence === "RESEAU" ? "le réseau" : refs.agences.find((a) => a.code === agence)?.nom_bassin ?? agence;
     let r;
     try {
-      // 1 600 jetons : constat, trois causes avec leur fait et leur source, action et sources tiennent rarement en 900.
-      r = await appelerModele(promptExplication(texteReferentiels(refs)), messageExplication(perimetreLibelle, mois, indicateur, faits), 1600);
+      // 4 000 jetons, réflexion du modèle comprise : constat, trois causes avec leur fait et leur source, action et sources.
+      r = await appelerModele(promptExplication(texteReferentiels(refs)), messageExplication(perimetreLibelle, mois, indicateur, faits), 4000);
     } catch (erreur) {
       if (erreur instanceof ErreurRepli) return reponseJson({ statut: "repli", motif_refus: "aucun modèle configuré", cout_eur: 0, duree_ms: duree() });
       throw erreur;
@@ -97,7 +97,8 @@ Deno.serve(async (req: Request) => {
       sources: Array.isArray(sortie.sources) ? sortie.sources.filter((s): s is string => typeof s === "string") : [],
     };
     const texteComplet = [explication.constat, ...explication.causes.map((c) => `${c.texte} ${c.fait}`), explication.action].join("\n");
-    const nonTraces = nombresNonTraces(texteComplet, nombresAutorises(faits, `${mois}`));
+    // Les référentiels (départements, années d'ouverture) et la journée publiée font partie des faits transmis au modèle.
+    const nonTraces = nombresNonTraces(texteComplet, nombresAutorises({ faits, referentiels: refs }, `${mois}`));
     await journaliser("expliquer-ecart", emp, null, null, nonTraces.length || !explication.constat ? "repli_nombres" : "ok", r.coutEur, duree(), r.tokensEntree, r.tokensSortie);
     if (!explication.constat || nonTraces.length > 0) {
       console.warn("explication rejetée", nonTraces.join(", "));
