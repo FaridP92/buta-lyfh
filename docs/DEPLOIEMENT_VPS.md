@@ -49,6 +49,7 @@ Le basculement par renommage rend le déploiement atomique et réversible (`mv` 
 - Lighthouse (Chrome headless) : performance, accessibilité, bonnes pratiques, SEO, résultats notés dans le journal.
 - Test sur téléphone réel (4G, hors wifi) : page d'accueil et Territoires.
 - Recherche de tirets longs et de la mention réglementaire dans `dist/index.html` et dans le bundle (script `verif:tirets` sur `dist/`).
+- `https://buta.lyfh.fr/fiche.pdf` répond 200 en `application/pdf` : la fiche est copiée depuis `docs/FICHE.pdf` par `scripts/copier-documents.ts` à la construction, et le `.htaccess` ne réécrit pas les fichiers existants.
 
 ## 5. Déploiement continu (palier C)
 GitHub Actions sur `main` : `npm ci`, `npm run check`, `npm run build`, rsync par SSH avec une clé dédiée verrouillée sur un script `/usr/local/bin/buta-deploy.sh` (même motif que LYFH : la clé ne peut que déclencher le script). Inerte tant que la variable `DEPLOY_ENABLED` n'est pas à `true`.

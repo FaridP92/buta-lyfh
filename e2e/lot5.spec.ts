@@ -70,3 +70,10 @@ test("sur téléphone, le tiroir de navigation mène à un écran et la page ne 
   const largeur = await page.evaluate(() => document.documentElement.scrollWidth);
   expect(largeur).toBeLessThanOrEqual(375);
 });
+
+test("la page Méthode propose la fiche de présentation en PDF", async ({ page }) => {
+  await page.goto("/methode");
+  const lien = page.getByRole("link", { name: /Fiche de présentation/ });
+  await expect(lien).toBeVisible();
+  await expect(lien).toHaveAttribute("href", "/fiche.pdf");
+});
