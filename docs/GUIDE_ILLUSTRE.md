@@ -4,6 +4,8 @@ Ce document s'adresse à quelqu'un qui découvre Buta.Lyfh sans rien en connaît
 
 Adresse : https://buta.lyfh.fr, sur ordinateur ou téléphone, sans compte.
 
+Auteur : Frédéric Poissonnier · 06 19 80 05 61 · faridp@free.fr · https://www.linkedin.com/in/f-poissonnier/
+
 Sommaire : 1. Le contexte · 2. Le vocabulaire · 3. D'où viennent les données · 4. Lire l'interface · 5. Les écrans, visuel par visuel · 6. Les sept histoires · 7. Notice d'utilisation · 8. Questions fréquentes · 9. Annexes.
 
 ---
@@ -12,7 +14,7 @@ Sommaire : 1. Le contexte · 2. Le vocabulaire · 3. D'où viennent les données
 
 ### 1.1 Pourquoi cet outil existe
 
-Buta.Lyfh est un démonstrateur personnel construit par Frédéric Poissonnier à l'appui d'une candidature au poste de Responsable Performance chez Butagaz Eco-énergie (entretien téléphonique le mardi 22 septembre 2026). Il n'est affilié ni à Butagaz ni à Butagaz Eco-énergie : aucun logo, aucune couleur de marque, aucun chiffre présenté comme celui de l'entreprise.
+Buta.Lyfh est un démonstrateur personnel construit par Frédéric Poissonnier à l'appui d'une candidature au poste de Responsable Performance chez Butagaz Eco-énergie. Il n'est affilié ni à Butagaz ni à Butagaz Eco-énergie : aucun logo, aucune couleur de marque, aucun chiffre présenté comme celui de l'entreprise.
 
 Le poste consiste à piloter la performance d'un réseau d'installateurs (photovoltaïque, pompes à chaleur, chauffe-eau thermodynamiques, poêles, bornes de recharge) : construire et fiabiliser le pilotage du lead à l'encaissement, analyser les écarts, prévoir l'atterrissage de l'année, transformer l'analyse en plans d'action, tenir des rituels de revue, faire évoluer les outils et les référentiels. Plutôt que de décrire ce qu'il ferait, le candidat a construit l'outil avec lequel il le ferait.
 
@@ -659,7 +661,7 @@ Tout se lit à 375 px sans zoom : les compteurs s'empilent, les tableaux gardent
 
 **Pourquoi simuler plutôt que prendre un jeu de données existant ?** Parce qu'un réseau d'installateurs n'a pas de jeu public, et parce qu'une simulation permet de planter des situations à retrouver (une agence qui remise trop, un canal qui dérape, une intégration) et de vérifier que les indicateurs les font remonter.
 
-**Comment être sûr des chiffres ?** Aucun calcul dans l'interface : tout est en SQL ou dans une bibliothèque testée ; chaque indicateur a sa fiche avec la formule ; le mois en cours est proratisé ; les cohortes immatures ne sont pas comparées ; douze contrôles tournent chaque matin ; vingt tests SQL vérifient les vues et les histoires ; une relecture à trois lentilles (faits, forme, recruteur simulé) a été faite avant la mise en ligne.
+**Comment être sûr des chiffres ?** Aucun calcul dans l'interface : tout est en SQL ou dans une bibliothèque testée ; chaque indicateur a sa fiche avec la formule ; le mois en cours est proratisé ; les cohortes immatures ne sont pas comparées ; douze contrôles tournent chaque matin ; vingt tests SQL vérifient les vues et les histoires ; une relecture à trois lentilles (faits, forme et typographie, regard extérieur) a été faite avant la mise en ligne.
 
 **Et avec des données réelles ?** Le modèle (un dossier avec ses dates, son agence, son canal, son produit, ses montants) est celui d'un CRM d'installateur. L'ingestion remplacerait le générateur ; les vues, les contrôles, les référentiels et les écrans resteraient.
 
