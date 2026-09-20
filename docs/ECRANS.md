@@ -90,6 +90,6 @@ Histoire : H4.
 - Le modèle de simulation : agences nommées par bassin (jamais celles d'un réseau réel), effectifs codés, canaux, produits, règles, ordres de grandeur à vérifier, les sept histoires listées explicitement (le recruteur peut vérifier qu'il les a vues), et la phrase : « aucune agence, personne ou entité réelle n'est associée à une performance simulée ».
 - Le contexte public, cité une seule fois : les dix départements et huit agences publiés par Butagaz Eco-énergie sur son site (aucun rachat réel n'est cité depuis le 19 septembre) ; le maillage simulé reprend ces bassins, pas ces agences.
 - L'architecture en un schéma, les outils (Supabase, n8n, Edge Functions, Claude ou Mistral, React, ECharts), le principe « faits SQL, prose modèle ».
-- Documents : lien vers la fiche de présentation en PDF (`/fiche.pdf`, copiée depuis `docs/FICHE.pdf` à la construction par `scripts/copier-documents.ts`).
+- Documents : liens vers la fiche de présentation (`/fiche.pdf`) et la synthèse d'une page (`/synthese.pdf`), copiées depuis `docs/FICHE.pdf` et `docs/SYNTHESE.pdf` à la construction par `scripts/copier-documents.ts`.
 - L'auteur : trois lignes, lien LinkedIn, lien CV PDF, lien RenovScope et CoPilote Atelier, adresse de contact.
 - Export Power BI : bouton zip (CSV des vues mart et `modele_etoile.md` au palier A ; `mesures.dax` et `LISEZMOI.md` ajoutés au palier B).

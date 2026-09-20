@@ -24,6 +24,7 @@
     "evaluer:analyste": "tsx scripts/evaluer-analyste.ts",
     "export:powerbi": "tsx scripts/export-powerbi.ts",
     "fiche": "tsx scripts/generer-fiche.ts --pdf",
+    "synthese": "tsx scripts/generer-synthese.ts",
     "deploiement": "bash scripts/deploiement.sh"
   },
   "dependencies": {

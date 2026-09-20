@@ -26,7 +26,7 @@ buta-lyfh/
     lib/                   calculs interactifs testés : indice.ts, forecast.ts, remise.ts, phrases.ts, format.ts
     styles/                tokens.css, base.css
   scripts/
-    ingerer-marche.ts  generer-activite.ts  instantane.ts  deploiement.sh  verif-tirets.ts  verif-sources.ts  export-powerbi.ts  generer-fiche.ts (fiche de présentation : HTML depuis GUIDE_ILLUSTRE.md, PDF mis en pages par Paged.js puis imprimé par Playwright, `npm run fiche`)  copier-documents.ts (docs/FICHE.pdf vers dist/fiche.pdf à la construction)
+    ingerer-marche.ts  generer-activite.ts  instantane.ts  deploiement.sh  verif-tirets.ts  verif-sources.ts  export-powerbi.ts  generer-fiche.ts (fiche de présentation : HTML depuis GUIDE_ILLUSTRE.md, PDF mis en pages par Paged.js puis imprimé par Playwright, `npm run fiche`)  copier-documents.ts (docs/FICHE.pdf et docs/SYNTHESE.pdf vers dist/fiche.pdf et dist/synthese.pdf à la construction)  generer-synthese.ts (synthèse d'une page A4, HTML et PDF, `npm run synthese`)
   supabase/
     migrations/            0001_schema.sql ... (dimensions, faits, marché, exploitation, vues, RLS, rôles, fonctions)
     functions/analyste/    index.ts  prompts.ts  garde-fous.ts
