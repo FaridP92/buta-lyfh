@@ -55,6 +55,9 @@ Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond
 - US-054 Signaux animés des cartes KPI (demande de Frédéric du 19 septembre) : carte qui s'enflamme à -20 % ou -5 points (éclats et secousse du premier essai remplacés le jour même), gerbe à +10 % ou +3 points, règle testée dans `src/lib/signaux.ts`, canvas `SignalCarte`, une fois par période, rien en mouvement réduit. Fait le 19 septembre.
 - US-055 Logo fourni par Frédéric (19 septembre) : monogramme détouré dans le rail et les favicons, couverture et en-tête de la fiche de présentation, thème du document aux couleurs du logo (bleu et menthe). Fait le 19 septembre.
 - US-056 Thème de l'application aligné sur le logo (décision de Frédéric du 19 septembre, 14 h 30) : mot-marque « BUTA.LYFH » en Montserrat 800 avec le monogramme, accent menthe (token `--accent`) à la place de l'ambre pour l'identité et l'interaction, ambre conservé pour « simulé », « attention » et les paliers de charge ; palette des séries réordonnée ; captures du guide et chiffres du texte refaits sur la journée publiée du 18/09. Fait le 19 septembre.
+- US-057 Balises Open Graph et Twitter Card avec une capture de l'accueil en 1200 × 630 (demande de Frédéric du 19 septembre). Fait le 20 septembre (PR 1).
+- US-058 Guide illustré et fiche : date d'entretien et « recruteur simulé » retirés, coordonnées de l'auteur en couverture et en pied (`scripts/lib/auteur.ts`), captures des compteurs reprises sur la journée du 18/09. Fait le 20 septembre (PR 2).
+- US-059 Fiche et synthèse servies à des adresses stables (`/fiche.pdf`, `/synthese.pdf`, copie au build par `scripts/copier-documents.ts`), section « Documents » sur Méthode, synthèse d'une page A4 générée par `npm run synthese`. Fait le 20 septembre (PR 3 et 4).
 
 ## Palier C (après l'entretien)
 - US-060 Mode présentation (touche P, plein écran, enchaînement des écrans toutes les 20 s).
