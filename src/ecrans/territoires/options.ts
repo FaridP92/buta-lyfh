@@ -47,7 +47,9 @@ export function optionFrance(departements: readonly DepartementCarte[], t: Token
     },
     series: [{
       type: "map", map: "departements", nameProperty: "code", roam: false, boundingCoords: CADRE_METROPOLE, selectedMode: false, showLegendSymbol: false,
-      left: mobile ? 8 : 60, right: 8, top: 8, bottom: mobile ? 36 : 8,
+      // Centre et taille plutôt que quatre marges : la bibliothèque conserve alors les proportions (avec des marges, elle
+      // étirait la France en largeur d'un facteur proche de 1,7 à 1 440 px). La taille se lit en part du plus petit côté.
+      layoutCenter: mobile ? ["50%", "46%"] : ["52%", "50%"], layoutSize: mobile ? "100%" : "110%",
       itemStyle: { areaColor: t.surface2, borderColor: t.bordure, borderWidth: 0.6 },
       emphasis: { label: { show: false }, itemStyle: { areaColor: t.attention, borderColor: t.texte, borderWidth: 1 } },
       label: { show: false },
@@ -80,7 +82,7 @@ export function optionGazCiterne(departements: readonly { code: string; nom: str
     },
     series: [{
       type: "map", map: "departements", nameProperty: "code", roam: false, boundingCoords: CADRE_METROPOLE, selectedMode: false, showLegendSymbol: false,
-      left: 8, right: 8, top: 8, bottom: mobile ? 36 : 28,
+      layoutCenter: ["50%", mobile ? "45%" : "46%"], layoutSize: "100%",
       itemStyle: { areaColor: t.surface2, borderColor: t.bordure, borderWidth: 0.6 },
       emphasis: { label: { show: false }, itemStyle: { borderColor: t.texte, borderWidth: 1 } },
       label: { show: false },
@@ -139,7 +141,7 @@ export function optionCommunes(
       inRange: { color: [t.surface2, t.accent] }, calculable: false,
     },
     geo: {
-      map: carte, nameProperty: "code", roam: true, scaleLimit: { min: 1, max: 6 }, left: mobile ? 8 : 60, right: 8, top: 8, bottom: mobile ? 36 : 8,
+      map: carte, nameProperty: "code", roam: true, scaleLimit: { min: 1, max: 6 }, layoutCenter: mobile ? ["50%", "46%"] : ["52%", "50%"], layoutSize: "100%",
       itemStyle: { areaColor: t.surface2, borderColor: t.bordure, borderWidth: 0.4 },
       emphasis: { label: { show: false }, itemStyle: { borderColor: t.texte, borderWidth: 0.8 } },
       label: { show: false },
