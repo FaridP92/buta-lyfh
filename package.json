@@ -25,6 +25,8 @@
     "export:powerbi": "tsx scripts/export-powerbi.ts",
     "fiche": "tsx scripts/generer-fiche.ts --pdf",
     "synthese": "tsx scripts/generer-synthese.ts",
+    "captures:presentation": "tsx scripts/capturer-presentation.ts",
+    "presentation": "tsx --tsconfig tsconfig.app.json scripts/generer-presentation.ts",
     "deploiement": "bash scripts/deploiement.sh"
   },
   "dependencies": {
@@ -45,7 +47,6 @@
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.3",
     "fflate": "^0.8.3",
-    "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
     "pg": "^8.23.0",
     "react": "^19.0.0",

@@ -9,6 +9,7 @@ import { join } from "node:path";
 const DOCUMENTS: ReadonlyArray<{ source: string; cible: string }> = [
   { source: join("docs", "FICHE.pdf"), cible: "fiche.pdf" },
   { source: join("docs", "SYNTHESE.pdf"), cible: "synthese.pdf" },
+  { source: join("docs", "PRESENTATION.pdf"), cible: "presentation.pdf" },
 ];
 
 const DIST = join(process.cwd(), "dist");

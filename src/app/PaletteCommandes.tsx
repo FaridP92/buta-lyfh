@@ -5,6 +5,8 @@ import { Building2, Info, Search } from "lucide-react";
 import { ROUTES } from "@/app/routes";
 import { AGENCES, useFiltres } from "@/app/filtres";
 import { useFicheIndicateur } from "@/composants/FicheIndicateur";
+import { useGuideEcran } from "@/composants/GuideEcran";
+import { useModePresentation } from "@/app/ModePresentation";
 import { INDICATEURS } from "@/lib/indicateurs";
 import { cn } from "@/lib/cn";
 import { correspond, normaliser } from "@/lib/recherche";
@@ -33,6 +35,8 @@ export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommande
   const navigate = useNavigate();
   const filtres = useFiltres();
   const { ouvrir } = useFicheIndicateur();
+  const guide = useGuideEcran();
+  const presentation = useModePresentation();
   const liste = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -45,11 +49,13 @@ export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommande
     const ecrans: Commande[] = ROUTES.filter((r) => r.disponible).map((r) => ({
       cle: `ecran:${r.chemin}`, groupe: "Écrans", libelle: r.libelle, cible: normaliser(r.libelle), cibleSecondaire: normaliser(r.objectif),
       ...(r.disponible ? {} : { detail: `palier ${r.palier}` }),
-      executer: () => { navigate(r.chemin); fermer(); },
+      executer: () => { void navigate(r.chemin, { viewTransition: true }); fermer(); },
     }));
     if (ROUTES.some((r) => r.chemin === "/analyste" && r.disponible)) {
-      ecrans.push({ cle: "ecran:question", groupe: "Écrans", libelle: "Poser une question à l'analyste", detail: "vérifier un chiffre", cible: normaliser("poser une question analyste verifier un chiffre"), cibleSecondaire: "", executer: () => { navigate("/analyste"); fermer(); } });
+      ecrans.push({ cle: "ecran:question", groupe: "Écrans", libelle: "Poser une question à l'analyste", detail: "vérifier un chiffre", cible: normaliser("poser une question analyste verifier un chiffre"), cibleSecondaire: "", executer: () => { void navigate("/analyste", { viewTransition: true }); fermer(); } });
     }
+    ecrans.push({ cle: "ecran:guide", groupe: "Écrans", libelle: "Comprendre cet écran", detail: "ce qu'il montre, ses sources, ce qu'il vise", cible: normaliser("comprendre cet ecran guide lecture aide"), cibleSecondaire: "", executer: () => { fermer(); guide.ouvrir(); } });
+    ecrans.push({ cle: "ecran:presentation", groupe: "Écrans", libelle: presentation.actif ? "Quitter le mode présentation" : "Mode présentation", detail: "touche P, flèches pour changer d'écran", cible: normaliser("mode presentation plein ecran presenter"), cibleSecondaire: "", executer: () => { fermer(); presentation.basculer(); } });
     const agences: Commande[] = [
       { cle: "agence:toutes", groupe: "Agences", libelle: "Toutes les agences", detail: "réseau entier", cible: "toutes les agences reseau", cibleSecondaire: "", executer: () => { filtres.definir("agence", "toutes"); fermer(); } },
       ...AGENCES.map((a) => ({
@@ -62,7 +68,7 @@ export function PaletteCommandes({ ouverte, onOuvertureChange }: PaletteCommande
       executer: () => { ouvrir(i.code); fermer(); },
     }));
     return [...ecrans, ...agences, ...indicateurs];
-  }, [navigate, onOuvertureChange, filtres, ouvrir]);
+  }, [navigate, onOuvertureChange, filtres, ouvrir, guide, presentation]);
 
   const resultats = useMemo(() => {
     const q = requete.trim();

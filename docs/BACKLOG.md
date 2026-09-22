@@ -59,8 +59,19 @@ Critères : chaque workflow a une ligne de journal réussie ; l'analyste répond
 - US-058 Guide illustré et fiche : date d'entretien et « recruteur simulé » retirés, coordonnées de l'auteur en couverture et en pied (`scripts/lib/auteur.ts`), captures des compteurs reprises sur la journée du 18/09. Fait le 20 septembre (PR 2).
 - US-059 Fiche et synthèse servies à des adresses stables (`/fiche.pdf`, `/synthese.pdf`, copie au build par `scripts/copier-documents.ts`), section « Documents » sur Méthode, synthèse d'une page A4 générée par `npm run synthese`. Fait le 20 septembre (PR 3 et 4).
 
+## Lot 6 · Après l'entretien : lecture par des directions non métier (session 4, mardi 22 septembre)
+Contexte : l'entretien avec le cabinet a eu lieu le 22 septembre au matin, le lien est envoyé ; les prochains interlocuteurs (ressources humaines, direction régionale, direction commerciale, direction financière) ne sont pas tous du métier du pilotage. Demande de Frédéric : application améliorée et vérifiée (transitions, fonctionnalités, affichage), et une fiche qui explique chaque page en détail (ce qu'on y trouve, d'où ça vient, ce que ça vise).
+- US-070 Guide de chaque écran, une seule source (`src/lib/guideEcrans.ts`) : question, décision, contenu, sources, intention, et lecture par chacun des quatre profils ; test Vitest de couverture et de forme. Fait le 22 septembre.
+- US-071 Panneau « Comprendre cet écran » dans la barre haute (`src/composants/GuideEcran.tsx`, 480 px, navigation entre les écrans dans le panneau), entrée dans la palette. Fait le 22 septembre.
+- US-072 Transitions de route (DESIGN.md §11) par l'API View Transitions (sortant 120 ms, entrant 220 ms, rail et barre haute nommés et immobiles), entrée d'écran en fondu décalé de 40 ms par carte (§4), retour en haut de page au changement d'écran (un changement de filtre conserve la position) ; `framer-motion`, jamais utilisé, retiré des dépendances. Fait le 22 septembre.
+- US-073 Mode présentation (reprend US-060 sans l'enchaînement automatique : en réunion, c'est le présentateur qui avance) : touche P ou bouton de la barre haute, plein écran quand le navigateur l'accorde, rail, barre haute et pied masqués, flèches pour changer d'écran, repère en bas à droite, Échap pour sortir. Fait le 22 septembre.
+- US-074 Filtres globaux sur téléphone (période, comparaison, agence) dans le tiroir de navigation, options partagées avec la barre haute (`src/app/optionsFiltres.ts`). Fait le 22 septembre.
+- US-075 Présentation par écran en PDF (`npm run captures:presentation` puis `npm run presentation`, `scripts/generer-presentation.ts`) : couverture par profil, avant de lire, sommaire et parcours conseillé par direction, une page par écran avec capture, glossaire des indicateurs depuis le catalogue, servie à `/presentation.pdf` et liée depuis Méthode. Fait le 22 septembre.
+- US-076 Page Méthode sans la date de l'entretien ; barre haute resserrée (libellés « Rechercher » et « Comprendre cet écran » en icône sous 1 536 px, sélecteurs sans retour à la ligne) ; doublon de tokens du thème clair retiré. Fait le 22 septembre.
+Critères : `npm run check` vert, parcours Playwright du lot 6 (`e2e/lot6.spec.ts`) verts en 1280 et 375 px, PDF de 17 pages sans page quasi vide, déploiement et relecture en production.
+
 ## Palier C (après l'entretien)
-- US-060 Mode présentation (touche P, plein écran, enchaînement des écrans toutes les 20 s).
+- US-060 Mode présentation (touche P, plein écran, enchaînement des écrans toutes les 20 s). Fait au lot 6 (US-073) sans l'enchaînement automatique.
 - US-061 Journal des visites anonymisé (`visite`), affiché sur Méthode pour Frédéric seulement (paramètre d'URL non devinable).
 - US-062 GitHub Actions de déploiement, clé verrouillée.
 - US-063 Revue hebdomadaire en PDF (skill createur-pdf-premium).

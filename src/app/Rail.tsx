@@ -19,10 +19,10 @@ export function Rail() {
   return (
     <nav
       aria-label="Navigation principale"
-      className="fixed inset-y-0 left-0 z-30 hidden w-[var(--rail-largeur)] flex-col items-center gap-[var(--esp-4)] border-r border-bordure bg-surface py-[var(--esp-3)] md:flex"
+      className="rail-navigation fixed inset-y-0 left-0 z-30 hidden w-[var(--rail-largeur)] flex-col items-center gap-[var(--esp-4)] border-r border-bordure bg-surface py-[var(--esp-3)] md:flex"
     >
       <InfoBulle contenu="Buta.Lyfh" delaiMs={300} cote="right">
-        <NavLink to="/" aria-label="Aller à la vue d'ensemble" className="flex items-center justify-center">
+        <NavLink to="/" viewTransition aria-label="Aller à la vue d'ensemble" className="flex items-center justify-center">
           <Monogramme taille={38} />
         </NavLink>
       </InfoBulle>
@@ -35,6 +35,7 @@ export function Rail() {
               <InfoBulle contenu={route.libelle} delaiMs={300} cote="right">
                 <NavLink
                   to={route.chemin}
+                  viewTransition
                   className={cn(
                     "relative flex h-10 w-10 items-center justify-center rounded-[10px] text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte",
                     estActif && "text-accent-texte",

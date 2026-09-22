@@ -172,7 +172,7 @@ export function EcranTerritoires() {
                 <button type="button" onClick={() => setPoids({ ...POIDS_DEFAUT })} disabled={!personnalise} className="inline-flex h-8 items-center rounded-[10px] border border-bordure px-[var(--esp-2)] text-[12px] text-texte-2 hover:bg-surface-2 hover:text-texte disabled:opacity-40">Réinitialiser les poids</button>
                 {!zoom && <button type="button" onClick={() => { setZoom(selectionne.departement); setAfficherRge(false); }} disabled={!selectionne.perimetre} title={selectionne.perimetre ? undefined : "Communes disponibles pour les onze départements du périmètre"} className="inline-flex h-8 items-center rounded-[10px] bouton-primaire px-[var(--esp-3)] text-[12px] font-medium">Voir les communes</button>}
               </div>
-              <p className="text-[11px] leading-relaxed text-texte-3">Indice = (0,4 × volume + 0,3 × fioul et citerne + 0,3 × F ou G) × (1 - 0,3 × frein / 100) × (1 - 0,3 × saturation / 100) aux poids de référence. Ce n'est pas une recommandation d'implantation : <Link to="/methode" className="underline-offset-2 hover:underline">méthode</Link>.</p>
+              <p className="text-[11px] leading-relaxed text-texte-3">Indice = (0,4 × volume + 0,3 × fioul et citerne + 0,3 × F ou G) × (1 - 0,3 × frein / 100) × (1 - 0,3 × saturation / 100) aux poids de référence. Ce n'est pas une recommandation d'implantation : <Link to="/methode" viewTransition className="underline-offset-2 hover:underline">méthode</Link>.</p>
             </div>
           )}
         </Carte>

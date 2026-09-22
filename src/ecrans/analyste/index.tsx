@@ -224,8 +224,8 @@ export function EcranAnalyste() {
           {r.statut === "refus" && (
             <Carte titre="Question refusée" sousTitre={`« ${courant.question} »`}>
               <p className="max-w-[72ch] text-[15px] leading-relaxed text-texte">{r.motif_refus}</p>
-              {r.motif === "conseil" && <p className="mt-[var(--esp-2)] text-[13px] text-texte-2">Le marché d'un département se lit sur l'écran <Link to="/territoires" className="underline underline-offset-2">Territoires</Link> ; la décision reste à celui qui pilote.</p>}
-              {r.motif === "non_couvert" && <p className="mt-[var(--esp-2)] text-[13px] text-texte-2">Ce que le cockpit contient et ne contient pas : page <Link to="/methode" className="underline underline-offset-2">Méthode</Link>.</p>}
+              {r.motif === "conseil" && <p className="mt-[var(--esp-2)] text-[13px] text-texte-2">Le marché d'un département se lit sur l'écran <Link to="/territoires" viewTransition className="underline underline-offset-2">Territoires</Link> ; la décision reste à celui qui pilote.</p>}
+              {r.motif === "non_couvert" && <p className="mt-[var(--esp-2)] text-[13px] text-texte-2">Ce que le cockpit contient et ne contient pas : page <Link to="/methode" viewTransition className="underline underline-offset-2">Méthode</Link>.</p>}
               <p className="mt-[var(--esp-2)] text-[12px] text-texte-3">{formatDuree(r.duree_ms)} · coût {formatMontantUnite(r.cout_eur ?? 0, "eur", 3)}</p>
             </Carte>
           )}

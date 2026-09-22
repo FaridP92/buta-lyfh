@@ -78,9 +78,9 @@ export function EcranMethode() {
       <section className="flex flex-col gap-[var(--esp-3)] rounded-[var(--rayon-carte)] border border-bordure bg-surface p-[var(--esp-4)]">
         <h2 className={TITRE_SECTION}>Ce que c'est, ce que ce n'est pas</h2>
         <p className={PARAGRAPHE}>
-          Buta.Lyfh est un démonstrateur personnel de Frédéric Poissonnier, construit à l'appui d'une
-          candidature au poste de Responsable Performance chez Butagaz Eco-énergie (entretien téléphonique
-          le mardi 22 septembre 2026). Il n'est affilié ni à Butagaz ni à Butagaz Eco-énergie.
+          Buta.Lyfh est un démonstrateur personnel de Frédéric Poissonnier, construit en septembre 2026 à
+          l'appui d'une candidature au poste de Responsable Performance chez Butagaz Eco-énergie, et présenté
+          aux interlocuteurs du processus de recrutement. Il n'est affilié ni à Butagaz ni à Butagaz Eco-énergie.
         </p>
         <p className={PARAGRAPHE}>
           C'est un cockpit de pilotage d'un réseau d'installateurs simulé, du lead à l'encaissement,
@@ -248,12 +248,24 @@ export function EcranMethode() {
       <section className="flex flex-col gap-[var(--esp-3)]">
         <h2 className={TITRE_SECTION}>Documents</h2>
         <p className={PARAGRAPHE}>
+          La présentation par écran s'adresse à un lecteur qui n'est pas du métier du pilotage : pour chacun
+          des onze écrans, ce qu'il permet de décider, ce qu'on y trouve, d'où viennent les données, ce qu'il
+          vise, et ce qu'y lit chaque direction (ressources humaines, régionale, commerciale, financière) ;
+          c'est le contenu du bouton « Comprendre cet écran » de la barre haute, mis en pages en A4.
           La fiche de présentation illustrée reprend le guide du dépôt : contexte, vocabulaire, données,
           lecture de chaque écran avec ses captures, notice d'utilisation. Mise en pages A4, environ
           quatre-vingts pages.
           La synthèse tient sur une page : les cinq attentes de l'annonce face aux écrans qui y répondent.
         </p>
         <div className="flex flex-wrap gap-[var(--esp-2)]">
+          <a
+            href="/presentation.pdf"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1 rounded-[10px] border border-bordure px-[var(--esp-3)] py-[8px] text-[13px] text-texte hover:bg-surface-2"
+          >
+            Présentation par écran (PDF) <Download size={12} strokeWidth={1.5} aria-hidden="true" />
+          </a>
           <a
             href="/fiche.pdf"
             target="_blank"

@@ -120,7 +120,7 @@ export function EcranPlansAction() {
                 <ul className="mt-[6px] flex flex-col gap-[2px] text-[12px] leading-[1.45] text-texte-2">{r.ordreDuJour.map((o) => <li key={o}>· {o}</li>)}</ul>
                 <div className="mt-[8px] flex flex-wrap items-center gap-[6px]">
                   {r.indicateurs.map((c) => <PuceIndicateur key={c} code={c} />)}
-                  <Link to={r.ecran} className="ml-auto text-[12px] text-texte-3 underline decoration-bordure underline-offset-4 hover:text-texte">écran</Link>
+                  <Link to={r.ecran} viewTransition className="ml-auto text-[12px] text-texte-3 underline decoration-bordure underline-offset-4 hover:text-texte">écran</Link>
                 </div>
               </li>
             ))}

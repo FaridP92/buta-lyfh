@@ -1,27 +1,23 @@
 import { useEffect, useState } from "react";
-import { Menu, Search, Download } from "lucide-react";
-import { AGENCES, useFiltres } from "@/app/filtres";
+import { Menu, Search, Download, Presentation } from "lucide-react";
+import { useOptionsFiltres } from "@/app/optionsFiltres";
 import { SelecteurMenu } from "@/composants/SelecteurMenu";
 import { BadgeFraicheur } from "@/app/BadgeFraicheur";
 import { BasculeTheme } from "@/app/BasculeTheme";
 import { PaletteCommandes } from "@/app/PaletteCommandes";
 import { TiroirMobile } from "@/app/TiroirMobile";
 import { useExportEcran } from "@/app/exportEcran";
+import { useModePresentation } from "@/app/ModePresentation";
+import { BoutonGuideEcran } from "@/composants/GuideEcran";
 import { Marque } from "@/composants/identite/Marque";
-import { optionsPeriode } from "@/lib/periode";
 import { nomFichier, telecharger, versXLSX } from "@/lib/export";
 
-const OPTIONS_COMPARAISON = [
-  { valeur: "objectif", libelle: "Objectif" },
-  { valeur: "n1", libelle: "N-1" },
-];
-
-const GROUPES: Record<string, string> = { mois: "Mois", trimestre: "Trimestres", annee: "Années" };
-
-/** Barre haute collante : période, comparaison, agence, Cmd K, Exporter, fraîcheur. */
+/** Barre haute collante : période, comparaison, agence, guide de l'écran, Cmd K, Exporter, présentation, fraîcheur. */
 export function BarreHaute() {
-  const { periode, comparaison, agence, moisPublie, definir } = useFiltres();
+  const { filtres, optionsPeriodes, optionsComparaison, optionsAgence } = useOptionsFiltres();
+  const { periode, comparaison, agence, definir } = filtres;
   const feuilles = useExportEcran();
+  const presentation = useModePresentation();
   const [paletteOuverte, setPaletteOuverte] = useState(false);
   const [tiroirOuvert, setTiroirOuvert] = useState(false);
 
@@ -37,12 +33,6 @@ export function BarreHaute() {
     return () => window.removeEventListener("keydown", surAppuiClavier);
   }, []);
 
-  const optionsPeriodes = optionsPeriode(moisPublie).map((o) => ({ valeur: o.valeur, libelle: o.libelle, groupe: GROUPES[o.groupe] ?? o.groupe }));
-  const optionsAgence = [
-    { valeur: "toutes", libelle: "Toutes les agences" },
-    ...AGENCES.map((a) => ({ valeur: a.code, libelle: a.nom })),
-  ];
-
   function exporterEcran() {
     if (feuilles.length === 0) return;
     telecharger(nomFichier("export-ecran", "xlsx"), versXLSX(feuilles), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -50,7 +40,7 @@ export function BarreHaute() {
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-[var(--barre-haute-hauteur)] items-center gap-[var(--esp-3)] border-b border-bordure bg-fond/95 px-[var(--esp-4)] backdrop-blur-sm md:pl-[calc(var(--rail-largeur)+var(--esp-4))]">
+      <header className="barre-haute sticky top-0 z-20 flex h-[var(--barre-haute-hauteur)] items-center gap-[var(--esp-3)] border-b border-bordure bg-fond/95 px-[var(--esp-4)] backdrop-blur-sm md:pl-[calc(var(--rail-largeur)+var(--esp-4))]">
         <button
           type="button"
           onClick={() => setTiroirOuvert(true)}
@@ -66,12 +56,13 @@ export function BarreHaute() {
 
         <div className="hidden items-center gap-[var(--esp-2)] md:flex">
           <SelecteurMenu libelle="Période" options={optionsPeriodes} valeur={periode.param} onChange={(v) => definir("periode", v)} />
-          <SelecteurMenu libelle="Vs" options={OPTIONS_COMPARAISON} valeur={comparaison} onChange={(v) => definir("comparaison", v)} />
+          <SelecteurMenu libelle="Vs" options={optionsComparaison} valeur={comparaison} onChange={(v) => definir("comparaison", v)} />
           <SelecteurMenu libelle="Agence" options={optionsAgence} valeur={agence} onChange={(v) => definir("agence", v)} />
         </div>
 
         <div className="ml-auto flex items-center gap-[var(--esp-2)]">
           <BadgeFraicheur />
+          <BoutonGuideEcran />
           <button
             type="button"
             onClick={() => setPaletteOuverte(true)}
@@ -80,7 +71,7 @@ export function BarreHaute() {
           >
             <Search size={14} strokeWidth={1.5} aria-hidden="true" />
             {/* Le libellé reste dans le nom accessible sur mobile (sr-only) : pas d'aria-label qui contredise le texte visible. */}
-            <span className="max-sm:sr-only">Rechercher</span>
+            <span className="max-2xl:sr-only">Rechercher</span>
             <kbd aria-hidden="true" className="hidden rounded border border-bordure px-[5px] py-[1px] text-[10px] text-texte-3 sm:inline">⌘K</kbd>
           </button>
           <button
@@ -92,6 +83,15 @@ export function BarreHaute() {
           >
             <Download size={14} strokeWidth={1.5} aria-hidden="true" />
             Exporter
+          </button>
+          <button
+            type="button"
+            onClick={presentation.basculer}
+            aria-label="Mode présentation (touche P) : plein écran, flèches pour changer d'écran"
+            title="Mode présentation (touche P) : plein écran, flèches pour changer d'écran"
+            className="hidden h-9 w-9 items-center justify-center rounded-[10px] border border-bordure text-texte-2 transition-colors hover:bg-surface-2 hover:text-texte md:flex"
+          >
+            <Presentation size={16} strokeWidth={1.5} aria-hidden="true" />
           </button>
           <BasculeTheme />
         </div>

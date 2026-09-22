@@ -169,7 +169,10 @@ Une suite de vingt tests SQL (un par histoire, plus des contrôles de cohérence
 ## 5. Comment l'utiliser
 
 ### 5.1 Navigation
-Rail à gauche (icônes, libellé au survol) : Vue d'ensemble, Territoires, Funnel, Ventes et marge, Forecast, Pose et encaissement, Plans d'action et rituels, Qualité, Automatisations, Analyste, Méthode. Sur téléphone, un tiroir. Le monogramme en haut ramène à l'accueil. Un écran non fini n'apparaît nulle part.
+Rail à gauche (icônes, libellé au survol) : Vue d'ensemble, Territoires, Funnel, Ventes et marge, Forecast, Pose et encaissement, Plans d'action et rituels, Qualité, Automatisations, Analyste, Méthode. Sur téléphone, un tiroir, qui porte aussi les trois filtres globaux. Le monogramme en haut ramène à l'accueil. Un écran non fini n'apparaît nulle part. Le bouton « Comprendre cet écran » de la barre haute (livre ouvert) explique l'écran courant à un lecteur qui n'est pas du métier : ce qu'il permet de décider, ce qu'on y trouve, d'où viennent les données, ce qu'il vise, ce qu'y lit chaque direction ; le même contenu est servi en PDF (présentation par écran, page Méthode).
+
+### 5.1 bis Mode présentation (réunion)
+Touche P ou bouton de la barre haute : plein écran, rail et barre haute masqués, flèches gauche et droite pour passer d'un écran à l'autre dans l'ordre du rail, repère en bas à droite (écran, position, touches), Échap pour sortir. Rien n'avance tout seul : c'est le présentateur qui avance.
 
 ### 5.2 Filtres globaux, dans l'adresse
 Période (mois, trimestre, année à date), comparaison (objectif ou N-1), agence (toutes ou une). Les filtres vivent dans l'URL : un lien partagé montre la même vue (`?periode=2026-05&comparaison=n1&agence=SAI`). Le titre de chaque écran s'adapte à l'agence choisie.

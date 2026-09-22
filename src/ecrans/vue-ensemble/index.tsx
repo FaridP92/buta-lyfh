@@ -139,7 +139,7 @@ export function EcranVueEnsemble() {
           {/* L'objet du site en une ligne sous le titre : le pied de page est plusieurs écrans plus bas. */}
           <p className="mt-2 max-w-[62ch] text-[12px] leading-[1.45] text-texte-3">
             Démonstrateur personnel de Frédéric Poissonnier, candidature Responsable Performance : marché réel, activité d'un réseau d'installateurs simulée.{" "}
-            <Link to="/methode" className="underline underline-offset-2 hover:text-texte">Méthode</Link>
+            <Link to="/methode" viewTransition className="underline underline-offset-2 hover:text-texte">Méthode</Link>
           </p>
         </div>
         <p className="text-[12px] text-texte-3">Journée publiée : {filtres.journeePubliee ? formatDateCourte(filtres.journeePubliee) : "n. d."}</p>
@@ -208,7 +208,7 @@ export function EcranVueEnsemble() {
         <Carte titre="Agences simulées" sousTitre="Taille du point : ventes de la période" className="lg:col-span-3">
           {optionCarte ? (
             <Graphique option={optionCarte} hauteur={260} description="Carte des onze départements du périmètre avec les neuf agences simulées"
-              onEvenements={{ click: () => navigate("/territoires") }} />
+              onEvenements={{ click: () => void navigate("/territoires", { viewTransition: true }) }} />
           ) : carte.erreur ? <p className="text-[13px] text-texte-2">Contours indisponibles : {carte.erreur}</p> : <Squelette hauteur={260} />}
           <p className="mt-[var(--esp-2)] text-[11px] text-texte-3">Agences positionnées au centre de leur bassin, aucune implantation réelle. Clic : Territoires.</p>
         </Carte>

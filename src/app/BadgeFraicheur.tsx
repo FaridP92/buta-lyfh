@@ -43,7 +43,7 @@ export function BadgeFraicheur() {
 
   return (
     <span
-      className="hidden items-center gap-[6px] rounded-full border border-bordure px-[var(--esp-3)] py-[6px] text-[12px] text-texte-3 lg:inline-flex"
+      className="hidden items-center gap-[6px] whitespace-nowrap rounded-full border border-bordure px-[var(--esp-3)] py-[6px] text-[12px] text-texte-3 lg:inline-flex"
       title={data?.source === "instantane" ? "Supabase ne répond pas : secours statique" : undefined}
     >
       <span className={cn("h-1.5 w-1.5 rounded-full", couleur, pulse && "animate-pulse")} aria-hidden="true" />

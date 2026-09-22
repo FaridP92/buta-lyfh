@@ -287,6 +287,68 @@ summary {
   border-color: var(--succes);
 }
 
+/* Entrée d'écran (DESIGN.md §4) : fondu et translation de 8 px en 220 ms, 40 ms de décalage par carte,
+   au plus huit cartes animées ; `backwards` pour qu'aucune transformation ne reste posée sur les cartes
+   (une transformation résiduelle ferait un bloc conteneur pour les éléments fixes). */
+@keyframes buta-entree {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.ecran-entree > * > * {
+  animation: buta-entree var(--duree-entree) ease-out backwards;
+}
+.ecran-entree > * > :nth-child(2) { animation-delay: 40ms; }
+.ecran-entree > * > :nth-child(3) { animation-delay: 80ms; }
+.ecran-entree > * > :nth-child(4) { animation-delay: 120ms; }
+.ecran-entree > * > :nth-child(5) { animation-delay: 160ms; }
+.ecran-entree > * > :nth-child(6) { animation-delay: 200ms; }
+.ecran-entree > * > :nth-child(7) { animation-delay: 240ms; }
+.ecran-entree > * > :nth-child(8) { animation-delay: 280ms; }
+
+/* Transition de route (DESIGN.md §11) par l'API View Transitions : le sortant s'efface en 120 ms, l'entrant
+   arrive en 220 ms ; le rail et la barre haute, nommés, ne bougent jamais. Sans prise en charge, le navigateur
+   change d'écran d'un coup, ce qui reste correct. */
+@keyframes buta-sortie-route {
+  to { opacity: 0; }
+}
+@keyframes buta-entree-route {
+  from { opacity: 0; }
+}
+::view-transition-old(root) {
+  animation: buta-sortie-route 120ms ease-in both;
+}
+::view-transition-new(root) {
+  animation: buta-entree-route 220ms ease-out 60ms both;
+}
+::view-transition-old(rail),
+::view-transition-new(rail),
+::view-transition-old(barre-haute),
+::view-transition-new(barre-haute) {
+  animation: none;
+}
+.rail-navigation {
+  view-transition-name: rail;
+}
+.barre-haute {
+  view-transition-name: barre-haute;
+}
+
+/* Mode présentation (touche P) : le rail et la barre haute disparaissent, le contenu prend toute la largeur. */
+:root[data-presentation] .rail-navigation,
+:root[data-presentation] .barre-haute,
+:root[data-presentation] .pied-page {
+  display: none;
+}
+:root[data-presentation] .cadre-contenu {
+  padding-left: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -295,5 +357,10 @@ summary {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

@@ -27,7 +27,7 @@ export function SelecteurMenu({ libelle, options, valeur, onChange, className }:
         <button
           type="button"
           className={cn(
-            "flex h-9 items-center gap-[6px] rounded-[10px] border border-bordure bg-surface px-[var(--esp-3)] text-[13px] text-texte transition-colors hover:bg-surface-2",
+            "flex h-9 items-center gap-[6px] whitespace-nowrap rounded-[10px] border border-bordure bg-surface px-[var(--esp-3)] text-[13px] text-texte transition-colors hover:bg-surface-2",
             className,
           )}
         >

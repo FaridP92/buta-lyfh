@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Layout } from "@/app/Layout";
 import { OuvertureAnimation } from "@/app/OuvertureAnimation";
 import { FournisseurFicheIndicateur } from "@/composants/FicheIndicateur";
+import { FournisseurGuideEcran } from "@/composants/GuideEcran";
+import { FournisseurModePresentation } from "@/app/ModePresentation";
 import { FournisseurExportEcran } from "@/app/exportEcran";
 import { EcranVueEnsemble } from "@/ecrans/vue-ensemble";
 import { EcranTerritoires } from "@/ecrans/territoires";
@@ -34,6 +36,8 @@ export function App() {
     <QueryClientProvider client={clientRequetes}>
       <BrowserRouter>
         <FournisseurFicheIndicateur>
+          <FournisseurGuideEcran>
+          <FournisseurModePresentation>
           <FournisseurExportEcran>
             <OuvertureAnimation onTermine={() => setOuvertureTerminee(true)} />
             <Routes>
@@ -52,6 +56,8 @@ export function App() {
               </Route>
             </Routes>
           </FournisseurExportEcran>
+          </FournisseurModePresentation>
+          </FournisseurGuideEcran>
         </FournisseurFicheIndicateur>
       </BrowserRouter>
     </QueryClientProvider>
