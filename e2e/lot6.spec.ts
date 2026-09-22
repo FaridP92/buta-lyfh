@@ -40,6 +40,12 @@ test("le mode présentation masque le rail et la barre haute, les flèches chang
   await expect(page.getByRole("status")).toContainText("2 / 11");
   await page.keyboard.press("ArrowLeft");
   await expect(page).toHaveURL(/\/$/);
+  // Échap ferme un dialogue ouvert (palette) sans sortir du mode.
+  await page.keyboard.press("Meta+k");
+  await expect(page.getByPlaceholder(/Chercher un écran/)).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByPlaceholder(/Chercher un écran/)).toBeHidden();
+  await expect(page.getByRole("status")).toContainText("1 / 11");
   await page.keyboard.press("Escape");
   await expect(page.getByRole("navigation", { name: "Navigation principale" })).toBeVisible();
   // La touche P dans un champ de saisie ne bascule rien.

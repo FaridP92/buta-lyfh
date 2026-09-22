@@ -335,7 +335,20 @@ ${fin()}
 `;
 }
 
+/** Les captures et le logo doivent exister avant la mise en pages : un PDF aux images cassées ne serait pas signalé. */
+function verifierImages(): void {
+  const attendues = [
+    join(RACINE, "docs", "logo", "monogramme.png"),
+    ...["guide-ouvert", "mobile-vue-ensemble", ...GUIDES_ECRANS.map((g) => slugEcran(g.chemin))].map((s) => join(RACINE, "docs", "captures", "presentation", `${s}.jpg`)),
+  ];
+  const manquantes = attendues.filter((f) => !existsSync(f));
+  if (manquantes.length > 0) {
+    throw new Error(`capture(s) manquante(s), lancer d'abord \`npm run captures:presentation\` : ${manquantes.map((f) => f.replace(`${RACINE}/`, "")).join(", ")}`);
+  }
+}
+
 async function principal(): Promise<void> {
+  verifierImages();
   const meta = lireMeta();
   writeFileSync(SORTIE_HTML, html(meta));
   console.log(`docs/PRESENTATION.html écrit : ${GUIDES_ECRANS.length} écrans, ${PROFILS.length} profils, ${INDICATEURS.length} indicateurs au glossaire.`);

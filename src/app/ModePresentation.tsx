@@ -68,12 +68,14 @@ export function FournisseurModePresentation({ children }: { children: ReactNode 
       }
       if (!actif) return;
       if (e.key === "Escape") {
+        // Un dialogue ouvert (palette, guide, fiche, tiroir) se ferme avec Échap : on ne sort pas du mode en même temps.
+        if (saisieEnCours(e.target) || document.querySelector("[role='dialog']")) return;
         quitter();
         return;
       }
       if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
         if (saisieEnCours(e.target)) return;
-        const index = CHEMINS.indexOf(pathname);
+        const index = Math.max(0, CHEMINS.indexOf(pathname));
         const suivant = e.key === "ArrowRight" ? (index + 1) % CHEMINS.length : (index - 1 + CHEMINS.length) % CHEMINS.length;
         e.preventDefault();
         void navigate(CHEMINS[suivant] ?? "/", { viewTransition: true });
@@ -99,7 +101,7 @@ export function useModePresentation(): ContextePresentation {
 
 /** Repère discret en bas à droite : écran courant, position dans l'enchaînement, touches. */
 function BandeauPresentation({ chemin, onQuitter }: { chemin: string; onQuitter: () => void }) {
-  const index = CHEMINS.indexOf(chemin);
+  const index = Math.max(0, CHEMINS.indexOf(chemin));
   const route = ROUTES.find((r) => r.chemin === chemin);
   return (
     <div

@@ -377,3 +377,6 @@ Preuves : `npm run check` vert (typage, oxlint 0 erreur, 156 tests Vitest, tiret
 - Relire la présentation par écran à tête reposée (formulations par profil) ; les captures datent du 22 septembre, journée publiée du 21/09 : relancer `npm run captures:presentation` puis `npm run presentation` après un changement visuel ou pour rafraîchir la journée.
 - La fiche illustrée de 80 pages (`docs/FICHE.pdf`) n'a pas été régénérée : ses captures montrent encore la barre haute d'avant le lot 6 (sans les deux boutons).
 - Firefox n'a pas l'API View Transitions : l'écran change d'un coup, sans erreur.
+
+Relecture par un agent relecteur (lecture seule, même soir), trois défauts retenus et corrigés avant redéploiement : Échap en mode présentation sortait du mode en même temps qu'il fermait un dialogue ouvert (palette, guide, fiche) ; le générateur de la présentation produisait un PDF aux images cassées si les captures manquaient (contrôle d'existence ajouté, erreur explicite) ; les flèches et le repère du mode présentation se trompaient d'un écran sur une adresse inconnue (index borné). Test Playwright ajouté pour le premier cas. Redéploiement dans la foulée.
+
