@@ -89,3 +89,26 @@ from buta.mart_fraicheur where source = 'journee_simulee';
 
 -- echecs_consecutifs : zéro pour un workflow inconnu (journal vide) ; le scénario à trois échecs est vérifié en transaction annulée dans le journal.
 select 'echecs_consecutifs : 0 sans exécution' as test, buta.echecs_consecutifs('WF_INCONNU') = 0 as ok, buta.echecs_consecutifs('WF_INCONNU') as valeur;
+
+-- Sécurité (0034, 0036). Une définition de mart antérieure à 0034 recopiée telle quelle (« create or replace view
+-- buta.mart_... ») efface security_invoker sans erreur : la vue s'exécuterait de nouveau avec les droits de son
+-- propriétaire dans le schéma exposé. Ces trois tests le détectent, avec les grants par colonne.
+select 'vues de buta lisibles par l''API toutes en security_invoker' as test, count(*) = 0 as ok,
+  coalesce(string_agg(c.relname, ', '), '') as vues_en_defaut
+from pg_class c join pg_namespace n on n.oid = c.relnamespace
+where n.nspname = 'buta' and c.relkind in ('v', 'm')
+  and (has_any_column_privilege('anon', c.oid, 'SELECT') or has_any_column_privilege('authenticated', c.oid, 'SELECT')
+    or has_any_column_privilege('analyste_ro', c.oid, 'SELECT'))
+  and not coalesce('security_invoker=true' = any(c.reloptions), false);
+
+select 'buta_prive sans usage pour les rôles de l''API ni analyste_ro' as test,
+  not (has_schema_privilege('anon', 'buta_prive', 'USAGE') or has_schema_privilege('authenticated', 'buta_prive', 'USAGE')
+    or has_schema_privilege('analyste_ro', 'buta_prive', 'USAGE') or has_schema_privilege('service_role', 'buta_prive', 'USAGE')) as ok;
+
+select 'chaque vue mince lisible jusqu''à sa vue privée (anon, authenticated, analyste_ro, service_role)' as test, count(*) = 0 as ok,
+  coalesce(string_agg(c.relname || ':' || r.role, ', '), '') as manquants
+from pg_class c join pg_namespace n on n.oid = c.relnamespace
+cross join unnest(array['anon', 'authenticated', 'analyste_ro', 'service_role']) as r(role)
+where n.nspname = 'buta' and c.relkind = 'v' and c.relname like 'mart\_%'
+  and not (has_table_privilege(r.role, c.oid, 'SELECT')
+    and coalesce(has_table_privilege(r.role, to_regclass('buta_prive.' || quote_ident(c.relname)), 'SELECT'), false));

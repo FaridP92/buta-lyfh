@@ -22,7 +22,8 @@ function listerMigrations(): string[] {
 }
 
 function extraireVues(contenuSQL: string): string[] {
-  const regex = /CREATE\s+(?:OR\s+REPLACE\s+)?(?:MATERIALIZED\s+)?VIEW\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:buta\.)?(mart_\w+)/gi;
+  // buta_prive depuis 0034 : le calcul des vues y vit, les vues minces de buta portent le même nom.
+  const regex = /CREATE\s+(?:OR\s+REPLACE\s+)?(?:MATERIALIZED\s+)?VIEW\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:buta(?:_prive)?\.)?(mart_\w+)/gi;
   const vues = new Set<string>();
   let correspondance: RegExpExecArray | null;
   while ((correspondance = regex.exec(contenuSQL)) !== null) {
