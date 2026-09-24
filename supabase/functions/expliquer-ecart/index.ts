@@ -40,23 +40,25 @@ async function faitsDe(agence: string, mois: string): Promise<Record<string, unk
 }
 
 Deno.serve(async (req: Request) => {
+  // Réponses avec l'en-tête CORS calculé pour l'origine de la requête (commun.ts).
+  const repondre = (corps: unknown, statut = 200) => reponseJson(corps, statut, req);
   const pre = preflight(req);
   if (pre) return pre;
   const debut = Date.now();
   const duree = () => Date.now() - debut;
-  if (req.method !== "POST") return reponseJson({ statut: "erreur", message: "méthode non prise en charge", cout_eur: 0, duree_ms: duree() }, 405);
+  if (req.method !== "POST") return repondre({ statut: "erreur", message: "méthode non prise en charge", cout_eur: 0, duree_ms: duree() }, 405);
 
   let corps: { perimetre?: unknown; mois?: unknown; indicateur?: unknown };
   try {
     corps = (await req.json()) as typeof corps;
   } catch {
-    return reponseJson({ statut: "erreur", message: "corps JSON attendu", cout_eur: 0, duree_ms: duree() }, 400);
+    return repondre({ statut: "erreur", message: "corps JSON attendu", cout_eur: 0, duree_ms: duree() }, 400);
   }
   const perimetre = typeof corps.perimetre === "string" ? corps.perimetre : "";
   const mois = typeof corps.mois === "string" ? corps.mois : "";
   const indicateur = typeof corps.indicateur === "string" ? corps.indicateur : "";
   if (!/^(reseau|[A-Z]{3})$/.test(perimetre) || !/^\d{4}-\d{2}$/.test(mois) || !["CA", "MARGE", "CONVERSION"].includes(indicateur)) {
-    return reponseJson({ statut: "erreur", message: "paramètres attendus : perimetre ('reseau' ou code agence), mois (AAAA-MM), indicateur (CA, MARGE, CONVERSION)", cout_eur: 0, duree_ms: duree() }, 400);
+    return repondre({ statut: "erreur", message: "paramètres attendus : perimetre ('reseau' ou code agence), mois (AAAA-MM), indicateur (CA, MARGE, CONVERSION)", cout_eur: 0, duree_ms: duree() }, 400);
   }
   const agence = perimetre === "reseau" ? "RESEAU" : perimetre;
   const emp = await empreinte(req);
@@ -67,11 +69,11 @@ Deno.serve(async (req: Request) => {
     const enCache = await lireVue<{ reponse: Explication }>("explication_cache", `cle=eq.${encodeURIComponent(cle)}&expire_le=gt.${encodeURIComponent(new Date().toISOString())}&select=reponse`);
     const cache = enCache[0]?.reponse;
     if (cache) {
-      return reponseJson({ statut: "ok", explication: { constat: cache.constat, causes: cache.causes, action: cache.action }, sources: cache.sources, cout_eur: 0, duree_ms: duree(), cache: true });
+      return repondre({ statut: "ok", explication: { constat: cache.constat, causes: cache.causes, action: cache.action }, sources: cache.sources, cout_eur: 0, duree_ms: duree(), cache: true });
     }
 
     const quota = await rpcService<{ autorise: boolean; motif: string | null }>("verifier_quota", { p_empreinte: emp, p_budget_jour: budgetJour() });
-    if (!quota.autorise) return reponseJson({ statut: "repli", motif_refus: quota.motif ?? "quota atteint", cout_eur: 0, duree_ms: duree() });
+    if (!quota.autorise) return repondre({ statut: "repli", motif_refus: quota.motif ?? "quota atteint", cout_eur: 0, duree_ms: duree() });
 
     const faits = await faitsDe(agence, mois);
     const perimetreLibelle = agence === "RESEAU" ? "le réseau" : refs.agences.find((a) => a.code === agence)?.nom_bassin ?? agence;
@@ -80,7 +82,7 @@ Deno.serve(async (req: Request) => {
       // 4 000 jetons, réflexion du modèle comprise : constat, trois causes avec leur fait et leur source, action et sources.
       r = await appelerModele(promptExplication(texteReferentiels(refs)), messageExplication(perimetreLibelle, mois, indicateur, faits), 4000);
     } catch (erreur) {
-      if (erreur instanceof ErreurRepli) return reponseJson({ statut: "repli", motif_refus: "aucun modèle configuré", cout_eur: 0, duree_ms: duree() });
+      if (erreur instanceof ErreurRepli) return repondre({ statut: "repli", motif_refus: "aucun modèle configuré", cout_eur: 0, duree_ms: duree() });
       throw erreur;
     }
     let sortie: Partial<Explication>;
@@ -103,12 +105,12 @@ Deno.serve(async (req: Request) => {
     await journaliser("expliquer-ecart", emp, null, null, nonTraces.length || !explication.constat ? "repli_nombres" : "ok", r.coutEur, duree(), r.tokensEntree, r.tokensSortie);
     if (!explication.constat || nonTraces.length > 0) {
       console.warn("explication rejetée", nonTraces.join(", "));
-      return reponseJson({ statut: "repli", motif_refus: `nombre absent des faits : ${nonTraces.slice(0, 3).join(", ") || "réponse vide"}`, cout_eur: r.coutEur, duree_ms: duree(), modele: r.modele });
+      return repondre({ statut: "repli", motif_refus: `nombre absent des faits : ${nonTraces.slice(0, 3).join(", ") || "réponse vide"}`, cout_eur: r.coutEur, duree_ms: duree(), modele: r.modele });
     }
     await ecrireTable("explication_cache", { cle, reponse: explication, expire_le: new Date(Date.now() + 24 * 3_600_000).toISOString() }).catch((e) => console.error("cache", e instanceof Error ? e.message : e));
-    return reponseJson({ statut: "ok", explication: { constat: explication.constat, causes: explication.causes, action: explication.action }, sources: explication.sources, cout_eur: r.coutEur, duree_ms: duree(), modele: r.modele, cache: false });
+    return repondre({ statut: "ok", explication: { constat: explication.constat, causes: explication.causes, action: explication.action }, sources: explication.sources, cout_eur: r.coutEur, duree_ms: duree(), modele: r.modele, cache: false });
   } catch (erreur) {
     console.error("expliquer-ecart", erreur instanceof Error ? erreur.stack ?? erreur.message : erreur);
-    return reponseJson({ statut: "repli", motif_refus: "service momentanément indisponible", cout_eur: 0, duree_ms: duree() });
+    return repondre({ statut: "repli", motif_refus: "service momentanément indisponible", cout_eur: 0, duree_ms: duree() });
   }
 });

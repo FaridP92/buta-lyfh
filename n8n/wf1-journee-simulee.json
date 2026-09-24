@@ -117,7 +117,10 @@
         "supabaseApi": {
           "name": "Supabase Buta (service role)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "id": "68824a3c-4d14-4e51-b5ab-945eb89e492b",
@@ -162,7 +165,10 @@
         "supabaseApi": {
           "name": "Supabase Buta (service role)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "id": "c50f5286-1dd0-4773-a41a-4269d91c150a",
@@ -205,7 +211,10 @@
         "supabaseApi": {
           "name": "Supabase Buta (service role)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     }
   ],
   "connections": {

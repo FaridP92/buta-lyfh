@@ -23,6 +23,15 @@ RewriteRule ^ /index.html [L]
 </IfModule>
 ```
    - Dans « Directives nginx supplémentaires », uniquement des `add_header ... always;` (les quatre en-têtes de sécurité) et, si Plesk l'accepte, un bloc `location /assets/ { add_header Cache-Control "public, max-age=31536000, immutable" always; }` qui répète aussi les quatre en-têtes de sécurité (en nginx, un `add_header` local efface ceux du niveau supérieur). Si Plesk refuse le bloc, s'en passer : les assets de Vite portent un hachage dans leur nom, le cache d'un an est un confort, pas une nécessité.
+   - Constaté le 24 septembre (gatekeeper) : les réponses servies directement par nginx (`/`, `/index.html`, `/assets/`) ne portaient aucun des quatre en-têtes, seules les routes réécrites par Apache les avaient, et HSTS manquait partout. À poser dans « Directives nginx supplémentaires » du sous-domaine (Plesk, hors dépôt), puis vérifier par `curl -I` sur `/` et sur un fichier de `/assets/` :
+```
+add_header X-Content-Type-Options "nosniff" always;
+add_header X-Frame-Options "DENY" always;
+add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+add_header Strict-Transport-Security "max-age=31536000" always;
+```
+     Le `.htaccess` porte les mêmes cinq en-têtes pour les réponses qui passent par Apache.
    - Tester la sauvegarde des directives dès cette étape. En cas de doute, la vérité est donnée par `curl -I` sur `/`, `/territoires`, `/index.html` et un fichier de `/assets/` après le premier déploiement : chaque réponse doit porter les quatre en-têtes.
 3. Vérifier : `curl -I https://buta.lyfh.fr` répond 200 (page Plesk par défaut) avec un certificat valide.
 
@@ -44,7 +53,7 @@ Le basculement par renommage rend le déploiement atomique et réversible (`mv` 
 `Content-Security-Policy` posée en balise meta dans `index.html` (nginx Plesk ne la porte pas facilement) : `default-src 'self'; connect-src 'self' https://<projet>.supabase.co https://geo.api.gouv.fr; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'`. Adapter l'URL Supabase au projet cible. `frame-ancestors` n'est pas honoré dans une balise meta : la protection contre l'encadrement vient de l'en-tête `X-Frame-Options DENY` posé par nginx ci-dessus.
 
 ## 4. Contrôles après chaque mise en ligne
-- `curl -I` sur `/`, `/territoires`, `/index.html` et un fichier de `/assets/` : code 200, TLS valide, les quatre en-têtes de sécurité présents partout, `Cache-Control: no-cache` sur le HTML.
+- `curl -I` sur `/`, `/territoires`, `/index.html` et un fichier de `/assets/` : code 200, TLS valide, les cinq en-têtes (les quatre de sécurité et `Strict-Transport-Security`) présents partout, `Cache-Control: no-cache` sur le HTML.
 - `npm run e2e` contre `https://buta.lyfh.fr` (variable `E2E_BASE`), en 1280 px et 375 px, zéro erreur console.
 - Lighthouse (Chrome headless) : performance, accessibilité, bonnes pratiques, SEO, résultats notés dans le journal.
 - Test sur téléphone réel (4G, hors wifi) : page d'accueil et Territoires.

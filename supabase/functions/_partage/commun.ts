@@ -4,18 +4,37 @@
  * Mistral, sinon repli), coût en euros, quotas et journal. Aucun chiffre métier n'est calculé ici.
  */
 
-export const ENTETES_CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
+/**
+ * CORS : le navigateur n'est autorisé que depuis le site et le poste de développement (Vite 5173, aperçu 4173 pour
+ * Playwright). SITE_ORIGINE et IA_ORIGINES (liste séparée par des virgules) complètent sans redéploiement. Une origine
+ * inconnue reçoit l'origine du site : la réponse lui est alors refusée par son navigateur. Sans en-tête Origin (appel
+ * serveur, curl, n8n) rien ne change : CORS ne protège que dans le navigateur, les quotas et garde-fous restent la défense.
+ */
+const ORIGINE_SITE = env("SITE_ORIGINE") ?? "https://buta.lyfh.fr";
+const ORIGINES_AUTORISEES = new Set([
+  ORIGINE_SITE,
+  "http://localhost:5173",
+  "http://localhost:4173",
+  "http://127.0.0.1:4173",
+  ...(env("IA_ORIGINES") ?? "").split(",").map((o) => o.trim()).filter(Boolean),
+]);
 
-export function reponseJson(corps: unknown, statut = 200): Response {
-  return new Response(JSON.stringify(corps), { status: statut, headers: { ...ENTETES_CORS, "Content-Type": "application/json; charset=utf-8" } });
+export function entetesCors(req?: Request): Record<string, string> {
+  const origine = req?.headers.get("origin") ?? "";
+  return {
+    "Access-Control-Allow-Origin": ORIGINES_AUTORISEES.has(origine) ? origine : ORIGINE_SITE,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    Vary: "Origin",
+  };
+}
+
+export function reponseJson(corps: unknown, statut = 200, req?: Request): Response {
+  return new Response(JSON.stringify(corps), { status: statut, headers: { ...entetesCors(req), "Content-Type": "application/json; charset=utf-8" } });
 }
 
 export function preflight(req: Request): Response | null {
-  return req.method === "OPTIONS" ? new Response("ok", { headers: ENTETES_CORS }) : null;
+  return req.method === "OPTIONS" ? new Response("ok", { headers: entetesCors(req) }) : null;
 }
 
 export function env(nom: string): string | undefined {

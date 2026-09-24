@@ -106,7 +106,13 @@ export function EcranAnalyste() {
     setSqlOuverte(false);
     setAnnonce("Requête en cours");
     try {
-      const reponse = await poserQuestion(q);
+      let reponse: ReponseIa;
+      try {
+        reponse = await poserQuestion(q);
+      } catch {
+        // Réponse hors contrat (passerelle en maintenance, corps inattendu) : l'écran le dit au lieu de rester muet.
+        reponse = { statut: "erreur", message: "Réponse illisible du service. Réessayez dans un instant." };
+      }
       const echange = { question: q, reponse, a: new Date().toISOString() };
       setCourant(echange);
       const suivant = [echange, ...historique.filter((h) => h.question !== q)].slice(0, HISTORIQUE_MAX);

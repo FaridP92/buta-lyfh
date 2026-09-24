@@ -80,20 +80,22 @@ const MOTIFS: Record<string, string> = {
 };
 
 Deno.serve(async (req: Request) => {
+  // Réponses avec l'en-tête CORS calculé pour l'origine de la requête (commun.ts).
+  const repondre = (corps: unknown, statut = 200) => reponseJson(corps, statut, req);
   const pre = preflight(req);
   if (pre) return pre;
   const debut = Date.now();
   const duree = () => Date.now() - debut;
-  if (req.method !== "POST") return reponseJson({ statut: "erreur", message: "méthode non prise en charge", cout_eur: 0, duree_ms: duree() }, 405);
+  if (req.method !== "POST") return repondre({ statut: "erreur", message: "méthode non prise en charge", cout_eur: 0, duree_ms: duree() }, 405);
 
   let corps: { question?: unknown };
   try {
     corps = (await req.json()) as { question?: unknown };
   } catch {
-    return reponseJson({ statut: "erreur", message: "corps JSON attendu", cout_eur: 0, duree_ms: duree() }, 400);
+    return repondre({ statut: "erreur", message: "corps JSON attendu", cout_eur: 0, duree_ms: duree() }, 400);
   }
   const question = typeof corps.question === "string" ? corps.question.trim().replace(/\s+/g, " ") : "";
-  if (question.length < 3 || question.length > 500) return reponseJson({ statut: "erreur", message: "question de 3 à 500 caractères attendue", cout_eur: 0, duree_ms: duree() }, 400);
+  if (question.length < 3 || question.length > 500) return repondre({ statut: "erreur", message: "question de 3 à 500 caractères attendue", cout_eur: 0, duree_ms: duree() }, 400);
 
   const emp = await empreinte(req);
   let tokensEntree = 0;
@@ -111,7 +113,7 @@ Deno.serve(async (req: Request) => {
     const quota = await verifierQuota(emp);
     if (!quota.autorise) {
       await journaliser("analyste", emp, question, null, "quota", 0, duree(), 0, 0);
-      return reponseJson({ statut: "quota", motif_refus: quota.motif ?? "quota atteint", cout_eur: 0, duree_ms: duree(), budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });
+      return repondre({ statut: "quota", motif_refus: quota.motif ?? "quota atteint", cout_eur: 0, duree_ms: duree(), budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });
     }
 
     const [cat, refs] = await Promise.all([catalogue(), referentiels()]);
@@ -132,7 +134,7 @@ Deno.serve(async (req: Request) => {
     } catch (erreur) {
       if (erreur instanceof ErreurRepli) {
         await journaliser("analyste", emp, question, null, "repli", 0, duree(), 0, 0);
-        return reponseJson({ statut: "repli", motif_refus: "aucun modèle configuré", cout_eur: 0, duree_ms: duree() });
+        return repondre({ statut: "repli", motif_refus: "aucun modèle configuré", cout_eur: 0, duree_ms: duree() });
       }
       throw erreur;
     }
@@ -140,7 +142,7 @@ Deno.serve(async (req: Request) => {
     if (sortie.statut === "refus" || typeof sortie.sql !== "string") {
       const motif = typeof sortie.motif === "string" && MOTIFS[sortie.motif] ? sortie.motif : "hors_perimetre";
       await journaliser("analyste", emp, question, null, `refus_${motif}`, cout, duree(), tokensEntree, tokensSortie);
-      return reponseJson({ statut: "refus", motif, motif_refus: MOTIFS[motif], explication_courte: typeof sortie.explication_courte === "string" ? sortie.explication_courte : null, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });
+      return repondre({ statut: "refus", motif, motif_refus: MOTIFS[motif], explication_courte: typeof sortie.explication_courte === "string" ? sortie.explication_courte : null, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });
     }
 
     // Garde-fous, avec une seule correction possible par le modèle.
@@ -152,7 +154,7 @@ Deno.serve(async (req: Request) => {
       if (typeof corrigee.sql === "string") validation = validerSql(corrigee.sql, cat.vues);
       if (!validation.ok) {
         await journaliser("analyste", emp, question, validation.sql, "sql_refusee", cout, duree(), tokensEntree, tokensSortie);
-        return reponseJson({ statut: "erreur", message: `La requête proposée a été refusée par les garde-fous (${validation.motif}). Reformulez la question.`, sql: validation.sql, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise });
+        return repondre({ statut: "erreur", message: `La requête proposée a été refusée par les garde-fous (${validation.motif}). Reformulez la question.`, sql: validation.sql, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise });
       }
     }
     const sql = validation.sql;
@@ -167,7 +169,7 @@ Deno.serve(async (req: Request) => {
     } catch (erreur) {
       console.error("lecture", erreur instanceof Error ? erreur.message : erreur);
       await journaliser("analyste", emp, question, sql, "sql_erreur", cout, duree(), tokensEntree, tokensSortie);
-      return reponseJson({ statut: "erreur", message: "La requête n'a pas pu être exécutée (délai de 5 secondes, vue non autorisée ou erreur de syntaxe). Reformulez la question.", sql, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise });
+      return repondre({ statut: "erreur", message: "La requête n'a pas pu être exécutée (délai de 5 secondes, vue non autorisée ou erreur de syntaxe). Reformulez la question.", sql, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise });
     }
 
     const r2 = await appelerModele(promptRedaction(refsTexte, refs.journee ? jourLibelle(refs.journee) : null), messageRedaction(question, sql, lecture.lignes, lecture.lignes.length), 2500);
@@ -210,10 +212,10 @@ Deno.serve(async (req: Request) => {
       reponse = `Je ne peux pas répondre de façon fiable à cette question : la rédaction contenait ${motif}. Les lignes ci-dessous sont exactes et restent la réponse.`;
     }
     await journaliser("analyste", emp, question, sql, statut, cout, duree(), tokensEntree, tokensSortie);
-    return reponseJson({ statut: "ok", sql, colonnes: lecture.colonnes, lignes: lecture.lignes, reponse, sources, nature, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, redaction_rejetee: statut !== "ok", budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });
+    return repondre({ statut: "ok", sql, colonnes: lecture.colonnes, lignes: lecture.lignes, reponse, sources, nature, cout_eur: cout, duree_ms: duree(), modele: modeleUtilise, redaction_rejetee: statut !== "ok", budget_jour: quota.budget_jour, cout_jour: quota.cout_jour });
   } catch (erreur) {
     console.error("analyste", erreur instanceof Error ? erreur.stack ?? erreur.message : erreur);
     await journaliser("analyste", emp, question, null, "erreur", cout, duree(), tokensEntree, tokensSortie);
-    return reponseJson({ statut: "erreur", message: "Le service analyste est momentanément indisponible.", cout_eur: cout, duree_ms: duree() }, 500);
+    return repondre({ statut: "erreur", message: "Le service analyste est momentanément indisponible.", cout_eur: cout, duree_ms: duree() }, 500);
   }
 });

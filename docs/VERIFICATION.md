@@ -2,6 +2,8 @@
 
 ## 1. À chaque lot
 - `npm run check` : typage strict, lint, tests unitaires (lib, formatage, schémas), `verif:tirets`, `verif:sources`.
+- `npm run check` mesure la couverture Vitest de `src/lib`, des garde-fous et de `nombres.ts` avec des seuils (92 % de lignes, 80 % de branches, 85 % de fonctions, `vitest.config.ts`) : un calcul ajouté sans test fait échouer la porte.
+- Chaos (`e2e/chaos.spec.ts`, joué par `npm run e2e`) : Supabase coupé, lent (20 s), corps corrompu, 500, instantané coupé en même temps, Edge Function coupée en cours de requête ou répondant hors contrat. Chaque écran doit rester lisible sur l'instantané et l'Analyste dire « Pas de réponse » ; aucune exception non gérée.
 - Captures d'écran des écrans touchés en 1280 px et 375 px (Playwright), comparées à DESIGN.md avec le skill visual-verdict : palette, typographie, grille, états, badges. Un écart est corrigé avant de passer au lot suivant.
 - Critères d'acceptation du lot cochés dans JOURNAL.md avec la preuve (commande, sortie, capture).
 - Commit (skill git-commit-guardian) et déploiement, puis contrôles de DEPLOIEMENT_VPS.md §4.

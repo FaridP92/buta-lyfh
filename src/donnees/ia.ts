@@ -33,13 +33,22 @@ export const SchemaReponseIa = z.object({
 });
 export type ReponseIa = z.infer<typeof SchemaReponseIa>;
 
+/**
+ * Délai côté navigateur. La fonction borne elle-même chaque saut (connexion 8 s, SQL 5 s, REST 15 s, modèle 45 s,
+ * rejoué une fois sans réflexion) : au-delà de deux minutes, on rend la main plutôt que d'attendre le délai du navigateur.
+ */
+export const DELAI_IA_MS = 120_000;
+
 async function appeler(nom: "analyste" | "expliquer-ecart", corps: Record<string, unknown>): Promise<ReponseIa> {
   if (!supabase) return { statut: "repli", motif_refus: "Supabase non configuré" };
-  const { data, error } = await supabase.functions.invoke(nom, { body: corps });
+  const { data, error } = await supabase.functions.invoke(nom, { body: corps, signal: AbortSignal.timeout(DELAI_IA_MS) });
   if (error) {
-    // Réponse non 2xx : le corps porte notre statut (erreur ou refus) ; sinon message générique.
-    const contexte = (error as { context?: Response }).context;
-    if (contexte && typeof contexte.json === "function") {
+    // Réponse non 2xx : le corps porte notre statut (erreur ou refus) ; délai dépassé : message dédié ; sinon message générique.
+    const contexte = (error as { context?: unknown }).context;
+    if (contexte instanceof DOMException && (contexte.name === "TimeoutError" || contexte.name === "AbortError")) {
+      return { statut: "erreur", message: "Le service n'a pas répondu dans le délai de deux minutes. Réessayez dans un instant." };
+    }
+    if (contexte instanceof Response && typeof contexte.json === "function") {
       try {
         return SchemaReponseIa.parse(await contexte.json());
       } catch {

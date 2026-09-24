@@ -75,3 +75,14 @@ Critères : `npm run check` vert, parcours Playwright du lot 6 (`e2e/lot6.spec.t
 - US-061 Journal des visites anonymisé (`visite`), affiché sur Méthode pour Frédéric seulement (paramètre d'URL non devinable).
 - US-062 GitHub Actions de déploiement, clé verrouillée.
 - US-063 Revue hebdomadaire en PDF (skill createur-pdf-premium).
+
+## Dette du gatekeeper DevSecOps (24 septembre 2026, JOURNAL session 6)
+- US-077 Écran Analyste : `catch` dans `poser()` (réponse hors contrat rendue « Pas de réponse ») et délai de deux minutes sur `functions.invoke` ; délai de 20 s par page sur `lireSupabase`. Fait.
+- US-078 CORS des Edge Functions restreint à l'origine du site et au poste de développement (`SITE_ORIGINE`, `IA_ORIGINES`). Code fait ; déploiement des deux fonctions à faire.
+- US-079 `mart_alertes` et `mart_ecarts` matérialisées (migration 0037, `rafraichir_marts()` en rafraîchit cinq). Migration écrite et répétée à blanc ; application à faire.
+- US-080 Réessais sur les nœuds HTTP n8n (trois essais, 5 s) et Mistral (deux) ; exports `n8n/` alignés. Fait, WF1, WF3, WF5 et WF0 publiés ; WF2 modifié en brouillon, à publier.
+- US-081 Suite de chaos dans `e2e/chaos.spec.ts`, tests de contrat `tests/ia.test.ts`, SQL adverse `tests/garde-fous-adverse.test.ts`, couverture avec seuils dans `npm run check`. Fait.
+- US-082 Vitest 5 et `@vitest/coverage-v8` ; `overrides` npm sur les dépendances transitives de mapshaper (adm-zip, image-size, file-type, fflate) : `npm audit` à zéro, CLI mapshaper vérifiée. Fait.
+- US-083 En-têtes de sécurité sur les réponses servies par nginx et HSTS (Plesk, DEPLOIEMENT_VPS.md §1) ; `.htaccess` porte HSTS. Directives à poser dans Plesk.
+- US-084 PostGIS hors de `public` : story RenovScope (drop cascade sur ses colonnes géométriques), non traitée ici.
+Critères : `npm run check` et `npm run e2e` verts (chaos compris), `npm audit` à zéro, en production : `curl -I` avec les cinq en-têtes sur `/` et `/assets/`, réponse OPTIONS des fonctions avec l'origine du site, `select buta.rafraichir_marts()` citant cinq vues.

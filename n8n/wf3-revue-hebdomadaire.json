@@ -120,7 +120,10 @@
         "supabaseApi": {
           "name": "Supabase Buta (service role)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "id": "753105d5-05c4-48cf-b2eb-b29447c30260",
@@ -181,7 +184,10 @@
         "mistralCloudApi": {
           "name": "Mistral Cloud account"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000
     },
     {
       "id": "1d75c77f-05a0-46ab-aa98-0c9808afb60b",
@@ -241,7 +247,10 @@
         "supabaseApi": {
           "name": "Supabase Buta (service role)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "id": "83b2f6b4-ce12-4745-a02f-7d6c61665cc8",
@@ -313,7 +322,10 @@
         "supabaseApi": {
           "name": "Supabase Buta (service role)"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     }
   ],
   "connections": {

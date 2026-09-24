@@ -12,7 +12,7 @@
     "test": "vitest run",
     "verif:tirets": "tsx scripts/verif-tirets.ts",
     "verif:sources": "tsx scripts/verif-sources.ts",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run verif:tirets && npm run verif:sources",
+    "check": "npm run typecheck && npm run lint && npm run test:couverture && npm run verif:tirets && npm run verif:sources",
     "e2e": "npm run build && playwright test",
     "test:sql": "tsx scripts/tests-sql.ts",
     "instantane": "tsx scripts/instantane.ts",
@@ -27,7 +27,8 @@
     "synthese": "tsx scripts/generer-synthese.ts",
     "captures:presentation": "tsx scripts/capturer-presentation.ts",
     "presentation": "tsx --tsconfig tsconfig.app.json scripts/generer-presentation.ts",
-    "deploiement": "bash scripts/deploiement.sh"
+    "deploiement": "bash scripts/deploiement.sh",
+    "test:couverture": "vitest run --coverage"
   },
   "dependencies": {
     "@fontsource/instrument-sans": "^5.2.5",
@@ -64,6 +65,7 @@
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/coverage-v8": "^5.0.1",
     "jsdom": "^26.0.0",
     "mapshaper": "^0.7.61",
     "oxlint": "^0.15.5",
@@ -73,6 +75,12 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",
     "vite": "^7.0.0",
-    "vitest": "^3.0.5"
+    "vitest": "^5.0.1"
+  },
+  "overrides": {
+    "adm-zip": "^0.6.1",
+    "image-size": "^2.0.4",
+    "file-type": "^22.1.1",
+    "fflate": "^0.8.3"
   }
 }

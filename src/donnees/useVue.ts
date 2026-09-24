@@ -30,12 +30,14 @@ function cle(nom: string, filtres: FiltresVue | undefined): unknown[] {
 
 /** PostgREST tronque silencieusement à 1 000 lignes (HTTP 200, en-tête content-range) : on lit page par page. */
 const PAGE = 1000;
+/** Délai par page : au-delà, la requête est abandonnée (un essai de plus, puis l'instantané reste avec sa source). */
+const DELAI_PAGE_MS = 20_000;
 
 async function lireSupabase<N extends NomVue>(nom: N, filtres: FiltresVue | undefined): Promise<Ligne<N>[]> {
   if (!supabase) throw new Error("Supabase non configuré");
   const lignes: unknown[] = [];
   for (let debut = 0; ; debut += PAGE) {
-    let requete = supabase.from(nom).select("*");
+    let requete = supabase.from(nom).select("*").abortSignal(AbortSignal.timeout(DELAI_PAGE_MS));
     for (const [colonne, valeur] of Object.entries(filtres?.egal ?? {})) requete = requete.eq(colonne, valeur);
     if (filtres?.entre) requete = requete.gte(filtres.entre.colonne, filtres.entre.de).lte(filtres.entre.colonne, filtres.entre.a);
     if (filtres?.ordre) {
