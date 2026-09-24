@@ -78,7 +78,7 @@ Critères : `npm run check` vert, parcours Playwright du lot 6 (`e2e/lot6.spec.t
 
 ## Dette du gatekeeper DevSecOps (24 septembre 2026, JOURNAL session 6)
 - US-077 Écran Analyste : `catch` dans `poser()` (réponse hors contrat rendue « Pas de réponse ») et délai de deux minutes sur `functions.invoke` ; délai de 20 s par page sur `lireSupabase`. Fait.
-- US-078 CORS des Edge Functions restreint à l'origine du site et au poste de développement (`SITE_ORIGINE`, `IA_ORIGINES`). Code fait ; déploiement des deux fonctions à faire.
+- US-078 CORS des Edge Functions restreint à l'origine du site et au poste de développement (`SITE_ORIGINE`, `IA_ORIGINES`). Fait le 24 septembre au soir : les deux fonctions déployées par le MCP Supabase (`expliquer-ecart` v11, `analyste` v13), en-têtes vérifiés par OPTIONS depuis le site, le poste local et une origine inconnue.
 - US-079 `mart_alertes` et `mart_ecarts` matérialisées (migration 0037, `rafraichir_marts()` en rafraîchit cinq). Fait, appliquée et vérifiée le 24 septembre au soir (verrou exclusif ajouté après un interblocage).
 - US-080 Réessais sur les nœuds HTTP n8n (trois essais, 5 s) et Mistral (deux) ; exports `n8n/` alignés. Fait, les cinq workflows publiés.
 - US-081 Suite de chaos dans `e2e/chaos.spec.ts`, tests de contrat `tests/ia.test.ts`, SQL adverse `tests/garde-fous-adverse.test.ts`, couverture avec seuils dans `npm run check`. Fait.
