@@ -15,7 +15,7 @@ Bascule de thème dans la barre haute, respect de `prefers-color-scheme`, choix 
 - Format français : espace insécable (U+00A0, pas la fine U+202F qui se rend à 1,3 px dans Instrument Sans) avant `%`, avant l'unité et entre milliers, virgule décimale, « k€ » et « M€ » à partir de 10 000 et 1 000 000 avec une décimale.
 
 ## 3. Grille et composants
-- Contenu maximal 1440 px, marges 24 px (16 px mobile), grille 12 colonnes, gouttière 16 px. Rail gauche 76 px (icônes 20 px, libellé au survol après 300 ms), barre haute 56 px collante.
+- Contenu maximal 1440 px, marges 24 px (16 px mobile), grille 12 colonnes, gouttière 16 px. Rail gauche 76 px (icônes 20 px, libellé au survol après 300 ms), barre haute 56 px collante (sur téléphone, une seconde ligne de 48 px porte le bouton Filtres, cible 40 px).
 - Carte : rayon 14 px, fond surface, bordure 1 px, ombre nulle en sombre, ombre douce en clair ; en-tête (titre 15 px 600, sous-titre 12 px secondaire, menu à droite) ; padding 20 px.
 - Carte KPI : libellé, valeur mono, variation avec flèche et couleur sémantique, mini courbe 12 mois (ligne 1,5 px, aire 12 %), bouton « i ». Hauteur fixe 132 px.
 - Tableau : lignes 40 px, en-tête collant, tri par colonne, chiffres alignés à droite en mono, zébrure 3 %, ligne survolée surface haute, pastille de statut 8 px.

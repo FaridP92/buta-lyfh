@@ -72,3 +72,28 @@ test("la page Méthode propose la présentation par écran en PDF et ne date plu
   await expect(lien).toHaveAttribute("href", "/presentation.pdf");
   await expect(page.getByRole("main")).not.toContainText("entretien téléphonique");
 });
+
+test("sur téléphone, la barre haute porte un bouton Filtres qui dit la vue active et ouvre les trois sélecteurs", async ({ page }, infos) => {
+  test.skip(infos.project.name !== "mobile-375", "le bouton Filtres n'existe que sur téléphone");
+  await page.goto("/ventes?periode=2026-08");
+  const bouton = page.getByRole("button", { name: /^Filtres :/ });
+  await expect(bouton).toBeVisible();
+  await expect(bouton).toContainText("août 2026");
+  await expect(bouton).toContainText("Réseau");
+  await bouton.click();
+  const panneau = page.getByRole("dialog").filter({ hasText: "Filtres de l'écran" });
+  await expect(panneau).toBeVisible();
+  await panneau.getByRole("button", { name: /^Agence/ }).click();
+  await page.getByRole("menuitem", { name: "Marensin" }).click();
+  await expect(page).toHaveURL(/agence=MAR/);
+  await panneau.getByRole("button", { name: "Terminé" }).click();
+  await expect(panneau).toBeHidden();
+  await expect(bouton).toContainText("Marensin");
+});
+
+test("sur grand écran, le bouton Filtres de téléphone n'apparaît pas", async ({ page }, infos) => {
+  test.skip(infos.project.name === "mobile-375", "vérifie l'absence sur grand écran seulement");
+  await page.goto("/ventes");
+  await expect(page.getByRole("button", { name: /^Filtres :/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^Période/ })).toBeVisible();
+});
