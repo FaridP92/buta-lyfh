@@ -79,7 +79,7 @@ Critères : `npm run check` vert, parcours Playwright du lot 6 (`e2e/lot6.spec.t
 ## Dette du gatekeeper DevSecOps (24 septembre 2026, JOURNAL session 6)
 - US-077 Écran Analyste : `catch` dans `poser()` (réponse hors contrat rendue « Pas de réponse ») et délai de deux minutes sur `functions.invoke` ; délai de 20 s par page sur `lireSupabase`. Fait.
 - US-078 CORS des Edge Functions restreint à l'origine du site et au poste de développement (`SITE_ORIGINE`, `IA_ORIGINES`). Code fait ; déploiement des deux fonctions à faire.
-- US-079 `mart_alertes` et `mart_ecarts` matérialisées (migration 0037, `rafraichir_marts()` en rafraîchit cinq). Migration écrite et répétée à blanc ; application à faire.
+- US-079 `mart_alertes` et `mart_ecarts` matérialisées (migration 0037, `rafraichir_marts()` en rafraîchit cinq). Fait, appliquée et vérifiée le 24 septembre au soir (verrou exclusif ajouté après un interblocage).
 - US-080 Réessais sur les nœuds HTTP n8n (trois essais, 5 s) et Mistral (deux) ; exports `n8n/` alignés. Fait, les cinq workflows publiés.
 - US-081 Suite de chaos dans `e2e/chaos.spec.ts`, tests de contrat `tests/ia.test.ts`, SQL adverse `tests/garde-fous-adverse.test.ts`, couverture avec seuils dans `npm run check`. Fait.
 - US-082 Vitest 5 et `@vitest/coverage-v8` ; `overrides` npm sur les dépendances transitives de mapshaper (adm-zip, image-size, file-type, fflate) : `npm audit` à zéro, CLI mapshaper vérifiée. Fait.

@@ -422,8 +422,14 @@ Suite de la session 6, même jour : traitement des quatorze recommandations (BAC
 - Docs : DONNEES.md §4.5 et §4.8, AUTOMATISATIONS.md, DEPLOIEMENT_VPS.md §1 et §4 (directives nginx à poser, HSTS), VERIFICATION.md §1, IA.md §7, BACKLOG. `.htaccess` porte HSTS.
 Preuves : `npm run check` vert (182 tests, lignes 96,5 %, branches 81,5 %, seuils tenus, 21 vues documentées), `npm run e2e` vert (72 parcours, chaos compris, 1280 et 375 px), `npm audit` : 0 vulnérabilité.
 
+Soirée du 24 septembre, carte blanche donnée par Frédéric :
+- Migration 0037 appliquée en production. Première tentative en interblocage (une lecture PostgREST de 2 s tenait la vue mince `buta.mart_alertes` et attendait la vue privée renommée) : la migration prend d'abord un verrou exclusif sur les deux vues minces, puis a été appliquée. Vérifié ensuite : `rafraichir_marts()` cite cinq vues (3,2 s), `mart_alertes` se lit en 2 ms (2 200 ms avant), `mart_ecarts` en 1 ms (1 000 ms avant), anon lit 2 alertes, `analyste_ro` 420 écarts, la vue mince reste `security_invoker`.
+- WF2 publié sur n8n : les cinq workflows portent les réessais.
+- `_partage/nombres.ts` : les espaces insécables des trois expressions régulières (U+202F, U+00A0) sont écrites en échappements `\u202F\u00A0`, même comportement (20 tests), pour qu'aucune copie du fichier ne perde un caractère invisible.
+- Refusé par le classifieur de la session, même après carte blanche : le déploiement des deux Edge Functions (motif « Production Deploy ») et l'exécution de `npm run test:sql`. Le code CORS reste donc à déployer ; les vérifications de la migration ont été faites par requêtes directes (ci-dessus), pas par `coherence.sql`.
+
 Reste à faire par Frédéric. La politique « auto » de la session a refusé à l'agent la migration et le déploiement des fonctions (motif « Production Deploy »), même après accord explicite, et l'agent SSH n'avait aucune identité : ces mises en production se font à la main ou depuis une session avec la permission correspondante.
-1. Appliquer la migration 0037 (MCP Supabase `apply_migration` depuis une session autorisée, ou `psql "$SUPABASE_DB_URL" -f supabase/migrations/0037_mart_alertes_ecarts_materialisees.sql`), puis `select buta.rafraichir_marts()` doit citer cinq vues ; relancer `supabase/tests/coherence.sql`.
+1. Fait le 24 au soir : migration 0037 appliquée et vérifiée (ci-dessus) ; relancer `supabase/tests/coherence.sql` à l'occasion.
 2. Déployer les deux Edge Functions (`analyste`, `expliquer-ecart`) avec `_partage/` (MCP depuis une session autorisée, ou `npx supabase functions deploy` après `npx supabase login`) ; vérifier qu'une requête OPTIONS depuis `https://buta.lyfh.fr` reçoit cette origine et qu'une origine inconnue reçoit celle du site.
 3. Poser les cinq `add_header ... always;` dans « Directives nginx supplémentaires » du sous-domaine (DEPLOIEMENT_VPS.md §1), puis `curl -I` sur `/` et un fichier de `/assets/`.
 4. `ssh-add ~/.ssh/id_ed25519` puis `npm run deploiement`.

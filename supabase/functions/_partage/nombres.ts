@@ -8,7 +8,7 @@
  * chiffres bruts seulement.
  */
 
-const MOTIF_NOMBRE = /\d[\d   ]*(?:[.,]\d+)?/g;
+const MOTIF_NOMBRE = /\d[\d \u202F\u00A0]*(?:[.,]\d+)?/g;
 
 /** Nombres écrits en lettres, de deux à mille ; « un » et « une » sont des articles et restent hors contrôle. */
 const MOTS_NOMBRES: Record<string, number> = {
@@ -20,7 +20,7 @@ const MOTIF_MOTS = new RegExp(`(?<![\\p{L}-])(${Object.keys(MOTS_NOMBRES).sort((
 
 /** Clé comparable d'un nombre écrit à la française ou en machine : « 284,5 » et « 284.5 » donnent « 284.5 », « 1 300 » donne « 1300 ». */
 export function normaliserNombre(brut: string): string {
-  const compact = brut.replace(/[\s  ]/g, "").replace(",", ".").replace(/[.,]$/, "");
+  const compact = brut.replace(/[\s\u202F\u00A0]/g, "").replace(",", ".").replace(/[.,]$/, "");
   if (compact === "") return "";
   const n = Number(compact);
   if (!Number.isFinite(n)) return compact;
@@ -137,7 +137,7 @@ export function signesIncoherents(texte: string, donnees: unknown): string[] {
   const positives = new Set(valeurs.filter((v) => v > 0).flatMap((v) => representations(v)));
   const negatives = new Set(valeurs.filter((v) => v < 0).flatMap((v) => representations(v)));
   const incoherents: string[] = [];
-  for (const m of texte.matchAll(/(?<![\p{L}\d])([+-])\s?(\d[\d   ]*(?:[.,]\d+)?)/gu)) {
+  for (const m of texte.matchAll(/(?<![\p{L}\d])([+-])\s?(\d[\d \u202F\u00A0]*(?:[.,]\d+)?)/gu)) {
     const signe = m[1];
     const cle = normaliserNombre(m[2] ?? "");
     if (cle === "" || cle === "0") continue;

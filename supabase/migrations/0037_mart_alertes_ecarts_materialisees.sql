@@ -5,6 +5,10 @@
 -- publication de la journée) et par la tâche pg_cron de secours (04:05 UTC). Ni l'une ni l'autre ne lit
 -- controle_resultat : le contenu ne dépend que de la journée publiée. Les vues minces de buta sont recréées par
 -- create or replace, qui conserve leurs commentaires, leurs colonnes et leurs droits (DONNEES.md §4.8).
+-- Verrou exclusif pris d'abord sur les deux vues minces : une lecture PostgREST en cours (2 s sur mart_alertes) tenait
+-- la vue mince et attendait la vue privée renommée, d'où un interblocage à la première application (24 septembre).
+lock table buta.mart_alertes, buta.mart_ecarts in access exclusive mode;
+
 alter view buta_prive.mart_alertes rename to mart_alertes_calcul;
 alter view buta_prive.mart_ecarts rename to mart_ecarts_calcul;
 
