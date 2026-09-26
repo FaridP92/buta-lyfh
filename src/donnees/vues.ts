@@ -97,6 +97,7 @@ export const VUES = {
     .object({
       jour: date, controle: z.string(), ordre: nombre, libelle: z.string(), regle: z.string(), bloquant: z.boolean(),
       statut: z.enum(["ok", "alerte", "ko"]), nb_lignes: nombre, echantillon: z.unknown(), score_jour: nombre, tendance: nombreOuNul,
+      nb_lignes_30j: nombreOuNul, agences: z.record(z.string(), nombre), flux_30j_jour: nombreOuNul,
     })
     .passthrough(),
   mart_marche_departement: z

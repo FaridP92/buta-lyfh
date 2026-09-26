@@ -21,16 +21,25 @@ const LIBELLES_SOURCES: Record<string, string> = {
   journee_simulee: "Journée simulée (activité)", contours_geo: "Contours administratifs (Etalab)",
 };
 
-function optionScore(points: readonly { jour: string; score: number }[], t: TokensGraphique): EChartsOption {
+/** Score du jour (stock, axe de gauche sur 100) et anomalies apparues sur 30 jours (flux, axe de droite). */
+function optionQualite(points: readonly { jour: string; score: number; flux: number | null }[], t: TokensGraphique): EChartsOption {
   const base = optionBase(t);
+  const symbole = points.length <= 40 ? 6 : 0;
   return {
     ...base,
-    grid: { left: 8, right: 12, top: 16, bottom: 8, containLabel: true },
+    grid: { left: 8, right: 8, top: 28, bottom: 8, containLabel: true },
+    legend: { top: 0, left: "center", itemWidth: 12, itemHeight: 8, textStyle: { color: t.texte2, fontSize: 11 }, data: ["Score", "Anomalies sur 30 jours"] },
     xAxis: { ...base.xAxis, type: "category", data: points.map((p) => formatDateCourte(p.jour)) },
-    yAxis: { ...base.yAxis, type: "value", min: 0, max: 100 },
-    tooltip: { ...base.tooltip, trigger: "axis", valueFormatter: (v: unknown) => (typeof v === "number" ? `${formatNombre(v)} / 100` : "n. d.") },
-    series: [{ name: "Score", type: "line", data: points.map((p) => p.score), symbol: "circle", symbolSize: 6, lineStyle: { color: t.accent, width: 1.5 }, itemStyle: { color: t.accent }, areaStyle: { color: t.accent, opacity: 0.08 },
-      markLine: { silent: true, symbol: "none", lineStyle: { color: t.texte3, type: "dashed" }, label: { color: t.texte3, fontSize: 11, formatter: "seuil 80" }, data: [{ yAxis: 80 }] } }],
+    yAxis: [
+      { ...base.yAxis, type: "value", min: 0, max: 100, name: "score", nameTextStyle: { color: t.texte3, fontSize: 11, align: "left" } },
+      { ...base.yAxis, type: "value", min: 0, name: "flux", nameTextStyle: { color: t.texte3, fontSize: 11, align: "right" }, splitLine: { show: false } },
+    ],
+    tooltip: { ...base.tooltip, trigger: "axis", valueFormatter: (v: unknown) => (typeof v === "number" ? formatNombre(v) : "n. d.") },
+    series: [
+      { name: "Score", type: "line", yAxisIndex: 0, data: points.map((p) => p.score), symbol: "circle", symbolSize: symbole, lineStyle: { color: t.accent, width: 1.5 }, itemStyle: { color: t.accent }, areaStyle: { color: t.accent, opacity: 0.08 },
+        markLine: { silent: true, symbol: "none", lineStyle: { color: t.texte3, type: "dashed" }, label: { color: t.texte3, fontSize: 11, formatter: "seuil 80", position: "insideEndTop" }, data: [{ yAxis: 80 }] } },
+      { name: "Anomalies sur 30 jours", type: "line", yAxisIndex: 1, data: points.map((p) => p.flux), symbol: "none", lineStyle: { color: t.ambre, width: 1.5 }, itemStyle: { color: t.ambre } },
+    ],
   };
 }
 
@@ -50,7 +59,12 @@ export function EcranQualite() {
   const controles = useMemo(() => (qualite.donnees ?? []).filter((l) => l.jour === dernierJour).sort((a, b) => a.ordre - b.ordre), [qualite.donnees, dernierJour]);
   const score = controles[0]?.score_jour ?? null;
   const scoreVeille = jours.length >= 2 ? (qualite.donnees ?? []).find((l) => l.jour === jours[jours.length - 2])?.score_jour ?? null : null;
-  const serieScore = jours.map((j) => ({ jour: j, score: (qualite.donnees ?? []).find((l) => l.jour === j)?.score_jour ?? 0 }));
+  const serieScore = jours.map((j) => {
+    const ligne = (qualite.donnees ?? []).find((l) => l.jour === j);
+    return { jour: j, score: ligne?.score_jour ?? 0, flux: ligne?.flux_30j_jour ?? null };
+  });
+  const flux = controles[0]?.flux_30j_jour ?? null;
+  const serieFlux = serieScore.slice(-30).map((p) => p.flux);
   const journeeSimulee = (fraicheur.donnees ?? []).find((f) => f.source === "journee_simulee");
   const bloquantsKo = controles.filter((c) => c.bloquant && c.statut === "ko").length;
 
@@ -74,19 +88,21 @@ export function EcranQualite() {
       </header>
 
       <div className="grid gap-[var(--esp-3)] lg:grid-cols-12">
-        <div className="lg:col-span-4">
-          <CarteKPI libelle="Score de qualité du jour" sousLibelle="part pondérée des contrôles réussis, sur 100" valeur={score} format="nombre" code="QUALITE" clePeriode={dernierJour ?? "aucun"} decalageMs={0}
+        <div className="flex flex-col gap-[var(--esp-3)] lg:col-span-4">
+          <CarteKPI libelle="Score de qualité du jour" sousLibelle="part pondérée des contrôles réussis, sur 100 : le stock" valeur={score} format="nombre" code="QUALITE" clePeriode={dernierJour ?? "aucun"} decalageMs={0}
             variation={{ valeur: ecartPoints(score, scoreVeille), unite: "pts", libelle: "vs veille" }} />
-          {bloquantsKo > 0 && <p className="mt-[var(--esp-2)] text-[12px] text-alerte">{formatNombre(bloquantsKo)} contrôle{bloquantsKo > 1 ? "s" : ""} bloquant{bloquantsKo > 1 ? "s" : ""} en échec : la journée est publiée, l'anomalie est portée à l'écran plutôt que masquée.</p>}
+          <CarteKPI libelle="Anomalies apparues sur 30 jours" sousLibelle="lignes en anomalie nées dans les 30 jours, tous contrôles : le flux" valeur={flux} format="nombre" code="FLUX_QUALITE" clePeriode={dernierJour ?? "aucun"} decalageMs={120}
+            serie={serieFlux} motifNd="aucune journée contrôlée" />
+          {bloquantsKo > 0 && <p className="text-[12px] text-alerte">{formatNombre(bloquantsKo)} contrôle{bloquantsKo > 1 ? "s" : ""} bloquant{bloquantsKo > 1 ? "s" : ""} en échec : le score compte les anomalies depuis leur apparition, le flux dit si elles continuent d'arriver. La journée est publiée, l'anomalie est portée à l'écran plutôt que masquée.</p>}
         </div>
         {serieScore.length > 0 ? (
-          <CarteGraphique className="lg:col-span-8" titre="Score des journées publiées" sousTitre={`${formatNombre(serieScore.length)} journée${serieScore.length > 1 ? "s" : ""} de contrôles disponible${serieScore.length > 1 ? "s" : ""} : l'historique se constitue au fil des journées publiées`} option={optionScore(serieScore, tokens)} hauteur={220} hauteurMobile={200} codeIndicateur="QUALITE"
-            description={`Score de qualité par jour, ${formatNombre(serieScore.length)} points`} requete="select distinct jour, score_jour from buta.mart_qualite order by jour"
-            exportCSV={{ colonnes: [{ cle: "jour", libelle: "Jour" }, { cle: "score", libelle: "Score" }], lignes: serieScore }} />
-        ) : <Carte className="lg:col-span-8" titre="Score des journées publiées"><Squelette hauteur={220} /></Carte>}
+          <CarteGraphique className="lg:col-span-8" titre="Score et flux des journées publiées" sousTitre={`${formatNombre(serieScore.length)} journée${serieScore.length > 1 ? "s" : ""} de contrôles : le score (stock, sur 100) reste bas tant qu'un contrôle bloquant a une ligne en défaut ; le flux (anomalies nées dans les 30 jours) montre si la situation s'assainit`} option={optionQualite(serieScore, tokens)} hauteur={296} hauteurMobile={220} codeIndicateur="QUALITE"
+            description={`Score de qualité et anomalies apparues sur 30 jours, par jour, ${formatNombre(serieScore.length)} points`} requete="select distinct jour, score_jour, flux_30j_jour from buta.mart_qualite order by jour"
+            exportCSV={{ colonnes: [{ cle: "jour", libelle: "Jour" }, { cle: "score", libelle: "Score" }, { cle: "flux", libelle: "Anomalies sur 30 jours" }], lignes: serieScore }} />
+        ) : <Carte className="lg:col-span-8" titre="Score et flux des journées publiées"><Squelette hauteur={296} /></Carte>}
       </div>
 
-      <Carte titre="Les douze contrôles" sousTitre="Pour chaque contrôle : la règle, le résultat du matin, les lignes concernées, la tendance sur la veille, un échantillon" actions={<BoutonFiche code="QUALITE" />}>
+      <Carte titre="Les douze contrôles" sousTitre="Pour chaque contrôle : la règle, le résultat du matin, les lignes concernées (stock), celles nées dans les 30 jours et leurs agences (flux), la tendance sur la veille, un échantillon" actions={<BoutonFiche code="QUALITE" />}>
         {qualite.donnees === undefined ? <Squelette hauteur={400} /> : (
           <ol className="flex flex-col divide-y divide-bordure">
             {controles.map((c, i) => {
@@ -101,6 +117,12 @@ export function EcranQualite() {
                     <div className="min-w-0 flex-1">
                       <p className="text-[14px] text-texte">{c.libelle}{c.bloquant && <span className="ml-2 rounded-[6px] border border-bordure px-[6px] py-[1px] text-[10px] uppercase tracking-[0.06em] text-texte-3">bloquant</span>}</p>
                       <p className="text-[12px] text-texte-3">{c.regle}</p>
+                      {c.nb_lignes > 0 && (
+                        <p className="mt-[2px] text-[12px] text-texte-2">
+                          {c.nb_lignes_30j === null ? "flux non mesuré (pas de date de lead)" : `${formatNombre(c.nb_lignes_30j)} née${c.nb_lignes_30j > 1 ? "s" : ""} dans les 30 jours`}
+                          {Object.keys(c.agences).length > 0 && <> · {Object.entries(c.agences).sort((a, b) => b[1] - a[1]).map(([code, n]) => `${nomAgence(code)} ${formatNombre(n)}`).join(", ")}</>}
+                        </p>
+                      )}
                     </div>
                     <div className="flex shrink-0 items-center gap-[var(--esp-3)] text-[12px]">
                       <span className="chiffre text-texte">{formatNombre(c.nb_lignes)} ligne{c.nb_lignes > 1 ? "s" : ""}</span>
@@ -182,7 +204,7 @@ export function EcranQualite() {
       </Carte>
 
       <LigneSources simule sources={[{ nom: "Vues mart_qualite, mart_reconciliation_libelles, mart_fraicheur, dimensions", ...(dernierJour ? { reference: `contrôles du ${formatDateCourte(dernierJour)}` } : {}) }]}
-        hypotheses="Score = 100 × somme des poids des contrôles OK / somme des poids (3 pour un contrôle bloquant, 1 sinon) ; tendance = lignes concernées en plus ou en moins par rapport à la veille ; l'historique des contrôles commence à la mise en service." />
+        hypotheses="Score = 100 × somme des poids des contrôles OK / somme des poids (3 pour un contrôle bloquant, 1 sinon) ; lignes concernées = stock des anomalies parmi les dossiers publiés jusqu'à la journée contrôlée ; flux = lignes dont le lead date des 30 jours précédant la journée contrôlée (C10, C11 et C12 n'ont pas de date de lead et n'y comptent pas) ; tendance = lignes concernées en plus ou en moins par rapport à la veille ; l'historique des contrôles commence au 1er mai 2026 (rejeu)." />
     </div>
   );
 }

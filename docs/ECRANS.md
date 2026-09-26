@@ -66,8 +66,8 @@ Histoires : H5, H7.
 
 ## 8. Qualité et référentiels (`/qualite`)
 Objectif : la confiance dans le chiffre, rendue visible.
-- Score de qualité du jour (0 à 100, part des contrôles OK pondérée) et courbe 90 jours.
-- Douze contrôles (DONNEES.md §4.6) : nom, règle, résultat du matin (OK, alerte, KO), nombre de lignes concernées, tendance, lien vers les lignes (échantillon).
+- Score de qualité du jour (0 à 100, part des contrôles OK pondérée : un stock, un contrôle reste KO tant qu'une ligne publiée est en anomalie) et, dessous, « Anomalies apparues sur 30 jours » (flux, fiche FLUX_QUALITE, mini courbe des 30 dernières journées). Graphique « Score et flux des journées publiées » : score à gauche sur 100, flux à droite ; le flux raconte l'intégration du Nord (66 fin juin, 3 fin septembre) là où le score reste plat à 68 (US-086, migration 0038).
+- Douze contrôles (DONNEES.md §4.6) : nom, règle, résultat du matin (OK, alerte, KO), nombre de lignes concernées (stock), tendance, et pour un contrôle en défaut la ligne « n nées dans les 30 jours · Nord 45 » (flux et agences concernées), lien vers les lignes (échantillon).
 - Fraîcheur des sources : Insee, RGE, RTE, DPE, journée simulée : date de référence, date d'ingestion, prochaine mise à jour.
 - Référentiels : agences, canaux, produits, statuts avec version et date ; l'agence Nord montre la réconciliation des libellés produits (avant, après).
 - Lignage : schéma sources vers staging vers mart vers écrans (SVG animé simple).

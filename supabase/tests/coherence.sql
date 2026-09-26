@@ -112,3 +112,28 @@ cross join unnest(array['anon', 'authenticated', 'analyste_ro', 'service_role'])
 where n.nspname = 'buta' and c.relkind = 'v' and c.relname like 'mart\_%'
   and not (has_table_privilege(r.role, c.oid, 'SELECT')
     and coalesce(has_table_privilege(r.role, to_regclass('buta_prive.' || quote_ident(c.relname)), 'SELECT'), false));
+
+-- 0038 : flux et agences des contrôles. Le flux ne dépasse jamais le stock ; les agences totalisent le stock quand
+-- le contrôle porte une agence ; le flux du jour de mart_qualite est la somme des flux des douze contrôles.
+select 'contrôles 0038 : flux <= stock et agences = stock' as test,
+  bool_and(nb_lignes_30j is null or nb_lignes_30j <= nb_lignes)
+    and bool_and(agences = '{}'::jsonb or (select sum(value::int) from jsonb_each_text(agences)) = nb_lignes) as ok,
+  count(*) as lignes
+from buta.controle_resultat where jour = buta.journee_publiee();
+
+select 'contrôles 0038 : flux C09 = recompte direct sur 30 jours' as test, r.nb_lignes_30j = d.n as ok, r.nb_lignes_30j, d.n as recompte
+from buta.controle_resultat r,
+  (select count(*) as n from buta.fait_dossier
+   where publie and date_lead <= buta.journee_publiee() and date_lead > buta.journee_publiee() - 30
+     and produit_libelle_source is not null and produit_libelle_source not in (select libelle from buta.dim_produit)) d
+where r.jour = buta.journee_publiee() and r.controle = 'C09';
+
+select 'mart_qualite 0038 : flux_30j_jour = somme des flux du jour' as test,
+  bool_and(flux_30j_jour = somme) as ok, count(*) as jours
+from (select jour, max(flux_30j_jour) as flux_30j_jour, sum(nb_lignes_30j) as somme from buta.mart_qualite group by jour) t;
+
+select 'synthèse 0038 : changement, jour_precedent, flux et agences_texte par contrôle' as test,
+  (r.s ? 'changement') and (r.s ? 'jour_precedent') and bool_and((e ? 'nb_lignes_30j') and (e ? 'agences_texte')) as ok,
+  r.s->>'changement' as changement, r.s->>'jour_precedent' as jour_precedent
+from (select buta.executer_controles(buta.journee_publiee()) as s) r, jsonb_array_elements(r.s->'controles') e
+group by r.s;

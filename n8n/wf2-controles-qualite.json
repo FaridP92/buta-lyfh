@@ -1,6 +1,6 @@
 {
   "name": "Buta - Contrôles qualité (quotidien 06:20)",
-  "description": "WF2 Buta.Lyfh : exécute les douze contrôles de cohérence (RPC buta.executer_controles), envoie la synthèse par email si un contrôle bloquant est KO ou si le score est sous 90, journalise dans buta.automatisation_run.",
+  "description": "WF2 Buta.Lyfh : douze contrôles (RPC executer_controles : stock, flux 30 jours, agences) ; email si bloquant KO ou score sous 90, seulement si le résultat a changé ou le lundi ; journal automatisation_run.",
   "nodes": [
     {
       "id": "0cb6097a-137d-4033-b5c7-e71bb593984e",
@@ -12,7 +12,7 @@
         150
       ],
       "parameters": {
-        "content": "## WF2 · Buta - Contrôles qualité (quotidien 06:20)\n\n**Déclencheur** : Schedule, chaque jour à 06:20 Europe/Paris, après WF1.\n\n**Étapes** : RPC `buta.executer_controles()` (les douze contrôles à la journée publiée, écrit `controle_resultat`, renvoie la synthèse), nœud Code « Synthèse » (texte de l'email et du journal, aucun calcul métier : le score vient de la RPC), email Gmail à Frédéric si un contrôle bloquant est KO ou si le score est sous 90, RPC `buta.journal_run` (statut `ok` ou `alerte`, message, nombre de contrôles).\n\n**Sorties** : écran Qualité (score du jour, historique), alertes de la Vue d'ensemble, une ligne `buta.automatisation_run`.\n\n**Credentials** : « Supabase Buta (service role) », « Gmail account ». Aucun secret dans l'export. Erreurs : workflow WF0.",
+        "content": "## WF2 · Buta - Contrôles qualité (quotidien 06:20)\n\n**Déclencheur** : Schedule, chaque jour à 06:20 Europe/Paris, après WF1.\n\n**Étapes** : RPC `buta.executer_controles()` (les douze contrôles à la journée publiée, écrit `controle_resultat` avec stock, flux sur 30 jours et agences, renvoie la synthèse avec `changement` depuis la journée précédente), nœud Code « Synthèse » (texte de l'email et du journal, aucun calcul métier : score, flux, agences et changement viennent de la RPC), email Gmail à Frédéric si un contrôle bloquant est KO ou si le score est sous 90, et seulement si le résultat a changé depuis la veille ou si l'exécution tombe un lundi (point de la semaine) ; sinon statut `ok` et mention « pas d'email » (migration 0038, 26 septembre : huit emails identiques avaient été envoyés du 19 au 26). RPC `buta.journal_run` (statut `ok` ou `alerte`, message, nombre de contrôles).\n\n**Sorties** : écran Qualité (score et flux du jour, historique), alertes de la Vue d'ensemble, une ligne `buta.automatisation_run`.\n\n**Credentials** : « Supabase Buta (service role) », « Gmail account ». Aucun secret dans l'export. Erreurs : workflow WF0.",
         "color": 4,
         "width": 1860,
         "height": 300
@@ -128,12 +128,12 @@
       "parameters": {
         "mode": "runOnceForAllItems",
         "language": "javaScript",
-        "jsCode": "const r = $input.first().json.body || {};\nconst liste = Array.isArray(r.controles) ? r.controles : [];\nconst ko = liste.filter((c) => c.statut === 'ko');\nconst alertes = liste.filter((c) => c.statut === 'alerte');\nconst score = Number(r.score);\nconst alerter = Boolean(r.bloquant_ko) || score < 90;\nconst jour = String(r.jour || '');\nconst jourCourt = jour.length === 10 ? jour.slice(8, 10) + '/' + jour.slice(5, 7) : jour;\nconst nomme = (l) => l.map((c) => c.controle + ' ' + c.libelle + ' (' + c.nb_lignes + ' lignes)').join(', ');\nconst message = 'score ' + score + '/100 au ' + jourCourt + ', ' + ko.length + ' contrôle(s) bloquant(s) KO' + (ko.length ? ' : ' + ko.map((c) => c.controle).join(', ') : '') + ', ' + alertes.length + ' alerte(s)' + (alertes.length ? ' : ' + alertes.map((c) => c.controle).join(', ') : '') + (alerter ? ', email envoyé' : '');\nconst lignes = liste.map((c) => '- ' + c.controle + ' ' + c.libelle + ' : ' + (c.statut === 'ok' ? 'ok' : c.statut.toUpperCase() + ', ' + c.nb_lignes + ' ligne(s)') + (c.bloquant ? ' (bloquant)' : ''));\nconst texte = 'Contrôles de cohérence du ' + jourCourt + ' : score ' + score + '/100.\\n\\n' + (ko.length ? 'Contrôles bloquants en échec : ' + nomme(ko) + '.\\n' : '') + (alertes.length ? 'Alertes : ' + nomme(alertes) + '.\\n' : '') + '\\nDétail :\\n' + lignes.join('\\n') + '\\n\\nÉcran Qualité : https://buta.lyfh.fr/qualite\\nDémonstrateur personnel, données d\\'activité simulées.';\nconst sujet = 'Buta.Lyfh : contrôles du ' + jourCourt + ', score ' + score + '/100' + (ko.length ? ', ' + ko.length + ' bloquant(s) KO' : '');\nreturn [{ json: { jour, score, alerter, statut: alerter ? 'alerte' : 'ok', message: message.slice(0, 300), sujet, texte, nb_ko: ko.length, nb_alertes: alertes.length, nb_controles: liste.length } }];"
+        "jsCode": "const r = $input.first().json.body || {};\nconst liste = Array.isArray(r.controles) ? r.controles : [];\nconst ko = liste.filter((c) => c.statut === 'ko');\nconst alertes = liste.filter((c) => c.statut === 'alerte');\nconst score = Number(r.score);\nconst degrade = Boolean(r.bloquant_ko) || score < 90;\nconst changement = r.changement !== false;\nconst lundi = $now.setZone('Europe/Paris').weekday === 1;\nconst alerter = degrade && (changement || lundi);\nconst jour = String(r.jour || '');\nconst court = (d) => (typeof d === 'string' && d.length === 10 ? d.slice(8, 10) + '/' + d.slice(5, 7) : String(d || ''));\nconst jourCourt = court(jour);\nconst flux = (c) => (c.nb_lignes_30j === null || c.nb_lignes_30j === undefined ? 'flux non mesuré' : c.nb_lignes_30j + ' née(s) dans les 30 jours');\nconst detail = (c) => c.nb_lignes + ' ligne(s), ' + flux(c) + (c.agences_texte ? ', ' + c.agences_texte : '');\nconst nomme = (l) => l.map((c) => c.controle + ' ' + c.libelle + ' (' + detail(c) + ')').join(', ');\nconst motif = !degrade ? '' : alerter ? (changement ? 'Un contrôle au moins a changé depuis ' + (r.jour_precedent ? 'le ' + court(r.jour_precedent) : 'la veille') + '.' : 'Point du lundi : résultat inchangé depuis la veille.') : 'Résultat inchangé depuis la veille : pas d\\'email.';\nconst message = 'score ' + score + '/100 au ' + jourCourt + ', ' + ko.length + ' contrôle(s) bloquant(s) KO' + (ko.length ? ' : ' + ko.map((c) => c.controle).join(', ') : '') + ', ' + alertes.length + ' alerte(s)' + (alertes.length ? ' : ' + alertes.map((c) => c.controle).join(', ') : '') + (alerter ? ', email envoyé' + (changement ? '' : ' (point du lundi)') : degrade ? ', inchangé depuis la veille, pas d\\'email' : '');\nconst lignes = liste.map((c) => '- ' + c.controle + ' ' + c.libelle + ' : ' + (c.statut === 'ok' ? 'ok' : c.statut.toUpperCase() + ', ' + detail(c)) + (c.bloquant ? ' (bloquant)' : ''));\nconst texte = 'Contrôles de cohérence du ' + jourCourt + ' : score ' + score + '/100.\\n' + (motif ? motif + '\\n' : '') + 'Le score compte les anomalies depuis leur apparition (stock) ; le flux dit si elles continuent d\\'arriver.\\n\\n' + (ko.length ? 'Contrôles bloquants en échec : ' + nomme(ko) + '.\\n' : '') + (alertes.length ? 'Alertes : ' + nomme(alertes) + '.\\n' : '') + '\\nDétail :\\n' + lignes.join('\\n') + '\\n\\nÉcran Qualité : https://buta.lyfh.fr/qualite\\nDémonstrateur personnel, données d\\'activité simulées.';\nconst sujet = 'Buta.Lyfh : contrôles du ' + jourCourt + ', score ' + score + '/100' + (ko.length ? ', ' + ko.length + ' bloquant(s) KO' : '') + (alerter && !changement ? ' (point du lundi)' : '');\nreturn [{ json: { jour, score, alerter, changement, statut: alerter ? 'alerte' : 'ok', message: message.slice(0, 300), sujet, texte, nb_ko: ko.length, nb_alertes: alertes.length, nb_controles: liste.length } }];"
       }
     },
     {
       "id": "f63b9466-e3a9-41be-8bec-27a4414fa762",
-      "name": "Bloquant KO ou score < 90 ?",
+      "name": "Dégradé et changé, ou lundi ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
@@ -277,22 +277,15 @@
       "main": [
         [
           {
-            "node": "Bloquant KO ou score < 90 ?",
+            "node": "Dégradé et changé, ou lundi ?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Bloquant KO ou score < 90 ?": {
+    "Email de synthèse": {
       "main": [
-        [
-          {
-            "node": "Email de synthèse",
-            "type": "main",
-            "index": 0
-          }
-        ],
         [
           {
             "node": "Journal",
@@ -302,8 +295,15 @@
         ]
       ]
     },
-    "Email de synthèse": {
+    "Dégradé et changé, ou lundi ?": {
       "main": [
+        [
+          {
+            "node": "Email de synthèse",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Journal",
