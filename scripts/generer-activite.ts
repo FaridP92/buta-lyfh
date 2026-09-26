@@ -104,6 +104,10 @@ interface Dossier {
   dateAnnulation: Date | null;
   motifAnnulation: string | null;
   statut: string | null;
+  /** Réconciliation datée (H4, migration 0039) : statut attribué à la qualification et sa date, date de fusion d'un doublon. */
+  statutQualifie: string | null;
+  qualifieLe: Date | null;
+  fusionneLe: Date | null;
   prixCatalogue: number;
   tauxRemise: number;
   montantHt: number | null;
@@ -168,6 +172,11 @@ function h2Actif(agence: string, annee: number, mois: number): boolean {
 function h7Actif(agence: string, date: Date): boolean {
   const d = formatDate(date);
   return agence === "ARC" && d >= "2026-04-15" && d <= "2026-08-31";
+}
+
+/** Jour de l'année (1 à 366), comme extract(doy) en SQL : règle commune au générateur et à la migration 0039. */
+function jourAnnee(date: Date): number {
+  return Math.floor((date.getTime() - Date.UTC(date.getUTCFullYear(), 0, 1)) / 86_400_000) + 1;
 }
 
 /** H4 Nord : intensite des anomalies d'intégration, décroissante de juin à mi-septembre 2026. */
@@ -281,6 +290,7 @@ function genererDossiers(alea: Alea): Dossier[] {
             empreinte: `e${compteurEmpreinte.toString(36)}`, dateLead,
             dateRdvPlanifie: null, dateRdv: null, dateDevis: null, montantDevis: null, dateSignature: null, datePose: null,
             dateEncaissement: null, dateAnnulation: null, motifAnnulation: null, statut: "sans_suite",
+            statutQualifie: null, qualifieLe: null, fusionneLe: null,
             prixCatalogue: arrondi(produit.prix * (1 + alea.entre(-0.12, 0.12)), 0), tauxRemise: 0, montantHt: null,
             coutMateriel: null, coutPose: null, commission: null, aideMontant: 0, aideVerseeLe: null, technicien: null,
           };
@@ -301,13 +311,22 @@ function genererDossiers(alea: Alea): Dossier[] {
           const h4 = intensiteH4(agence.code, d.dateLead);
           if (h4 > 0) {
             if (alea.bernoulli(0.12 * h4)) d.produitLibelleSource = LIBELLES_DIVERGENTS[d.produit.code] ?? null;
-            if (alea.bernoulli(0.06 * h4)) d.statut = null;
+            if (alea.bernoulli(0.06 * h4)) {
+              // Reçu sans statut, qualifié par l'agence 7 à 21 jours plus tard (règle reprise dans la migration 0039).
+              d.statutQualifie = d.statut;
+              d.statut = null;
+              d.qualifieLe = ajouterJours(d.dateLead, 7 + (jourAnnee(d.dateLead) % 15));
+            }
             if (alea.bernoulli(0.03 * h4)) {
+              const dateLeadDoublon = ajouterJours(d.dateLead, alea.entier(1, 20));
               cohorte.push({
-                ...d, dateLead: ajouterJours(d.dateLead, alea.entier(1, 20)),
+                ...d, dateLead: dateLeadDoublon,
                 dateRdvPlanifie: null, dateRdv: null, dateDevis: null, montantDevis: null, dateSignature: null,
                 datePose: null, dateEncaissement: null, dateAnnulation: null, motifAnnulation: null,
-                statut: "sans_suite", montantHt: null, coutMateriel: null, coutPose: null, commission: null,
+                statut: "sans_suite", statutQualifie: null, qualifieLe: null,
+                // Doublon fusionné dans le dossier d'origine 5 à 14 jours plus tard (même règle que la migration 0039).
+                fusionneLe: ajouterJours(dateLeadDoublon, 5 + (jourAnnee(dateLeadDoublon) % 10)),
+                montantHt: null, coutMateriel: null, coutPose: null, commission: null,
                 aideMontant: 0, aideVerseeLe: null, technicien: null, produitLibelleSource: null,
               });
             }
@@ -543,7 +562,7 @@ async function charger(dossiers: Dossier[], couts: CoutCanal[], jusqua: string):
       "date_lead", "date_rdv_planifie", "date_rdv", "date_devis", "montant_devis", "date_signature", "date_pose",
       "date_encaissement", "date_annulation", "motif_annulation", "statut", "prix_catalogue", "taux_remise",
       "montant_ht", "cout_materiel", "cout_pose", "commission", "aide_montant", "aide_versee_le", "technicien",
-      "publie", "lot_generation",
+      "publie", "lot_generation", "statut_qualifie", "qualifie_le", "fusionne_le",
     ];
     const f = (x: Date | null) => (x ? formatDate(x) : null);
     const lignes = dossiers.map((d) => [
@@ -551,7 +570,7 @@ async function charger(dossiers: Dossier[], couts: CoutCanal[], jusqua: string):
       f(d.dateLead), f(d.dateRdvPlanifie), f(d.dateRdv), f(d.dateDevis), d.montantDevis, f(d.dateSignature), f(d.datePose),
       f(d.dateEncaissement), f(d.dateAnnulation), d.motifAnnulation, d.statut, d.prixCatalogue, d.tauxRemise,
       d.montantHt, d.coutMateriel, d.coutPose, d.commission, d.aideMontant, f(d.aideVerseeLe), d.technicien,
-      false, LOT_GENERATION,
+      false, LOT_GENERATION, d.statutQualifie, f(d.qualifieLe), f(d.fusionneLe),
     ]);
     const n = await insererParLots(client, "buta.fait_dossier", colonnes, lignes, 800);
     console.log(`fait_dossier : ${n} lignes`);

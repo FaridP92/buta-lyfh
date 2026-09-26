@@ -75,6 +75,7 @@ export function EcranQualite() {
     { cle: "dossiers", libelle: "Dossiers", numerique: true, largeur: "80px", rendu: (l) => formatNombre(l.dossiers) },
     { cle: "premier_lead", libelle: "Du", secondaire: true, largeur: "88px", rendu: (l) => formatDateCourte(l.premier_lead) },
     { cle: "dernier_lead", libelle: "Au", secondaire: true, largeur: "88px", rendu: (l) => formatDateCourte(l.dernier_lead) },
+    { cle: "rapproche_le", libelle: "Rapproché le", largeur: "124px", valeur: (l) => l.rapproche_le ?? "", rendu: (l) => (l.rapproche_le ? <span className="chiffre text-succes">{formatDateCourte(l.rapproche_le)}</span> : <span className="text-alerte">en attente</span>) },
   ];
 
   return (
@@ -195,7 +196,7 @@ export function EcranQualite() {
         </div>
       </Carte>
 
-      <Carte titre="Réconciliation des libellés produits" sousTitre="Libellés reçus du système source hors référentiel, résolus vers le produit de référence (agence Nord pendant son intégration, H4)" nu>
+      <Carte titre="Réconciliation des libellés produits" sousTitre="Libellés reçus du système source hors référentiel, résolus vers le produit de référence et rapprochés dans le référentiel commun à une date donnée (agence Nord pendant son intégration, H4) : avant cette date le dossier compte en anomalie, après il n'y compte plus" nu>
         <div className="px-[var(--esp-2)] pb-[var(--esp-3)]">
           {reconciliation.donnees === undefined ? <Squelette hauteur={200} /> : (
             <Tableau colonnes={colonnesReconciliation} lignes={reconciliation.donnees} cleLigne={(l) => `${l.agence}-${l.libelle_source}`} triInitial={{ cle: "dossiers", sens: "desc" }} compact nomExport="reconciliation-libelles" vide="Aucun libellé divergent : tous les dossiers publiés portent un libellé du référentiel." />

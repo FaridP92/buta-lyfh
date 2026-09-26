@@ -158,7 +158,7 @@ export const VUES = {
     })
     .passthrough(),
   mart_reconciliation_libelles: z
-    .object({ agence: z.string(), libelle_source: z.string(), produit_code: z.string(), libelle_referentiel: z.string(), dossiers: nombre, premier_lead: date, dernier_lead: date })
+    .object({ agence: z.string(), libelle_source: z.string(), produit_code: z.string(), libelle_referentiel: z.string(), dossiers: nombre, premier_lead: date, dernier_lead: date, rapproche_le: date.nullable() })
     .passthrough(),
   dim_statut: z.object({ code: z.string(), libelle: z.string(), ordre: nombre }).passthrough(),
   dim_canal: z

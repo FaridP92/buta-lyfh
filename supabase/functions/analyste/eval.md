@@ -20,7 +20,7 @@ Vingt-quatre questions, exécutées par `npm run evaluer:analyste` contre la fon
 | 14 | Combien de leads sans rendez-vous à 48 heures par agence sur la cohorte de septembre 2026 ? | ok | 48 | mart_funnel, sans_rdv_48h (valeurs mouvantes) |
 | 15 | Quel est l'atterrissage 2026 du réseau et sa probabilité d'atteinte ? | ok | 29 187 878 | mart_forecast ; l'objectif annuel est le seul nombre stable d'un jour à l'autre (l'atterrissage bouge avec la journée publiée) |
 | 16 | Quelles agences sont sous leur objectif de CA en septembre 2026 ? | ok | objectif | mart_kpi_mensuel, ecart_objectif_pct au prorata (valeurs mouvantes) |
-| 17 | Quel est le score de qualité du jour et quels contrôles sont en échec ? | ok | C03 | mart_qualite |
+| 17 | Quel est le score de qualité du jour et quels contrôles sont en échec ? | ok | 100 | mart_qualite ; depuis la migration 0039 (26 septembre) les douze contrôles sont ok à la journée publiée, score 100 (C03 était attendu jusque-là) |
 | 18 | Combien d'installateurs RGE pompe à chaleur compte le département du Nord ? | ok | 399 | mart_marche_departement, rge_pac |
 | 19 | Quelle est la remise moyenne de la Saintonge au deuxième trimestre 2026 ? | ok | Saintonge ; 8,32 | mart_remises, grain trimestre |
 | 20 | Quel est le carnet de pose du Bassin d'Arcachon la dernière semaine renseignée ? | ok | Arcachon | mart_pose |

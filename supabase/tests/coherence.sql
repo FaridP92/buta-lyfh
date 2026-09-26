@@ -125,7 +125,8 @@ select 'contrôles 0038 : flux C09 = recompte direct sur 30 jours' as test, r.nb
 from buta.controle_resultat r,
   (select count(*) as n from buta.fait_dossier
    where publie and date_lead <= buta.journee_publiee() and date_lead > buta.journee_publiee() - 30
-     and produit_libelle_source is not null and produit_libelle_source not in (select libelle from buta.dim_produit)) d
+     and produit_libelle_source is not null and produit_libelle_source not in (select libelle from buta.dim_produit)
+     and not exists (select 1 from buta.ref_libelle_produit r where r.libelle_source = fait_dossier.produit_libelle_source and r.rapproche_le <= buta.journee_publiee())) d
 where r.jour = buta.journee_publiee() and r.controle = 'C09';
 
 select 'mart_qualite 0038 : flux_30j_jour = somme des flux du jour' as test,
@@ -137,3 +138,28 @@ select 'synthèse 0038 : changement, jour_precedent, flux et agences_texte par c
   r.s->>'changement' as changement, r.s->>'jour_precedent' as jour_precedent
 from (select buta.executer_controles(buta.journee_publiee()) as s) r, jsonb_array_elements(r.s->'controles') e
 group by r.s;
+
+-- 0039 : réconciliation datée du Nord. À la journée publiée, les douze contrôles sont ok (score 100) ; l'historique
+-- garde la trace de l'intégration (score sous 100 en juillet) ; chaque libellé divergent a une date de rapprochement ;
+-- les doublons fusionnés à la journée sortent de dossier_a_date ; plus aucune alerte « dossiers à qualifier ».
+select 'réconciliation 0039 : douze contrôles ok à la journée publiée, score 100' as test,
+  bool_and(statut = 'ok') and max(score_jour) = 100 as ok, count(*) as controles, max(score_jour) as score
+from buta.mart_qualite where jour = buta.journee_publiee();
+
+select 'réconciliation 0039 : l''historique garde l''intégration du Nord (score < 100 mi-juillet)' as test,
+  max(score_jour) filter (where jour = '2026-07-15') < 100 and max(score_jour) filter (where jour = '2026-05-15') = 100 as ok,
+  max(score_jour) filter (where jour = '2026-07-15') as score_15_juillet, max(score_jour) filter (where jour = '2026-05-15') as score_15_mai
+from buta.mart_qualite;
+
+select 'réconciliation 0039 : chaque libellé divergent est rapproché à une date' as test,
+  count(*) filter (where rapproche_le is null) = 0 as ok, count(*) as libelles, max(rapproche_le) as dernier_rapprochement
+from buta.mart_reconciliation_libelles;
+
+select 'réconciliation 0039 : doublons fusionnés exclus de dossier_a_date' as test,
+  (select count(*) from buta.fait_dossier where publie and date_lead <= buta.journee_publiee())
+    - (select count(*) from buta.dossier_a_date)
+    = (select count(*) from buta.fait_dossier where publie and date_lead <= buta.journee_publiee() and fusionne_le <= buta.journee_publiee()) as ok,
+  (select count(*) from buta.fait_dossier where publie and date_lead <= buta.journee_publiee() and fusionne_le <= buta.journee_publiee()) as fusionnes;
+
+select 'réconciliation 0039 : plus d''alerte « dossiers à qualifier »' as test, count(*) = 0 as ok, count(*) as alertes
+from buta.mart_alertes where code = 'DOSSIERS_A_QUALIFIER';
