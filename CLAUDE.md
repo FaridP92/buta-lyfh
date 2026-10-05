@@ -24,7 +24,7 @@ Buta.Lyfh est un démonstrateur personnel de Frédéric Poissonnier, construit �
 - Marque : aucun logo, aucune couleur de marque, aucun visuel Butagaz. Le nom de l'application vit dans une seule constante (`src/app/marque.ts`) et le sous-domaine dans `.env`, pour qu'un renommage prenne dix minutes. Le nom affiché est « Buta.Lyfh ». Le pied de page et la page Méthode portent la mention : « Démonstrateur personnel de Frédéric Poissonnier, à l'appui d'une candidature. Sans lien avec Butagaz. Données de marché publiques, données d'activité simulées. »
 - Niveau de design : celui d'un produit de studio, pas d'un gabarit. `docs/DESIGN.md` §9 liste ce qui trahit une interface générée et ce qu'on fait à la place ; §10 définit le logo ; §11 les animations signature. Chaque écran est relu contre ces trois sections, capture à l'appui, avant d'être déclaré fini.
 - Ton : sobre, précis, aucun superlatif dans l'interface (« le meilleur », « révolutionnaire » sont interdits). Les titres disent ce que l'écran permet de décider.
-- Sécurité : la clé Anthropic et la clé service Supabase ne quittent jamais le serveur (Edge Functions, n8n). Le front n'embarque que l'URL Supabase et la clé anon, bornée par la RLS. Le rôle SQL de l'analyste est en lecture seule, limité aux vues autorisées, avec `statement_timeout`.
+- Sécurité : la clé Anthropic et la clé service ne quittent jamais le serveur (Edge Functions, n8n). Le front n'embarque que l'URL de l'API et la clé anon, bornée par la RLS. Le rôle SQL de l'analyste est en lecture seule, limité aux vues autorisées, avec `statement_timeout`.
 - Périmètre : rien n'est ajouté au périmètre d'un lot sans l'écrire dans `docs/BACKLOG.md`. Un lot est fini quand ses critères d'acceptation sont vérifiés et notés dans `docs/JOURNAL.md`, pas avant.
 - Pas de faux fini : aucun `TODO` laissé dans le code livré, aucun test `skip`, aucune branche non implémentée. Si quelque chose bloque, l'écrire dans le journal et le dire.
 
@@ -33,12 +33,12 @@ Buta.Lyfh est un démonstrateur personnel de Frédéric Poissonnier, construit �
 - `npm run check` : `typecheck` (tsc strict), `lint` (oxlint), `test` (Vitest), `verif:tirets`, `verif:sources` (chaque vue `mart_` a une fiche dans INDICATEURS.md).
 - `npm run build` : bundle de production dans `dist/` (budget : moins de 900 Ko de JavaScript compressé hors GeoJSON chargés à la demande).
 - `npm run e2e` : Playwright, parcours de chaque route en 1280 px et 375 px, zéro erreur console.
-- `npm run instantane` : écrit `public/data/instantane/*.json` (secours statique des vues `mart_`) depuis Supabase.
+- `npm run instantane` : écrit `public/data/instantane/*.json` (secours statique des vues `mart_`) depuis la base.
 - `npm run deploiement` : build, contrôle, rsync vers le VPS, test HTTP de la page d'accueil et d'une route profonde (voir DEPLOIEMENT_VPS.md).
-- `npm run generer:activite` : régénère le jeu simulé (graine fixe) et le charge dans Supabase. `npm run ingerer:marche` : charge le marché réel (Insee, RGE, RTE, DPE).
+- `npm run generer:activite` : régénère le jeu simulé (graine fixe) et le charge dans la base (tunnel SSH vers le VPS, voir `deploy/backend/README.md`). `npm run ingerer:marche` : charge le marché réel (Insee, RGE, RTE, DPE).
 
 ## Outils et skills à mobiliser
-- MCP Supabase (projet cible défini dans ARCHITECTURE.md) pour le schéma, les migrations, les Edge Functions et les advisors de sécurité après chaque migration.
+- Base et fonctions : backend auto-hébergé sur le VPS (`deploy/backend/README.md`) pour le schéma, les migrations (`docker compose exec -T db psql -U postgres -d buta < supabase/migrations/NNNN_xxx.sql`) et les Edge Functions ; vérification des droits et de la RLS après chaque migration.
 - MCP n8n (instance n8n.lyfh.fr) pour créer, valider et publier les workflows ; export JSON de chaque workflow dans `n8n/`.
 - Skills locaux, par lot : `frontend-design` et `ui-ux-pro-max` (écrans), `data-viz-dashboard-expert` (choix des graphiques), `supabase-rls-guard` (chaque migration), `n8n-workflow-architect` (workflows), `devops-cloud-deploy` (déploiement), `powerbi-dax-expert` (export Power BI), `expert-qa-e2e` (Playwright), `static-analysis-enforcer` (typage), `git-commit-guardian` (fin de lot), `visual-verdict` (captures d'écran contre DESIGN.md).
 - Mode ultracode pour les relectures : workflows de réfutation à trois lentilles (faits contre DONNEES.md, forme et typographie, recruteur Butagaz simulé), sans juge de synthèse. La rédaction se fait à la main, la réfutation par workflow.

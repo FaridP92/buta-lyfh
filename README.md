@@ -6,7 +6,7 @@ Cockpit de pilotage d'un réseau d'installateurs (photovoltaïque, pompes à cha
 
 - Application : https://buta.lyfh.fr
 - Démarrage : `CLAUDE.md`, puis `docs/` dans l'ordre indiqué, puis `PROMPT_DEMARRAGE.md`.
-- Stack : React 19, Vite 7, TypeScript strict, Tailwind v4, Radix, ECharts, Supabase (Postgres, Edge Functions), n8n, VPS OVH Plesk.
+- Stack : React 19, Vite 7, TypeScript strict, Tailwind v4, Radix, ECharts, Postgres (PostgREST) et Edge Functions Deno auto-hébergés sur le VPS (`deploy/backend`), n8n, VPS OVH Plesk.
 
 ## Commandes
 

@@ -1,12 +1,12 @@
 /**
  * Chaos (VERIFICATION.md) : pannes sur les dépendances de Buta.Lyfh, simulé au niveau réseau du navigateur.
- * Hypothèse de résilience : chaque écran reste lisible (instantané statique) quand Supabase est coupé, lent ou
+ * Hypothèse de résilience : chaque écran reste lisible (instantané statique) quand l'API de données est coupée, lent ou
  * renvoie n'importe quoi, et l'écran Analyste dit clairement qu'il n'a pas de réponse quand l'Edge Function coupe
  * ou répond hors contrat. Le délai de deux minutes côté navigateur est vérifié en unitaire (tests/ia.test.ts).
  */
 import { expect, test, type Page } from "@playwright/test";
 
-const SUPABASE = "**/*.supabase.co/**";
+const API_DONNEES = "**/rest/v1/**";
 const ECRANS = ["/ventes", "/forecast", "/qualite", "/plans-action"];
 
 function surveiller(page: Page) {
@@ -16,9 +16,9 @@ function surveiller(page: Page) {
 }
 
 for (const route of ECRANS) {
-  test(`Supabase coupé (connexion refusée) : ${route} affiche l'instantané`, async ({ page }) => {
+  test(`API de données coupée (connexion refusée) : ${route} affiche l'instantané`, async ({ page }) => {
     const fatales = surveiller(page);
-    await page.route(SUPABASE, (r) => r.abort("connectionrefused"));
+    await page.route(API_DONNEES, (r) => r.abort("connectionrefused"));
     await page.goto(route);
     await expect(page.getByRole("contentinfo")).toContainText("Démonstrateur personnel");
     await expect(page.getByText("instantané", { exact: true }).first()).toBeVisible({ timeout: 15_000 });
@@ -26,9 +26,9 @@ for (const route of ECRANS) {
   });
 }
 
-test("Supabase lent (20 s sans réponse) : l'instantané s'affiche en moins de 8 s, sans attendre", async ({ page }) => {
+test("API de données lente (20 s sans réponse) : l'instantané s'affiche en moins de 8 s, sans attendre", async ({ page }) => {
   const fatales = surveiller(page);
-  await page.route(SUPABASE, async (r) => {
+  await page.route(API_DONNEES, async (r) => {
     await new Promise((ok) => setTimeout(ok, 20_000));
     await r.abort("timedout");
   });
@@ -39,17 +39,17 @@ test("Supabase lent (20 s sans réponse) : l'instantané s'affiche en moins de 8
   expect(fatales).toEqual([]);
 });
 
-test("Supabase répond 200 avec un corps corrompu : Zod rejette, l'instantané reste", async ({ page }) => {
+test("L'API répond 200 avec un corps corrompu : Zod rejette, l'instantané reste", async ({ page }) => {
   const fatales = surveiller(page);
-  await page.route(SUPABASE, (r) => r.fulfill({ status: 200, contentType: "application/json", body: "[{\"ca\": \"pas un nombre\", " }));
+  await page.route(API_DONNEES, (r) => r.fulfill({ status: 200, contentType: "application/json", body: "[{\"ca\": \"pas un nombre\", " }));
   await page.goto("/ventes");
   await expect(page.getByText("instantané", { exact: true }).first()).toBeVisible({ timeout: 15_000 });
   expect(fatales).toEqual([]);
 });
 
-test("Supabase répond 500 : pas d'écran blanc, instantané et pied de page présents", async ({ page }) => {
+test("L'API répond 500 : pas d'écran blanc, instantané et pied de page présents", async ({ page }) => {
   const fatales = surveiller(page);
-  await page.route(SUPABASE, (r) => r.fulfill({ status: 500, contentType: "application/json", body: "{\"message\":\"panne\"}" }));
+  await page.route(API_DONNEES, (r) => r.fulfill({ status: 500, contentType: "application/json", body: "{\"message\":\"panne\"}" }));
   await page.goto("/qualite");
   await expect(page.getByText("instantané", { exact: true }).first()).toBeVisible({ timeout: 15_000 });
   await expect(page.getByRole("contentinfo")).toBeVisible();
@@ -58,7 +58,7 @@ test("Supabase répond 500 : pas d'écran blanc, instantané et pied de page pr�
 
 test("Supabase et instantané coupés tous les deux : dégradation annoncée, aucune exception non gérée", async ({ page }) => {
   const fatales = surveiller(page);
-  await page.route(SUPABASE, (r) => r.abort("connectionrefused"));
+  await page.route(API_DONNEES, (r) => r.abort("connectionrefused"));
   await page.route("**/data/instantane/**", (r) => r.fulfill({ status: 404, body: "" }));
   await page.goto("/ventes");
   await expect(page.getByRole("contentinfo")).toContainText("Démonstrateur personnel");

@@ -39,7 +39,7 @@ add_header Strict-Transport-Security "max-age=31536000" always;
 ```
 set -euo pipefail
 npm run check                      # verif:sources et instantane tolèrent l'absence de vues (avertissement, code 0) tant que le lot 1 n'est pas livré
-npm run instantane || echo "instantané ignoré (Supabase absent ou vues absentes)"
+npm run instantane || echo "instantané ignoré (API absente ou vues absentes)"
 npm run build
 rsync -az --delete dist/ "$VPS_HOTE:$VPS_RACINE.nouveau/"
 ssh "$VPS_HOTE" "cd $(dirname $VPS_RACINE) && rm -rf buta.lyfh.fr.ancien && mv buta.lyfh.fr buta.lyfh.fr.ancien && mv buta.lyfh.fr.nouveau buta.lyfh.fr && chown -R faridp:psacln buta.lyfh.fr"
@@ -50,7 +50,7 @@ echo "En ligne : $(date)"
 Le basculement par renommage rend le déploiement atomique et réversible (`mv` inverse). Le premier déploiement crée le dossier au lieu de le renommer. Le contenu Plesk par défaut est écrasé, c'est voulu.
 
 ## 3. Contenu de la politique de sécurité de contenu
-`Content-Security-Policy` posée en balise meta dans `index.html` (nginx Plesk ne la porte pas facilement) : `default-src 'self'; connect-src 'self' https://<projet>.supabase.co https://geo.api.gouv.fr; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'`. Adapter l'URL Supabase au projet cible. `frame-ancestors` n'est pas honoré dans une balise meta : la protection contre l'encadrement vient de l'en-tête `X-Frame-Options DENY` posé par nginx ci-dessus.
+`Content-Security-Policy` posée en balise meta dans `index.html` (nginx Plesk ne la porte pas facilement) : `default-src 'self'; connect-src 'self' https://geo.api.gouv.fr; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'`. L'API de données est servie en même origine (`/rest/v1`, `/functions/v1`) : `'self'` suffit, aucun domaine externe à autoriser. `frame-ancestors` n'est pas honoré dans une balise meta : la protection contre l'encadrement vient de l'en-tête `X-Frame-Options DENY` posé par nginx ci-dessus.
 
 ## 4. Contrôles après chaque mise en ligne
 - `curl -I` sur `/`, `/territoires`, `/index.html` et un fichier de `/assets/` : code 200, TLS valide, les cinq en-têtes (les quatre de sécurité et `Strict-Transport-Security`) présents partout, `Cache-Control: no-cache` sur le HTML.

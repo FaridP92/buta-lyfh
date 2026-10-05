@@ -87,7 +87,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/publier_journee",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/publier_journee",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
@@ -133,7 +133,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/rafraichir_marts",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/rafraichir_marts",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
@@ -181,7 +181,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/journal_run",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/journal_run",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,

@@ -90,7 +90,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/faits_revue_hebdo",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/faits_revue_hebdo",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
@@ -215,7 +215,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/publier_revue",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/publier_revue",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
@@ -292,7 +292,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/journal_run",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/journal_run",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,

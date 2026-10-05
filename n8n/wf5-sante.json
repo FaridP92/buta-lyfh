@@ -106,7 +106,7 @@
       ],
       "parameters": {
         "method": "GET",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/mart_kpi_mensuel",
+        "url": "https://buta.lyfh.fr/rest/v1/mart_kpi_mensuel",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendQuery": true,
@@ -176,7 +176,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/journal_run",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/journal_run",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
@@ -222,7 +222,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "https://iuremijuoxkzvfqyrmcc.supabase.co/rest/v1/rpc/echecs_consecutifs",
+        "url": "https://buta.lyfh.fr/rest/v1/rpc/echecs_consecutifs",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "supabaseApi",
         "sendHeaders": true,
